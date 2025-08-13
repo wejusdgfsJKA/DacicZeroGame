@@ -83,19 +83,6 @@ namespace Entity
             multiPool.Release(entity);
         }
         /// <summary>
-        /// Send an attack to an entity.
-        /// </summary>
-        /// <param name="entity">The root transform of the attacked entity.</param>
-        /// <param name="dmgInfo">The damage package.</param>
-        public void SendAttack(Transform entity, DmgInfo dmgInfo)
-        {
-            EntityBase b;
-            if (Entities.TryGetValue(entity.GetInstanceID(), out b))
-            {
-                b.TakeDamage(dmgInfo);
-            }
-        }
-        /// <summary>
         /// This entity just died, will be added to the pool.
         /// </summary>
         /// <param name="entity">The entity that died.</param>
@@ -109,14 +96,6 @@ namespace Entity
             Entities.Clear();
             multiPool.Clear();
             roster.Clear();
-        }
-        private void OnDestroy()
-        {
-            OnDisable();
-        }
-        private void OnApplicationQuit()
-        {
-            OnDestroy();
         }
     }
 }

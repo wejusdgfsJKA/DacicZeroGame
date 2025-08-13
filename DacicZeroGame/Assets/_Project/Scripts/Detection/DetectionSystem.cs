@@ -1,81 +1,202 @@
+using EventBus;
 using KBCore.Refs;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Detection
 {
     public class DetectionSystem : ValidatedMonoBehaviour
     {
-        [field: SerializeField] public bool CanSee { get; set; } = true;
-        [field: SerializeField] public bool CanHear { get; set; } = true;
-        //some entities may share a common detection memory
-        public DetectionMemory Memory { get; set; }
+        #region Parameters
+        [SerializeField] protected float UpdateCooldown;
+        [SerializeField] protected float TimeToLose;
+        [SerializeField] protected float TimeToForgetTarget;
+        [SerializeField] protected float awarenessBuildRate;
+        [SerializeField] protected float awarenessLossRate;
+        [SerializeField] protected float TimeToForgetSound;
         /// <summary>
         /// How far can we hear?
         /// </summary>
-        public float AudioRange { get; protected set; }
+        [field: SerializeField] public float AudioRange { get; protected set; }
         /// <summary>
         /// How far can we see?
         /// </summary>
-        public float VisualRange { get; protected set; }
+        [field: SerializeField] public float VisualRange { get; protected set; }
         /// <summary>
         /// What is our field of view?
         /// </summary>
-        public float VisualAngle { get; protected set; }
+        [field: SerializeField] public float VisualAngle { get; protected set; }
         /// <summary>
         /// What can we NOT see through?
         /// </summary>
-        LayerMask obstructionMask = 1 << 0;
-        public float ProximityRange { get; protected set; }
-        protected DetectionStrategy strategy;
-        private void OnEnable()
+        [SerializeField] protected LayerMask obstructionMask = 1 << 0;
+        [field: SerializeField] public float ProximityRange { get; protected set; }
+        #endregion
+        #region Other fields
+        //cache this for performance/convenience
+        [SerializeField] protected LayerMask targetMask;
+        public Dictionary<Transform, TargetData> Targets { get; } = new();
+        public TargetData ClosestTarget { get; protected set; }
+        public HashSet<SoundData> Sounds { get; } = new();
+        protected WaitForSeconds wait;
+        protected Coroutine coroutine;
+        protected Collider[] targetBuffer = new Collider[GlobalSettings.MaxTargets];
+        #endregion
+        #region Debugging
+        private void OnDrawGizmosSelected()
         {
-            if (Memory == null)
+            //show detection ranges
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, VisualRange);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(transform.position, AudioRange);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, ProximityRange);
+        }
+        private void OnDrawGizmos()
+        {
+            foreach (var target in Targets.Values)
             {
-                Memory = new();
+                if (target.LastKnownPosition != null)
+                {
+                    Gizmos.color = new Color(target.Awareness, 0, 0);
+                    Gizmos.DrawLine(transform.position, (Vector3)target.LastKnownPosition);
+                }
+            }
+            foreach (var sound in Sounds)
+            {
+                Gizmos.color = new Color(0, Time.time - sound.TimeHeard, 0);
+                Gizmos.DrawLine(transform.position, sound.Position);
             }
         }
-        void Detect()
+        #endregion
+        #region Setup
+        protected void Awake()
         {
-            //go over all entities in the EntityManager?
+            wait = new WaitForSeconds(UpdateCooldown);
+            targetMask = GlobalSettings.TargetMasks[gameObject.layer];
         }
-        /// <summary>
-        /// Check to see if we can detect a given entity.
-        /// </summary>
-        /// <param name="entity">The entity to check against.</param>
-        /// <returns>True if we can detect this entity.</returns>
-        bool CanDetect(DetectableTarget entity)
+        protected void OnEnable()
         {
-            float dist = Vector3.Distance(entity.transform.position, transform.position);
-            if (dist <= ProximityRange)
-            {
-                return true;
-            }
-            if (CanHear && dist <= entity.CurrentSound + AudioRange)
-            {
-                //we can hear this entity
-                return true;
-            }
-            if (CanSee)
-            {
-                //check distance
-                if (dist > VisualRange)
-                {
-                    return false;
-                }
-                //check visual angle
-                if (Vector3.Angle(transform.forward, entity.transform.position -
-                    transform.position) > VisualAngle / 2)
-                {
-                    return false;
-                }
-                //check for obstructions
-                if (Physics.Linecast(transform.position, entity.transform.position,
-                    obstructionMask))
-                {
-                    return false;
-                }
-                return true;
-            }
-            return false;
+            EventBus<SoundEvent>.AddActions(transform.GetInstanceID(), HeardSound);
+            Targets.Clear();
+            Sounds.Clear();
+            coroutine = StartCoroutine(enumerator());
         }
+        protected void OnDisable()
+        {
+            EventBus<SoundEvent>.RemoveActions(transform.GetInstanceID(), HeardSound);
+            if (coroutine != null)
+            {
+                StopCoroutine(coroutine);
+            }
+        }
+        #endregion
+        #region Main methods
+        protected IEnumerator enumerator()
+        {
+            while (true)
+            {
+                yield return wait;
+                Detect();
+                ProcessInformation();
+            }
+        }
+        protected void Detect()
+        {
+            //gather all nearby targets
+            int targetCount = Physics.OverlapSphereNonAlloc(transform.position,
+                VisualRange, targetBuffer, targetMask);
+            for (int i = 0; i < targetCount; i++)
+            {
+                var tr = targetBuffer[i].transform.root;
+                //check for proximity
+                if (Vector3.Distance(transform.position, tr.position) <= ProximityRange)
+                {
+                    Detected(tr);
+                    continue;
+                }
+                //check for visual
+                Vector3 VectorToTarget = tr.position - transform.position;
+                VectorToTarget.Normalize();
+                if (Vector3.Dot(VectorToTarget, transform.forward) < Mathf.Cos(Mathf.Deg2Rad * VisualAngle / 2))
+                {
+                    continue;
+                }
+                if (Physics.Linecast(transform.position, tr.position, obstructionMask))
+                {
+                    continue;
+                }
+                Detected(tr);
+            }
+        }
+        protected void Detected(Transform target)
+        {
+            TargetData targetData;
+            if (Targets.TryGetValue(target, out targetData))
+            {
+                targetData.TimeLastSpotted = Time.time;
+                targetData.Awareness += awarenessBuildRate;
+                targetData.LastKnownPosition = target.position;
+            }
+            else
+            {
+                Targets.Add(target, new TargetData(target));
+            }
+        }
+        protected void ProcessInformation()
+        {
+            #region Targets
+            Queue<TargetData> targetsToRemove = new();
+            foreach (var target in Targets.Values)
+            {
+                if (target.Transform == null ||
+                    target.Transform.gameObject == null ||
+                    !target.Transform.gameObject.activeSelf ||
+                    Time.time - target.TimeLastSpotted > TimeToForgetTarget)
+                {
+                    targetsToRemove.Enqueue(target);
+                    continue;
+                }
+                if (target.Awareness >= 0.5f)
+                {
+                    target.LastKnownPosition = target.Transform.position;
+                }
+                target.Awareness -= awarenessLossRate;
+            }
+            TargetData target2;
+            while (targetsToRemove.TryDequeue(out target2))
+            {
+                Targets.Remove(target2.Transform);
+            }
+            #endregion
+            #region Sounds
+            Queue<SoundData> soundsToRemove = new();
+            foreach (var sound in Sounds)
+            {
+                if (Time.time - sound.TimeHeard > TimeToForgetSound)
+                {
+                    soundsToRemove.Enqueue(sound);
+                    continue;
+                }
+            }
+            SoundData sound2;
+            while (soundsToRemove.TryDequeue(out sound2))
+            {
+                Sounds.Remove(sound2);
+            }
+            #endregion
+        }
+        public void HeardSound(SoundEvent soundEvent)
+        {
+            //this sound was made by a friend
+            if (soundEvent.Team == gameObject.layer) return;
+            //this sound is too far away
+            if (soundEvent.Intensity + AudioRange < Vector3.Distance(transform.position, soundEvent.Location)) return;
+            Sounds.Add(new SoundData(soundEvent.Intensity, soundEvent.Location, soundEvent.Team, Time.time));
+        }
+        #endregion
     }
 }
