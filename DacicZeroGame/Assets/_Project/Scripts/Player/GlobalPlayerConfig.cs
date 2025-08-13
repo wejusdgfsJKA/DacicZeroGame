@@ -3,12 +3,19 @@
 /// </summary>
 public static class GlobalPlayerConfig
 {
+    public static float PlayerGroundCheckRadius { get; set; } = 0.4f;
     /// <summary>
     /// How fast can the player move.
     /// </summary>
     public static float PlayerSpeed { get; set; } = 10;
-    public static float JumpForce { get; set; } = 20;
-    public static float Gravity { get; set; } = .25f;
+    /// <summary>
+    /// How much force to apply when jumping.
+    /// </summary>
+    public static float JumpForce { get; set; } = 10;
+    /// <summary>
+    /// How much gravity to apply downwards when not grounded.
+    /// </summary>
+    public static float Gravity { get; set; } = .35f;
     /// <summary>
     /// At what distance can the player interact with an interactable.
     /// </summary>

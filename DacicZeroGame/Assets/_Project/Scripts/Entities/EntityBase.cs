@@ -1,10 +1,9 @@
-using Detection;
 using EventBus;
 using Pooling;
 using UnityEngine;
 namespace Entity
 {
-    public class EntityBase : DetectableTarget, IPoolable<EntityID>
+    public class EntityBase : MonoBehaviour, IPoolable<EntityID>
     {
         #region Fields
         protected int maxHealth;
@@ -33,9 +32,8 @@ namespace Entity
             }
         }
         #endregion
-        protected override void OnEnable()
+        protected void OnEnable()
         {
-            base.OnEnable();
             //register events
             EventBus<OnDamageTaken>.AddBinding(transform.GetInstanceID());
             EventBus<OnDeath>.AddBinding(transform.GetInstanceID());
@@ -77,9 +75,8 @@ namespace Entity
             EventBus<OnDamageTaken>.RemoveBinding(transform.GetInstanceID());
             EventBus<OnDeath>.RemoveBinding(transform.GetInstanceID());
         }
-        protected override void OnDisable()
+        protected void OnDisable()
         {
-            base.OnDisable();
             ClearEventBindings();
             if (EntityManager.Instance != null)
             {

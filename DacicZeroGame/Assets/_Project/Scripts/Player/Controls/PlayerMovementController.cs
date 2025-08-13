@@ -1,4 +1,5 @@
 using KBCore.Refs;
+using UnityEditor;
 using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
@@ -7,7 +8,7 @@ public class PlayerMovementController : ValidatedMonoBehaviour
     #region Fields
     [SerializeField, Anywhere] InputReader inputReader;
     [SerializeField, Self] Rigidbody rb;
-    [SerializeField, Anywhere] Transform groundCheckPoint;
+    [SerializeField, Anywhere] public Transform groundCheckPoint;
     [field: SerializeField] public bool Grounded { get; protected set; }
     [SerializeField] bool onSlope;
     RaycastHit slopeHit;
@@ -41,7 +42,7 @@ public class PlayerMovementController : ValidatedMonoBehaviour
     }
     void GroundCheck()
     {
-        Grounded = Physics.CheckSphere(groundCheckPoint.position, transform.localScale.x / 2, GlobalPlayerConfig.GroundLayerMask);
+        Grounded = Physics.CheckSphere(groundCheckPoint.position, GlobalPlayerConfig.PlayerGroundCheckRadius, GlobalPlayerConfig.GroundLayerMask);
         if (Grounded)
         {
             SlopeCheck();
@@ -53,7 +54,7 @@ public class PlayerMovementController : ValidatedMonoBehaviour
     }
     void SlopeCheck()
     {
-        Physics.Raycast(groundCheckPoint.position, -groundCheckPoint.up, out slopeHit, transform.localScale.x / 2, GlobalPlayerConfig.GroundLayerMask);
+        Physics.Raycast(groundCheckPoint.position, -groundCheckPoint.up, out slopeHit, GlobalPlayerConfig.PlayerGroundCheckRadius, GlobalPlayerConfig.GroundLayerMask);
         onSlope = slopeHit.normal != Vector3.up;
     }
     private void FixedUpdate()
@@ -86,3 +87,23 @@ public class PlayerMovementController : ValidatedMonoBehaviour
         }
     }
 }
+#if UNITY_EDITOR
+[CustomEditor(typeof(PlayerMovementController))]
+public class PlayerMovementDebug : Editor
+{
+    public void OnSceneGUI()
+    {
+        var t = (PlayerMovementController)target;
+        Handles.color = Color.yellow;
+        Handles.DrawWireArc(t.groundCheckPoint.position, Vector3.up, Vector3.forward,
+            360, GlobalPlayerConfig.PlayerGroundCheckRadius);
+        Handles.DrawWireArc(t.groundCheckPoint.position, Vector3.forward, Vector3.up,
+            360, GlobalPlayerConfig.PlayerGroundCheckRadius);
+        Handles.DrawWireArc(t.groundCheckPoint.position, Vector3.right, Vector3.forward,
+            360, GlobalPlayerConfig.PlayerGroundCheckRadius);
+        Handles.color = Color.blue;
+        Handles.DrawLine(t.groundCheckPoint.position, t.groundCheckPoint.position -
+            new Vector3(0, GlobalPlayerConfig.PlayerGroundCheckRadius, 0));
+    }
+}
+#endif
