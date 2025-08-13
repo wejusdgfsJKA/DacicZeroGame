@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638905344154459604
-    m_Hash: 180146623
+      ticks: 638906582114081279
+    m_Hash: 3815749946
   m_LockFileStatus:
     m_FilePath: C:/Users/ATPEngie/UBB/DacicZeroGame/DacicZeroGame/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638905344154599853
-    m_Hash: 1425555744
+      ticks: 638906582114151288
+    m_Hash: 150497460
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -22,6 +22,61 @@ m_LocalPackages:
 m_ProjectPath: C:/Users/ATPEngie/UBB/DacicZeroGame/DacicZeroGame/Packages
 m_EditorVersion: 2022.3.45f1 (a13dfa44d684)
 m_ResolvedPackages:
+- packageId: com.kylewbanks.scenerefattribute@https://github.com/KyleBanks/scene-ref-attribute.git
+  testable: 0
+  isDirectDependency: 1
+  version: 0.13.0
+  source: 5
+  resolvedPath: C:\Users\ATPEngie\UBB\DacicZeroGame\DacicZeroGame\Library\PackageCache\com.kylewbanks.scenerefattribute@8d3a0ee421
+  assetPath: Packages/com.kylewbanks.scenerefattribute
+  name: com.kylewbanks.scenerefattribute
+  displayName: Scene Reference Attribute
+  author:
+    name: Kyle Banks
+    email: 
+    url: https://github.com/KyleBanks/scene-ref-attribute
+  category: 
+  type: 
+  description: Unity C# attribute for serializing component and interface references
+    within the scene or prefab during OnValidate, rather than using GetComponent*
+    functions in Awake/Start/OnEnable at runtime.
+  status: 0
+  errors: []
+  versions:
+    all: []
+    compatible: []
+    recommended: 
+    deprecated: []
+  dependencies: []
+  resolvedDependencies: []
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 0
+  documentationUrl: https://github.com/KyleBanks/scene-ref-attribute/blob/main/README.md
+  hasRepository: 0
+  repository:
+    type: 
+    url: 
+    revision: 
+    path: 
+  unityLifecycle:
+    version: 
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  fingerprint: 
 - packageId: com.unity.ai.navigation@1.1.7
   testable: 0
   isDirectDependency: 1
