@@ -13,10 +13,18 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638906582114151288
-    m_Hash: 150497460
+      ticks: 638908308309914985
+    m_Hash: 4145984326
 m_EmbeddedPackageManifests:
-  m_ManifestsStatus: {}
+  m_ManifestsStatus:
+    C:/Users/ATPEngie/UBB/DacicZeroGame/DacicZeroGame/Packages/com.kybernetik.animancer/package.json:
+      m_FilePath: C:/Users/ATPEngie/UBB/DacicZeroGame/DacicZeroGame/Packages/com.kybernetik.animancer/package.json
+      m_PathExists: 1
+      m_ContentTrackingEnabled: 1
+      m_ModificationDate:
+        serializedVersion: 2
+        ticks: 638596597050000000
+      m_Hash: 2464383434
 m_LocalPackages:
   m_LocalFileStatus: []
 m_ProjectPath: C:/Users/ATPEngie/UBB/DacicZeroGame/DacicZeroGame/Packages
@@ -277,6 +285,7 @@ m_ResolvedPackages:
     - 2.7.1
     - 2.8.1
     - 2.8.2
+    - 2.9.1
     compatible:
     - 2.4.4
     - 2.5.1
@@ -285,6 +294,7 @@ m_ResolvedPackages:
     - 2.7.1
     - 2.8.1
     - 2.8.2
+    - 2.9.1
     recommended: 2.4.4
     deprecated: []
   dependencies: []
@@ -2997,6 +3007,66 @@ m_ResolvedPackages:
     path: 
   unityLifecycle:
     version: 1.0.0
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  fingerprint: 
+- packageId: com.kybernetik.animancer@file:C:\Users\ATPEngie\UBB\DacicZeroGame\DacicZeroGame\Packages\com.kybernetik.animancer
+  testable: 1
+  isDirectDependency: 1
+  version: 8.0.0
+  source: 3
+  resolvedPath: C:\Users\ATPEngie\UBB\DacicZeroGame\DacicZeroGame\Packages\com.kybernetik.animancer
+  assetPath: Packages/com.kybernetik.animancer
+  name: com.kybernetik.animancer
+  displayName: Animancer
+  author:
+    name: Kybernetik
+    email: animancer@kybernetik.com.au
+    url: https://kybernetik.com.au
+  category: Animation
+  type: 
+  description: Animancer allows you to play animations on demand and control their
+    details directly, without all the restrictions and extra preparation required
+    by other systems.
+  status: 0
+  errors: []
+  versions:
+    all: []
+    compatible: []
+    recommended: 
+    deprecated: []
+  dependencies:
+  - name: com.unity.modules.animation
+    version: 1.0.0
+  resolvedDependencies:
+  - name: com.unity.modules.animation
+    version: 1.0.0
+  keywords:
+  - Animation
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 0
+  isAssetStorePackage: 0
+  datePublishedTicks: 0
+  documentationUrl: https://kybernetik.com.au/animancer
+  hasRepository: 0
+  repository:
+    type: 
+    url: 
+    revision: 
+    path: 
+  unityLifecycle:
+    version: 
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0

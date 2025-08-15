@@ -33,7 +33,7 @@ namespace Detection
         [field: SerializeField] public float ProximityRange { get; protected set; }
         #endregion
         #region Other fields
-        //cache this for performance/convenience
+        //cache this for performance/convenience and debugging
         [SerializeField] protected LayerMask targetMask;
         public Dictionary<Transform, TargetData> Targets { get; } = new();
         public TargetData ClosestTarget { get; protected set; }
@@ -65,9 +65,10 @@ namespace Detection
                     Gizmos.DrawLine(transform.position, (Vector3)target.LastKnownPosition);
                 }
             }
+
             foreach (var sound in Sounds)
             {
-                Gizmos.color = new Color(0, Time.time - sound.TimeHeard, 0);
+                Gizmos.color = new Color(0, (TimeToForgetSound - (Time.time - sound.TimeHeard)) / TimeToForgetSound, 0);
                 Gizmos.DrawLine(transform.position, sound.Position);
             }
         }
@@ -80,14 +81,20 @@ namespace Detection
         }
         protected void OnEnable()
         {
-            EventBus<SoundEvent>.AddActions(transform.GetInstanceID(), HeardSound);
+            if (!EventBus<SoundEvent>.AddActions(0, HeardSound))
+            {
+                Debug.LogError($"{transform} unable to add action to SoundEvent bus.");
+            }
             Targets.Clear();
             Sounds.Clear();
             coroutine = StartCoroutine(enumerator());
         }
         protected void OnDisable()
         {
-            EventBus<SoundEvent>.RemoveActions(transform.GetInstanceID(), HeardSound);
+            if (!EventBus<SoundEvent>.RemoveActions(0, HeardSound))
+            {
+                Debug.LogError($"{transform} unable to remove action from SoundEvent bus.");
+            }
             if (coroutine != null)
             {
                 StopCoroutine(coroutine);
@@ -132,7 +139,7 @@ namespace Detection
                 Detected(tr);
             }
         }
-        protected void Detected(Transform target)
+        public void Detected(Transform target)
         {
             TargetData targetData;
             if (Targets.TryGetValue(target, out targetData))
@@ -194,8 +201,8 @@ namespace Detection
             //this sound was made by a friend
             if (soundEvent.Team == gameObject.layer) return;
             //this sound is too far away
-            if (soundEvent.Intensity + AudioRange < Vector3.Distance(transform.position, soundEvent.Location)) return;
-            Sounds.Add(new SoundData(soundEvent.Intensity, soundEvent.Location, soundEvent.Team, Time.time));
+            if (soundEvent.Intensity + AudioRange < Vector3.Distance(transform.position, soundEvent.Position)) return;
+            Sounds.Add(new SoundData(soundEvent));
         }
         #endregion
     }

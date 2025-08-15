@@ -288,7 +288,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 622ef3ea44c083848b2b89b342032b7d, type: 2}
+  - {fileID: 2100000, guid: 0e0fd5f5c73223149b57cdd2411bf596, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -381,6 +381,7 @@ GameObject:
   - component: {fileID: 807806304}
   - component: {fileID: 807806303}
   - component: {fileID: 807806302}
+  - component: {fileID: 807806306}
   m_Layer: 6
   m_Name: Capsule
   m_TagString: Untagged
@@ -470,12 +471,26 @@ Transform:
   m_GameObject: {fileID: 807806301}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.87, z: 25.5}
+  m_LocalPosition: {x: 0, y: 0.87, z: -6.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &807806306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 807806301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24f9f9c39bdd1024e8038095b4f6fe25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  b: 0
+  intensity: 4
 --- !u!1 &990073503
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +884,7 @@ MonoBehaviour:
   awarenessBuildRate: 0.1
   awarenessLossRate: 0.07
   TimeToForgetSound: 15
-  <AudioRange>k__BackingField: 10
+  <AudioRange>k__BackingField: 20
   <VisualRange>k__BackingField: 50
   <VisualAngle>k__BackingField: 90
   obstructionMask:
@@ -1002,7 +1017,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2037129572}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0

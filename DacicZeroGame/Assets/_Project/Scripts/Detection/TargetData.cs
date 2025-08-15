@@ -11,11 +11,17 @@ namespace Detection
         /// <summary>
         /// Where did the sound originate?
         /// </summary>
-        public Vector3 Location;
+        public Vector3 Position;
         /// <summary>
         /// Use this so AI don't constantly investigate sounds made by their buddies.
         /// </summary>
         public int Team;
+        public SoundEvent(float intensity, Vector3 position, int team)
+        {
+            Intensity = intensity;
+            Position = position;
+            Team = team;
+        }
     }
     public class SoundData
     {
@@ -32,12 +38,19 @@ namespace Detection
         /// </summary>
         public int Team;
         public float TimeHeard;
-        public SoundData(float intensity, Vector3 location, int team, float timeHeard)
+        public SoundData(float intensity, Vector3 position, int team)
         {
             Intensity = intensity;
-            Position = location;
+            Position = position;
             Team = team;
-            TimeHeard = timeHeard;
+            TimeHeard = Time.time;
+        }
+        public SoundData(SoundEvent @event)
+        {
+            Intensity = @event.Intensity;
+            Position = @event.Position;
+            Team = @event.Team;
+            TimeHeard = Time.time;
         }
     }
     public class TargetData

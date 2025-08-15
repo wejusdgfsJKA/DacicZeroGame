@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.kybernetik.animancer": {
+      "version": "file:com.kybernetik.animancer",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.animation": "1.0.0"
+      }
+    },
     "com.kylewbanks.scenerefattribute": {
       "version": "https://github.com/KyleBanks/scene-ref-attribute.git",
       "depth": 0,
