@@ -23,6 +23,7 @@ namespace Detection
             Team = team;
         }
     }
+    [System.Serializable]
     public class SoundData
     {
         /// <summary>
@@ -53,6 +54,7 @@ namespace Detection
             TimeHeard = Time.time;
         }
     }
+    [System.Serializable]
     public class TargetData
     {
         protected float awareness = 1;
@@ -68,7 +70,7 @@ namespace Detection
             }
         }
         public float TimeLastSpotted;
-        public Vector3? LastKnownPosition;
+        public Vector3 LastKnownPosition;
         public Transform Transform;
         public TargetData(Transform tr)
         {

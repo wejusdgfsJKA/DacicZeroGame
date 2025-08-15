@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b7e636c5c014f141a38c4ab9296352a, type: 3}
+  m_Name: BotDetection
+  m_EditorClassIdentifier: 
+  <UpdateCooldown>k__BackingField: 0.05
+  <TimeToForgetTarget>k__BackingField: 20
+  <AwarenessBuildRate>k__BackingField: 0.05
+  <AwarenessLossRate>k__BackingField: 0.03
+  <TimeToForgetSound>k__BackingField: 10
+  <AudioRange>k__BackingField: 20
+  <VisualRange>k__BackingField: 40
+  <VisualAngle>k__BackingField: 90
+  <ObstructionMask>k__BackingField:
+    serializedVersion: 2
+    m_Bits: 1
+  <ProximityRange>k__BackingField: 2

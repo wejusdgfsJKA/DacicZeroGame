@@ -1,43 +1,25 @@
 using EventBus;
-using KBCore.Refs;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Detection
 {
-    public class DetectionSystem : ValidatedMonoBehaviour
+    public class DetectionSystem : MonoBehaviour
     {
         #region Parameters
-        [SerializeField] protected float UpdateCooldown;
-        [SerializeField] protected float TimeToLose;
-        [SerializeField] protected float TimeToForgetTarget;
-        [SerializeField] protected float awarenessBuildRate;
-        [SerializeField] protected float awarenessLossRate;
-        [SerializeField] protected float TimeToForgetSound;
-        /// <summary>
-        /// How far can we hear?
-        /// </summary>
-        [field: SerializeField] public float AudioRange { get; protected set; }
-        /// <summary>
-        /// How far can we see?
-        /// </summary>
-        [field: SerializeField] public float VisualRange { get; protected set; }
-        /// <summary>
-        /// What is our field of view?
-        /// </summary>
-        [field: SerializeField] public float VisualAngle { get; protected set; }
-        /// <summary>
-        /// What can we NOT see through?
-        /// </summary>
-        [SerializeField] protected LayerMask obstructionMask = 1 << 0;
-        [field: SerializeField] public float ProximityRange { get; protected set; }
+        [SerializeField] protected DetectionParameters @params;
+        #endregion
+        #region Targets & Sounds
+        public Dictionary<Transform, TargetData> Targets { get; } = new();
+        public TargetData ClosestTarget { get; protected set; }
+        protected float closestTargetDist;
+        public HashSet<SoundData> Sounds { get; } = new();
+        public SoundData ClosestSound { get; protected set; }
+        protected float closestSoundDist;
         #endregion
         #region Other fields
         //cache this for performance/convenience and debugging
-        [SerializeField] protected LayerMask targetMask;
-        public Dictionary<Transform, TargetData> Targets { get; } = new();
-        public TargetData ClosestTarget { get; protected set; }
-        public HashSet<SoundData> Sounds { get; } = new();
+        protected LayerMask targetMask;
         protected WaitForSeconds wait;
         protected Coroutine coroutine;
         protected Collider[] targetBuffer = new Collider[GlobalSettings.MaxTargets];
@@ -47,13 +29,13 @@ namespace Detection
         {
             //show detection ranges
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, VisualRange);
+            Gizmos.DrawWireSphere(transform.position, @params.VisualRange);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawWireSphere(transform.position, AudioRange);
+            Gizmos.DrawWireSphere(transform.position, @params.AudioRange);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position, ProximityRange);
+            Gizmos.DrawWireSphere(transform.position, @params.ProximityRange);
         }
         private void OnDrawGizmos()
         {
@@ -68,7 +50,7 @@ namespace Detection
 
             foreach (var sound in Sounds)
             {
-                Gizmos.color = new Color(0, (TimeToForgetSound - (Time.time - sound.TimeHeard)) / TimeToForgetSound, 0);
+                Gizmos.color = new Color(0, (@params.TimeToForgetSound - (Time.time - sound.TimeHeard)) / @params.TimeToForgetSound, 0);
                 Gizmos.DrawLine(transform.position, sound.Position);
             }
         }
@@ -76,7 +58,7 @@ namespace Detection
         #region Setup
         protected void Awake()
         {
-            wait = new WaitForSeconds(UpdateCooldown);
+            wait = new WaitForSeconds(@params.UpdateCooldown);
             targetMask = GlobalSettings.TargetMasks[gameObject.layer];
         }
         protected void OnEnable()
@@ -115,12 +97,12 @@ namespace Detection
         {
             //gather all nearby targets
             int targetCount = Physics.OverlapSphereNonAlloc(transform.position,
-                VisualRange, targetBuffer, targetMask);
+                @params.VisualRange, targetBuffer, targetMask);
             for (int i = 0; i < targetCount; i++)
             {
                 var tr = targetBuffer[i].transform.root;
                 //check for proximity
-                if (Vector3.Distance(transform.position, tr.position) <= ProximityRange)
+                if (Vector3.Distance(transform.position, tr.position) <= @params.ProximityRange)
                 {
                     Detected(tr);
                     continue;
@@ -128,11 +110,11 @@ namespace Detection
                 //check for visual
                 Vector3 VectorToTarget = tr.position - transform.position;
                 VectorToTarget.Normalize();
-                if (Vector3.Dot(VectorToTarget, transform.forward) < Mathf.Cos(Mathf.Deg2Rad * VisualAngle / 2))
+                if (Vector3.Dot(VectorToTarget, transform.forward) < Mathf.Cos(Mathf.Deg2Rad * @params.VisualAngle / 2))
                 {
                     continue;
                 }
-                if (Physics.Linecast(transform.position, tr.position, obstructionMask))
+                if (Physics.Linecast(transform.position, tr.position, @params.ObstructionMask))
                 {
                     continue;
                 }
@@ -145,7 +127,7 @@ namespace Detection
             if (Targets.TryGetValue(target, out targetData))
             {
                 targetData.TimeLastSpotted = Time.time;
-                targetData.Awareness += awarenessBuildRate;
+                targetData.Awareness += @params.AwarenessBuildRate;
                 targetData.LastKnownPosition = target.position;
             }
             else
@@ -156,13 +138,14 @@ namespace Detection
         protected void ProcessInformation()
         {
             #region Targets
+            ClosestTarget = null;
             Queue<TargetData> targetsToRemove = new();
             foreach (var target in Targets.Values)
             {
                 if (target.Transform == null ||
                     target.Transform.gameObject == null ||
                     !target.Transform.gameObject.activeSelf ||
-                    Time.time - target.TimeLastSpotted > TimeToForgetTarget)
+                    Time.time - target.TimeLastSpotted > @params.TimeToForgetTarget)
                 {
                     targetsToRemove.Enqueue(target);
                     continue;
@@ -171,7 +154,20 @@ namespace Detection
                 {
                     target.LastKnownPosition = target.Transform.position;
                 }
-                target.Awareness -= awarenessLossRate;
+                target.Awareness -= @params.AwarenessLossRate;
+                if (ClosestTarget == null)
+                {
+                    ClosestTarget = target;
+                    closestTargetDist = Vector3.Distance(transform.position, target.LastKnownPosition);
+                    continue;
+                }
+                if (ClosestTarget.Awareness >= 0.5f && target.Awareness < 0.5f) continue;
+                float newDist = Vector3.Distance(transform.position, target.LastKnownPosition);
+                if (newDist < closestTargetDist)
+                {
+                    closestTargetDist = newDist;
+                    ClosestTarget = target;
+                }
             }
             TargetData target2;
             while (targetsToRemove.TryDequeue(out target2))
@@ -180,13 +176,26 @@ namespace Detection
             }
             #endregion
             #region Sounds
+            ClosestSound = null;
             Queue<SoundData> soundsToRemove = new();
             foreach (var sound in Sounds)
             {
-                if (Time.time - sound.TimeHeard > TimeToForgetSound)
+                if (Time.time - sound.TimeHeard > @params.TimeToForgetSound)
                 {
                     soundsToRemove.Enqueue(sound);
                     continue;
+                }
+                if (ClosestSound == null)
+                {
+                    ClosestSound = sound;
+                    closestSoundDist = Vector3.Distance(transform.position, sound.Position);
+                    continue;
+                }
+                float newDist = Vector3.Distance(transform.position, sound.Position);
+                if (newDist < closestSoundDist)
+                {
+                    ClosestSound = sound;
+                    closestSoundDist = newDist;
                 }
             }
             SoundData sound2;
@@ -201,7 +210,7 @@ namespace Detection
             //this sound was made by a friend
             if (soundEvent.Team == gameObject.layer) return;
             //this sound is too far away
-            if (soundEvent.Intensity + AudioRange < Vector3.Distance(transform.position, soundEvent.Position)) return;
+            if (soundEvent.Intensity + @params.AudioRange < Vector3.Distance(transform.position, soundEvent.Position)) return;
             Sounds.Add(new SoundData(soundEvent));
         }
         #endregion
