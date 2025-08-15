@@ -72,6 +72,7 @@ namespace Detection
         public float TimeLastSpotted;
         public Vector3 LastKnownPosition;
         public Transform Transform;
+        public bool Spotted = true;
         public TargetData(Transform tr)
         {
             Transform = tr;

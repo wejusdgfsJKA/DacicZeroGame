@@ -27,15 +27,38 @@ namespace Detection
         #region Debugging
         private void OnDrawGizmosSelected()
         {
-            //show detection ranges
+            #region Visual 
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, @params.VisualRange);
 
+            float halfFov = @params.VisualAngle / 2;
+
+            // Calculate left & right and up & down directions for fov
+            Quaternion leftRotation = Quaternion.Euler(0, -halfFov, 0);
+            Quaternion rightRotation = Quaternion.Euler(0, halfFov, 0);
+            Quaternion upRotation = Quaternion.Euler(halfFov, 0, 0);
+            Quaternion downRotation = Quaternion.Euler(-halfFov, 0, 0);
+
+            Vector3 leftDirection = leftRotation * transform.forward;
+            Vector3 rightDirection = rightRotation * transform.forward;
+            Vector3 upDirection = upRotation * transform.forward;
+            Vector3 downDirection = downRotation * transform.forward;
+
+            Gizmos.DrawLine(transform.position, transform.position + leftDirection * @params.VisualRange);
+            Gizmos.DrawLine(transform.position, transform.position + rightDirection * @params.VisualRange);
+            Gizmos.DrawLine(transform.position, transform.position + upDirection * @params.VisualRange);
+            Gizmos.DrawLine(transform.position, transform.position + downDirection * @params.VisualRange);
+            #endregion
+
+            #region Audible
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(transform.position, @params.AudioRange);
+            #endregion
 
+            #region Proximity
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position, @params.ProximityRange);
+            #endregion
         }
         private void OnDrawGizmos()
         {
@@ -108,18 +131,23 @@ namespace Detection
                     continue;
                 }
                 //check for visual
-                Vector3 VectorToTarget = tr.position - transform.position;
-                VectorToTarget.Normalize();
-                if (Vector3.Dot(VectorToTarget, transform.forward) < Mathf.Cos(Mathf.Deg2Rad * @params.VisualAngle / 2))
-                {
-                    continue;
-                }
-                if (Physics.Linecast(transform.position, tr.position, @params.ObstructionMask))
-                {
-                    continue;
-                }
+                if (!CanSee(tr.position)) continue;
                 Detected(tr);
             }
+        }
+        public bool CanSee(Vector3 pos)
+        {
+            Vector3 VectorToTarget = pos - transform.position;
+            VectorToTarget.Normalize();
+            if (Vector3.Dot(VectorToTarget, transform.forward) < Mathf.Cos(Mathf.Deg2Rad * @params.VisualAngle / 2))
+            {
+                return false;
+            }
+            if (Physics.Linecast(transform.position, pos, @params.ObstructionMask))
+            {
+                return false;
+            }
+            return true;
         }
         public void Detected(Transform target)
         {
@@ -129,11 +157,21 @@ namespace Detection
                 targetData.TimeLastSpotted = Time.time;
                 targetData.Awareness += @params.AwarenessBuildRate;
                 targetData.LastKnownPosition = target.position;
+                targetData.Spotted = true;
             }
             else
             {
                 Targets.Add(target, new TargetData(target));
             }
+        }
+        protected bool Invalid(TargetData target)
+        {
+            return target.Transform == null ||
+                    target.Transform.gameObject == null ||
+                    !target.Transform.gameObject.activeSelf ||
+                    Time.time - target.TimeLastSpotted > @params.TimeToForgetTarget ||
+                    (CanSee(target.LastKnownPosition) && !target.Spotted && target.Awareness < 0.5f);
+
         }
         protected void ProcessInformation()
         {
@@ -142,14 +180,12 @@ namespace Detection
             Queue<TargetData> targetsToRemove = new();
             foreach (var target in Targets.Values)
             {
-                if (target.Transform == null ||
-                    target.Transform.gameObject == null ||
-                    !target.Transform.gameObject.activeSelf ||
-                    Time.time - target.TimeLastSpotted > @params.TimeToForgetTarget)
+                if (Invalid(target))
                 {
                     targetsToRemove.Enqueue(target);
                     continue;
                 }
+                target.Spotted = false;
                 if (target.Awareness >= 0.5f)
                 {
                     target.LastKnownPosition = target.Transform.position;
