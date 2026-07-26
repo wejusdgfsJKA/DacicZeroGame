@@ -24,7 +24,7 @@ namespace DacicZero.Prep {
         public float InteractionRadius => _interactionRadius;
         public LayerMask InteractionLayer => _interactionLayer;
 
-        // Calculate CanMove dynamically. Eliminated redundant _canMove state and UpdateCanMove() function.
+        // calculate CanMove dynamically. eliminated redundant _canMove state and UpdateCanMove() function.
         public bool CanMove => !_isDialogOpen && !_isMapOpen;
 
         private Vector2 _currentMoveInput;
@@ -58,7 +58,7 @@ namespace DacicZero.Prep {
         }
 
         private void Update() {
-            // Micro-optimization: If there is no movement, skip redundant vector multiplications.
+            // micro-optimization: if there is no movement, skip redundant vector multiplications.
             if (!CanMove || _currentMoveInput == Vector2.zero) return;
 
             Vector3 movement = new Vector3(_currentMoveInput.x, _currentMoveInput.y, 0f);
@@ -72,7 +72,7 @@ namespace DacicZero.Prep {
         #endregion
 
         #region Event Handlers
-        // Using Expression-Bodied Methods for short events.
+        // using expression-bodied methods for short events.
         private void OnStartDialog(NPC.StartDialogEvent evt) => _isDialogOpen = true;
         
         private void OnEndDialog(UI.Dialog.EndDialogEvent evt) {
@@ -92,7 +92,7 @@ namespace DacicZero.Prep {
         private void OnInteract() {
             if (!CanMove || Time.frameCount == _frameDialogEnded) return;
 
-            // 1. Physics Optimization: Search only on the specified layer mask.
+            // 1. physics optimization: search only on the specified layer mask.
             int hitCount = Physics.OverlapSphereNonAlloc(transform.position, InteractionRadius, _overlapResults, InteractionLayer);
 
             float closestSqrDistance = float.MaxValue;
@@ -100,7 +100,7 @@ namespace DacicZero.Prep {
 
             for (int i = 0; i < hitCount; i++) {
                 if (_overlapResults[i].TryGetComponent(out Interactable interactable)) {
-                    // 2. Math Optimization: sqrMagnitude is significantly faster than Vector3.Distance.
+                    // 2. math optimization: sqrMagnitude is significantly faster than Vector3.Distance.
                     float sqrDist = (transform.position - _overlapResults[i].transform.position).sqrMagnitude;
 
                     if (sqrDist < closestSqrDistance) {
