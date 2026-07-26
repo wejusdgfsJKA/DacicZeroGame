@@ -1,13 +1,11 @@
 using UnityEngine;
-namespace Detection
-{
+namespace Detection {
     /// <summary>
     /// Parameters for detection because it is a mess in the inspector.
     /// </summary>
     [CreateAssetMenu(menuName = "ScriptableObjects/DetectionParams")]
     [System.Serializable]
-    public class DetectionParameters : ScriptableObject
-    {
+    public class DetectionParameters : ScriptableObject {
         /// <summary>
         /// How often does the update loop occur?
         /// </summary>

@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
-    public interface IMonoBehaviourTreeTickListener
-    {
+namespace MBT {
+    public interface IMonoBehaviourTreeTickListener {
         void OnBehaviourTreeTick();
     }
 }

@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>A state that can be used in a <see cref="StateMachine{TState}"/>.</summary>
     /// <remarks>
     /// The <see cref="StateExtensions"/> class contains various extension methods for this interface.
@@ -15,8 +14,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/IState
     /// 
-    public interface IState
-    {
+    public interface IState {
         /// <summary>Can this state be entered?</summary>
         /// <remarks>
         /// Checked by <see cref="StateMachine{TState}.CanSetState"/>, <see cref="StateMachine{TState}.TrySetState"/>
@@ -62,8 +60,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/IOwnedState_1
     public interface IOwnedState<TState> : IState
-        where TState : class, IState
-    {
+        where TState : class, IState {
         /// <summary>The <see cref="StateMachine{TState}"/> that this state is used in.</summary>
         StateMachine<TState> OwnerStateMachine { get; }
     }
@@ -78,8 +75,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/State
     /// 
-    public abstract class State : IState
-    {
+    public abstract class State : IState {
         /************************************************************************************************************************/
 
         /// <summary><see cref="IState.CanEnterState"/></summary>
@@ -195,8 +191,7 @@ namespace Animancer.FSM
     /// </code></example>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/StateExtensions
     [HelpURL(APIDocumentationURL + nameof(StateExtensions))]
-    public static class StateExtensions
-    {
+    public static class StateExtensions {
         /************************************************************************************************************************/
 
         /// <summary>The URL of the API documentation for the <see cref="FSM"/> system.</summary>
@@ -308,28 +303,23 @@ namespace Animancer.FSM
 
 #if UNITY_ASSERTIONS
         /// <summary>[Internal] Returns an error message explaining that the wrong type of change is being accessed.</summary>
-        internal static string GetChangeError(Type stateType, Type machineType, string changeType = "State")
-        {
+        internal static string GetChangeError(Type stateType, Type machineType, string changeType = "State") {
             Type previousType = null;
             Type baseStateType = null;
             System.Collections.Generic.HashSet<Type> activeChangeTypes = null;
 
             var stackTrace = new System.Diagnostics.StackTrace(1, false).GetFrames();
-            for (int i = 0; i < stackTrace.Length; i++)
-            {
+            for (int i = 0; i < stackTrace.Length; i++) {
                 var type = stackTrace[i].GetMethod().DeclaringType;
                 if (type != previousType &&
                     type.IsGenericType &&
-                    type.GetGenericTypeDefinition() == machineType)
-                {
+                    type.GetGenericTypeDefinition() == machineType) {
                     var argument = type.GetGenericArguments()[0];
-                    if (argument.IsAssignableFrom(stateType))
-                    {
+                    if (argument.IsAssignableFrom(stateType)) {
                         baseStateType = argument;
                         break;
                     }
-                    else
-                    {
+                    else {
                         activeChangeTypes ??= new();
 
                         if (!activeChangeTypes.Contains(argument))
@@ -349,8 +339,7 @@ namespace Animancer.FSM
                 .Append(changeType)
                 .AppendLine(".");
 
-            if (baseStateType != null)
-            {
+            if (baseStateType != null) {
                 text.Append(" - ")
                     .Append(changeType)
                     .Append(" changes must be accessed using the base ")
@@ -362,8 +351,7 @@ namespace Animancer.FSM
                     .AppendLine("> in this case.");
 
                 var caller = stackTrace[1].GetMethod();
-                if (caller.DeclaringType == typeof(StateExtensions))
-                {
+                if (caller.DeclaringType == typeof(StateExtensions)) {
                     var propertyName = stackTrace[0].GetMethod().Name;
                     propertyName = propertyName[4..];// Remove the "get_".
 
@@ -376,24 +364,19 @@ namespace Animancer.FSM
                         .AppendLine(">()");
                 }
             }
-            else
-            {
-                if (activeChangeTypes == null)
-                {
+            else {
+                if (activeChangeTypes == null) {
                     text.Append(" - No other ")
                         .Append(changeType)
                         .AppendLine(" changes are currently occurring either.");
                 }
-                else
-                {
-                    if (activeChangeTypes.Count == 1)
-                    {
+                else {
+                    if (activeChangeTypes.Count == 1) {
                         text.Append(" - There is 1 ")
                             .Append(changeType)
                             .AppendLine(" change currently occurring:");
                     }
-                    else
-                    {
+                    else {
                         text.Append(" - There are ")
                             .Append(activeChangeTypes.Count)
                             .Append(' ')
@@ -401,8 +384,7 @@ namespace Animancer.FSM
                             .AppendLine(" changes currently occurring:");
                     }
 
-                    foreach (var type in activeChangeTypes)
-                    {
+                    foreach (var type in activeChangeTypes) {
                         text.Append("     - ")
                             .AppendLine(type.FullName);
                     }

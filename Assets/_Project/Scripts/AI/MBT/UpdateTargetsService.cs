@@ -1,24 +1,19 @@
 using AI;
 using Detection;
 using UnityEngine;
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode("Service/Update Targets Service")]
-    public class UpdateTargetsService : Service
-    {
+    public class UpdateTargetsService : Service {
         [SerializeField] protected DetectionSystem detectionSystem;
         [SerializeField] protected Vector3Reference position;
         [SerializeField] protected BoolReference hasPosition;
         [SerializeField] protected FloatReference targetAwareness;
         [SerializeField] protected TacticalBrain tacticalBrain;
         [SerializeField] protected bool lookAtTarget = true, lookAtSound = true;
-        public override void Task()
-        {
-            if (detectionSystem)
-            {
-                if (detectionSystem.ClosestTarget != null)
-                {
+        public override void Task() {
+            if (detectionSystem) {
+                if (detectionSystem.ClosestTarget != null) {
                     //targets have priority over sounds; we will prioritize going
                     //after them over investigating noises
                     position.Value = detectionSystem.ClosestTarget.LastKnownPosition;
@@ -28,14 +23,12 @@ namespace MBT
                 }
                 //reset target awareness if we do not have a target
                 targetAwareness.Value = 0;
-                if (tacticalBrain.RequestedPosition != null)
-                {
+                if (tacticalBrain.RequestedPosition != null) {
                     position.Value = tacticalBrain.RequestedPosition.Value;
                     hasPosition.Value = true;
                     return;
                 }
-                if (detectionSystem.ClosestSound != null)
-                {
+                if (detectionSystem.ClosestSound != null) {
                     position.Value = detectionSystem.ClosestSound.Value.Position;
                     detectionSystem.Eye.LookAt(position.Value);
                     hasPosition.Value = true;

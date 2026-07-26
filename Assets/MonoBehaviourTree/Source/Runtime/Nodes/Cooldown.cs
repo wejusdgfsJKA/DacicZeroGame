@@ -3,12 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Decorators/Cooldown")]
-    public class Cooldown : Decorator, IMonoBehaviourTreeTickListener
-    {
+    public class Cooldown : Decorator, IMonoBehaviourTreeTickListener {
         public AbortTypes abort = AbortTypes.None;
         [Space]
         public FloatReference time = new FloatReference(1f);
@@ -17,24 +15,19 @@ namespace MBT
         private float cooldownTime = 0f;
         private bool entered = false;
         private bool childFailed = false;
-        
-        public enum AbortTypes
-        {
+
+        public enum AbortTypes {
             None, LowerPriority
         }
 
-        public override void OnAllowInterrupt()
-        {
-            if (abort == AbortTypes.LowerPriority)
-            {
+        public override void OnAllowInterrupt() {
+            if (abort == AbortTypes.LowerPriority) {
                 ObtainTreeSnapshot();
             }
         }
 
-        public override NodeResult Execute()
-        {
-            if (!TryGetChild(out Node node))
-            {
+        public override NodeResult Execute() {
+            if (!TryGetChild(out Node node)) {
                 return NodeResult.failure;
             }
             if (node.status == Status.Success) {
@@ -48,21 +41,19 @@ namespace MBT
             if (cooldownTime <= Time.time) {
                 entered = true;
                 return node.runningNodeResult;
-            } else {
+            }
+            else {
                 return NodeResult.failure;
             }
         }
 
-        public override void OnExit()
-        {
+        public override void OnExit() {
             // Setup cooldown and event when child was entered
             // Check reset option too
-            if (entered && !childFailed)
-            {
+            if (entered && !childFailed) {
                 cooldownTime = Time.time + time.Value;
                 // For LowerPriority try to abort after given time
-                if (abort == AbortTypes.LowerPriority)
-                {
+                if (abort == AbortTypes.LowerPriority) {
                     behaviourTree.AddTickListener(this);
                 }
             }
@@ -71,15 +62,12 @@ namespace MBT
             childFailed = false;
         }
 
-        public override void OnDisallowInterrupt()
-        {
+        public override void OnDisallowInterrupt() {
             behaviourTree.RemoveTickListener(this);
         }
 
-        void IMonoBehaviourTreeTickListener.OnBehaviourTreeTick()
-        {
-            if (cooldownTime <= Time.time)
-            {
+        void IMonoBehaviourTreeTickListener.OnBehaviourTreeTick() {
+            if (cooldownTime <= Time.time) {
                 // Task should be aborted, so there is no need to listen anymore
                 behaviourTree.RemoveTickListener(this);
                 TryAbort(Abort.LowerPriority);

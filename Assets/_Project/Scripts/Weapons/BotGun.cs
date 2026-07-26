@@ -1,10 +1,8 @@
 using EventBus;
 using HP;
 using UnityEngine;
-namespace Weapons
-{
-    public class BotGun : WeaponBase
-    {
+namespace Weapons {
+    public class BotGun : WeaponBase {
         #region Parameters
         /// <summary>
         /// minimum error when shooting
@@ -35,14 +33,11 @@ namespace Weapons
         /// <summary>
         /// Current error of the gun. Don't fuck with this.
         /// </summary>
-        protected float currentError
-        {
-            get
-            {
+        protected float currentError {
+            get {
                 return error;
             }
-            set
-            {
+            set {
                 error = Mathf.Clamp(value, minError, maxError);
             }
         }
@@ -58,49 +53,41 @@ namespace Weapons
         protected LineRenderer lineRenderer;
         #endregion
         #region Setup
-        private void Awake()
-        {
+        private void Awake() {
             lineRenderer = GetComponent<LineRenderer>();
             audioSource = GetComponent<AudioSource>();
             maxRaycastDist = GlobalSettings.MaxRaycastDist;
         }
-        protected override void OnEnable()
-        {
+        protected override void OnEnable() {
             base.OnEnable();
             lineRenderer.enabled = false;
             currentError = maxError;
         }
         #endregion
         #region Main methods
-        protected override void Update()
-        {
+        protected override void Update() {
             base.Update();
-            if (lineRenderer.enabled)
-            {
-                if (Time.time - timeLastShot >= lineDuration)
-                {
+            if (lineRenderer.enabled) {
+                if (Time.time - timeLastShot >= lineDuration) {
                     lineRenderer.enabled = false;
                 }
             }
         }
-        protected override void Fire()
-        {
+        protected override void Fire() {
             //reset the fireCooldown of the gun
             CooldownTo = Time.time + fireCooldown;
             timeLastShot = Time.time;
             Vector3 dir = transform.forward;
             lineRenderer.enabled = true;
             audioSource.PlayOneShot(audioClip);
-            if (currentError > 0)
-            {
+            if (currentError > 0) {
                 float a = Random.Range(0, 360);
                 dir += (transform.right * Mathf.Cos(a) + transform.up *
                     Mathf.Sin(a)) * currentError;
                 //Debug.DrawRay(transform.position, dir, Color.blue, 10);
             }
             if (Physics.Raycast(transform.position, dir, out hit, maxRaycastDist,
-                GlobalSettings.TargetMasks[gameObject.layer]))
-            {
+                GlobalSettings.TargetMasks[gameObject.layer])) {
                 //we hit something, damage it
                 lineRenderer.SetPositions(new Vector3[2] { transform.position,
                     hit.point });
@@ -108,16 +95,14 @@ namespace Weapons
                 EventBus<TakeDamage>.Raise(hit.transform.root.GetInstanceID(),
                     new TakeDamage(damage, transform.root, hit.collider));
             }
-            else
-            {
+            else {
                 lineRenderer.SetPositions(new Vector3[2] { transform.position,
                     transform.position + dir * maxRaycastDist });
             }
             //accuracy increases while firing
             currentError -= accBuildUp * fireCooldown;
         }
-        protected override void HandleNotFiring()
-        {
+        protected override void HandleNotFiring() {
             currentError += accDecay * Time.deltaTime;
         }
         #endregion

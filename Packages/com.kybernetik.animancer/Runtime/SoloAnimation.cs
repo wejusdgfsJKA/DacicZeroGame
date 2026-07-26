@@ -7,8 +7,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>Plays a single <see cref="AnimationClip"/>.</summary>
     /// 
     /// <remarks>

@@ -5,8 +5,7 @@
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>Sets a <see cref="PlayableDirector"/> as Animancer's <see cref="IExposedPropertyTable"/>.</summary>
     /// <remarks>
     /// This class allows Control Tracks to work properly when played in a <see cref="PlayableAssetState"/>.
@@ -20,8 +19,7 @@ namespace Animancer
     [AddComponentMenu(Strings.MenuPrefix + "Exposed Property Table")]
     [AnimancerHelpUrl(typeof(ExposedPropertyTable))]
     [DefaultExecutionOrder(-10000)]// Initialize before anything else might need to use the table.
-    public class ExposedPropertyTable : MonoBehaviour
-    {
+    public class ExposedPropertyTable : MonoBehaviour {
         /************************************************************************************************************************/
 
         [SerializeField] private AnimancerComponent _Animancer;
@@ -30,8 +28,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Calls <see cref="OnValidate"/> and if no <see cref="PlayableDirector"/> was found it adds one.</summary>
-        protected virtual void Reset()
-        {
+        protected virtual void Reset() {
             OnValidate();
 
             if (_Director == null)
@@ -44,8 +41,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Tries to automatically find any missing references.</summary>
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             gameObject.GetComponentInParentOrChildren(ref _Animancer);
             gameObject.GetComponentInParentOrChildren(ref _Director);
         }
@@ -53,8 +49,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Sets the <see cref="PlayableDirector"/> as Animancer's <see cref="IExposedPropertyTable"/>.</summary>
-        protected virtual void Awake()
-        {
+        protected virtual void Awake() {
             _Animancer.Graph.PlayableGraph.SetResolver(_Director);
         }
 

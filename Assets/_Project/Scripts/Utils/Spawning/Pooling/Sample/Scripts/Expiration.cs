@@ -1,20 +1,16 @@
 using UnityEngine;
 
-public class Expiration : MonoBehaviour
-{
+public class Expiration : MonoBehaviour {
     float time;
     public float lifeTime = 5;
-    private void OnEnable()
-    {
+    private void OnEnable() {
         time = 0;
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         time += Time.deltaTime;
-        if (time > lifeTime)
-        {
+        if (time > lifeTime) {
             gameObject.SetActive(false);
         }
     }

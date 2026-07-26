@@ -1,4 +1,3 @@
-public class FloatPoolable : Poolable<float>
-{
+public class FloatPoolable : Poolable<float> {
 
 }

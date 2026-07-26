@@ -6,8 +6,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>[Editor-Only] Utilities used by the <see cref="FSM"/> system.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -16,15 +15,12 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/StateMachineUtilities
     /// 
-    public static class StateMachineUtilities
-    {
+    public static class StateMachineUtilities {
         /************************************************************************************************************************/
 
         /// <summary>Draws a GUI field for the `value`.</summary>
-        public static T DoGenericField<T>(Rect area, string label, T value)
-        {
-            if (typeof(Object).IsAssignableFrom(typeof(T)))
-            {
+        public static T DoGenericField<T>(Rect area, string label, T value) {
+            if (typeof(Object).IsAssignableFrom(typeof(T))) {
                 return (T)(object)EditorGUI.ObjectField(
                     area,
                     label,
@@ -44,8 +40,7 @@ namespace Animancer.FSM
         /// If the <see cref="Rect.height"/> is positive, this method moves the <see cref="Rect.y"/> by that amount and
         /// adds the <see cref="EditorGUIUtility.standardVerticalSpacing"/>.
         /// </summary>
-        public static void NextVerticalArea(ref Rect area)
-        {
+        public static void NextVerticalArea(ref Rect area) {
             if (area.height > 0)
                 area.y += area.height + EditorGUIUtility.standardVerticalSpacing;
         }

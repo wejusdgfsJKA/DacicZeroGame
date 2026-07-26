@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
-    public abstract class Decorator : Node, IParentNode, IChildrenNode
-    {
+namespace MBT {
+    public abstract class Decorator : Node, IParentNode, IChildrenNode {
         private Node[] stackState = new Node[0];
 
-        public override void AddChild(Node node)
-        {
+        public override void AddChild(Node node) {
             // Allow only one children
-            if (this.children.Count > 0)
-            {
+            if (this.children.Count > 0) {
                 Node child = this.children[0];
                 if (child == node) {
                     return;
@@ -28,18 +24,15 @@ namespace MBT
             node.parent = this;
         }
 
-        protected Node GetChild()
-        {
+        protected Node GetChild() {
             if (children.Count > 0) {
                 return children[0];
             }
             return null;
         }
 
-        protected bool TryGetChild(out Node node)
-        {
-            if (children.Count > 0)
-            {
+        protected bool TryGetChild(out Node node) {
+            if (children.Count > 0) {
                 node = children[0];
                 return true;
             }
@@ -47,15 +40,12 @@ namespace MBT
             return false;
         }
 
-        protected bool HasChild()
-        {
+        protected bool HasChild() {
             return children.Count > 0;
         }
 
-        public override void RemoveChild(Node node)
-        {
-            if (children.Contains(node))
-            {
+        public override void RemoveChild(Node node) {
+            if (children.Contains(node)) {
                 children.Remove(node);
                 node.parent = null;
             }
@@ -64,23 +54,19 @@ namespace MBT
         /// <summary>
         /// Copy and store current state of execution stack if it was not saved before.
         /// </summary>
-        protected void ObtainTreeSnapshot()
-        {
+        protected void ObtainTreeSnapshot() {
             // Copy stack only when this method is called for the first time
-            if (stackState.Length == 0)
-            {
+            if (stackState.Length == 0) {
                 behaviourTree.GetStack(ref stackState);
             }
         }
 
         [System.Obsolete]
-        protected void DisposeBTState()
-        {
+        protected void DisposeBTState() {
             stackState = new Node[0];
         }
 
-        internal Node[] GetStoredTreeSnapshot()
-        {
+        internal Node[] GetStoredTreeSnapshot() {
             return stackState;
         }
 
@@ -88,10 +74,8 @@ namespace MBT
         /// Helper method used to abort nodes in valid case
         /// </summary>
         /// <param name="abort">Abort type</param>
-        protected void TryAbort(Abort abort)
-        {
-            switch (abort)
-            {
+        protected void TryAbort(Abort abort) {
+            switch (abort) {
                 case Abort.Self:
                     if (status == Status.Running) {
                         behaviourTree.Interrupt(this);

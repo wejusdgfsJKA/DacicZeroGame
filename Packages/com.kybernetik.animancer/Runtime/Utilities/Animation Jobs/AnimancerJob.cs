@@ -2,8 +2,7 @@
 
 using UnityEngine.Animations;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>[Pro-Only]
     /// A base class that allows Animation Jobs to be easily inserted into an Animancer graph.
     /// </summary>
@@ -16,8 +15,7 @@ namespace Animancer
     /// 
     /// https://kybernetik.com.au/animancer/api/Animancer/AnimancerJob_1
     /// 
-    public abstract class AnimancerJob<T> where T : struct, IAnimationJob
-    {
+    public abstract class AnimancerJob<T> where T : struct, IAnimationJob {
         /************************************************************************************************************************/
 
         /// <summary>The <see cref="IAnimationJob"/>.</summary>
@@ -29,8 +27,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Creates the <see cref="_Playable"/> and inserts it between the root and the graph output.</summary>
-        protected void CreatePlayable(AnimancerGraph animancer)
-        {
+        protected void CreatePlayable(AnimancerGraph animancer) {
             _Playable = animancer.InsertOutputJob(_Job);
         }
 
@@ -43,8 +40,7 @@ namespace Animancer
         /// This method is NOT called automatically, so if you need to guarantee that things will get cleaned up you
         /// should use <see cref="AnimancerGraph.Disposables"/>.
         /// </remarks>
-        public virtual void Destroy()
-        {
+        public virtual void Destroy() {
             AnimancerUtilities.RemovePlayable(_Playable);
         }
 

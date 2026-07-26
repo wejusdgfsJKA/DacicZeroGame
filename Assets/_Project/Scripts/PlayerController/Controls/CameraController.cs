@@ -2,10 +2,8 @@ using EventBus;
 using Interaction;
 using TMPro;
 using UnityEngine;
-namespace PlayerController
-{
-    public class CameraController : MonoBehaviour
-    {
+namespace PlayerController {
+    public class CameraController : MonoBehaviour {
         #region Fields
         float currentXAngle;
         float currentYAngle;
@@ -20,27 +18,19 @@ namespace PlayerController
 
         //The interactable we are currently able to interact with. DO NOT CHANGE!!!
         [SerializeField] protected Transform currentInteractable = null;
-        protected Transform currentInteractableProperty
-        {
-            get
-            {
+        protected Transform currentInteractableProperty {
+            get {
                 return currentInteractable;
             }
-            set
-            {
-                if (currentInteractable != value)
-                {
-                    if (value == null)
-                    {
-                        if (interactionPrompt != null)
-                        {
+            set {
+                if (currentInteractable != value) {
+                    if (value == null) {
+                        if (interactionPrompt != null) {
                             interactionPrompt.enabled = false;
                         }
                     }
-                    else
-                    {
-                        if (interactionPrompt != null)
-                        {
+                    else {
+                        if (interactionPrompt != null) {
                             interactionPrompt.enabled = true;
                         }
                     }
@@ -52,13 +42,11 @@ namespace PlayerController
         [SerializeField] TextMeshProUGUI interactionPrompt;
         #endregion
 
-        void Awake()
-        {
+        void Awake() {
             currentXAngle = transform.localRotation.eulerAngles.x;
             currentYAngle = transform.localRotation.eulerAngles.y;
         }
-        private void OnEnable()
-        {
+        private void OnEnable() {
             currentInteractableProperty = null;
             interactionPrompt.enabled = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -67,24 +55,20 @@ namespace PlayerController
             UpdateInteractionPrompt();
             inputReader.Interact += OnInteract;
         }
-        private void OnDisable()
-        {
+        private void OnDisable() {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             inputReader.DisablePlayerActions();
             inputReader.Interact -= OnInteract;
         }
 
-        void Update()
-        {
+        void Update() {
             RotateCamera(inputReader.LookDirection.x, -inputReader.LookDirection.y);
             InteractionCheck();
         }
 
-        void RotateCamera(float horizontalInput, float verticalInput)
-        {
-            if (smoothCameraRotation)
-            {
+        void RotateCamera(float horizontalInput, float verticalInput) {
+            if (smoothCameraRotation) {
                 horizontalInput = Mathf.Lerp(0, horizontalInput, Time.deltaTime * cameraSmoothingFactor);
                 verticalInput = Mathf.Lerp(0, verticalInput, Time.deltaTime * cameraSmoothingFactor);
             }
@@ -101,10 +85,8 @@ namespace PlayerController
         /// <summary>
         /// Updates the interaction prompt. Should only fire if the interact key changes.
         /// </summary>
-        protected void UpdateInteractionPrompt()
-        {
-            if (interactionPrompt != null)
-            {
+        protected void UpdateInteractionPrompt() {
+            if (interactionPrompt != null) {
                 interactionPrompt.text = $"[{inputReader.InteractKey}] to interact.";
             }
         }
@@ -112,21 +94,17 @@ namespace PlayerController
         /// <summary>
         /// Check if we are able to interact with anything. Updates currentInteractableProperty accordingly.
         /// </summary>
-        protected void InteractionCheck()
-        {
+        protected void InteractionCheck() {
             if (Physics.SphereCast(transform.position, transform.localScale.x / 2,
-                transform.forward, out hit, GlobalPlayerConfig.InteractionDistance, 1 << 5))
-            {
+                transform.forward, out hit, GlobalPlayerConfig.InteractionDistance, 1 << 5)) {
                 currentInteractableProperty = hit.transform;
                 return;
             }
             currentInteractableProperty = null;
         }
 
-        public void OnInteract()
-        {
-            if (currentInteractable != null)
-            {
+        public void OnInteract() {
+            if (currentInteractable != null) {
                 //attempt to interact with something in front of us
                 EventBus<InteractionEvent>.Raise(currentInteractable.GetInstanceID(),
                     new InteractionEvent(transform));

@@ -11,8 +11,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// The main component through which other scripts can interact with <see cref="Animancer"/>. It allows you to play
     /// animations on an <see cref="UnityEngine.Animator"/> without using a <see cref="RuntimeAnimatorController"/>.
@@ -36,8 +35,7 @@ namespace Animancer
         IAnimancerComponent,
         IEnumerator,
         IAnimationClipSource,
-        IAnimationClipCollection
-    {
+        IAnimationClipCollection {
         /************************************************************************************************************************/
         #region Fields and Properties
         /************************************************************************************************************************/
@@ -58,14 +56,11 @@ namespace Animancer
         /// <remarks>
         /// The <see cref="Animator.runtimeAnimatorController"/> should be empty unless you intend to use it.
         /// </remarks>
-        public Animator Animator
-        {
+        public Animator Animator {
             get => _Animator;
-            set
-            {
+            set {
                 _Animator = value;
-                if (IsGraphInitialized)
-                {
+                if (IsGraphInitialized) {
                     _Graph.DestroyOutput();
                     _Graph.Initialize(this);
                 }
@@ -89,11 +84,9 @@ namespace Animancer
         /// An optional <see cref="TransitionLibraryAsset"/>
         /// which can modify the way Animancer transitions between animations.
         /// </summary>
-        public TransitionLibraryAsset Transitions
-        {
+        public TransitionLibraryAsset Transitions {
             get => _Transitions;
-            set
-            {
+            set {
                 _Transitions = value;
                 if (IsGraphInitialized)
                     _Graph.Transitions = value?.Library;
@@ -108,10 +101,8 @@ namespace Animancer
         /// The internal system which manages the playing animations.
         /// Accessing this property will automatically initialize it.
         /// </summary>
-        public AnimancerGraph Graph
-        {
-            get
-            {
+        public AnimancerGraph Graph {
+            get {
                 InitializeGraph();
                 return _Graph;
             }
@@ -195,8 +186,7 @@ namespace Animancer
         /// An action to perform when disabling an <see cref="AnimancerComponent"/>.
         /// See <see cref="ActionOnDisable"/>.
         /// </summary>
-        public enum DisableAction
-        {
+        public enum DisableAction {
             /// <summary>
             /// Stop and reset all animations, but leave all animated values as they are (unlike <see cref="Reset"/>).
             /// </summary>
@@ -241,11 +231,9 @@ namespace Animancer
         /// </summary>
         /// <remarks>Note that changing to or from <see cref="AnimatorUpdateMode.AnimatePhysics"/> at runtime has no effect.</remarks>
         /// <exception cref="NullReferenceException">No <see cref="Animator"/> is assigned.</exception>
-        public AnimatorUpdateMode UpdateMode
-        {
+        public AnimatorUpdateMode UpdateMode {
             get => _Animator.updateMode;
-            set
-            {
+            set {
                 _Animator.updateMode = value;
 
                 if (!IsGraphInitialized)
@@ -258,12 +246,10 @@ namespace Animancer
                     DirectorUpdateMode.GameTime;
 
 #if UNITY_EDITOR
-                if (InitialUpdateMode == null)
-                {
+                if (InitialUpdateMode == null) {
                     InitialUpdateMode = value;
                 }
-                else if (UnityEditor.EditorApplication.isPlaying)
-                {
+                else if (UnityEditor.EditorApplication.isPlaying) {
                     if (Editor.AnimancerGraphCleanup.HasChangedToOrFromAnimatePhysics(InitialUpdateMode, value))
                         Debug.LogWarning(
                             $"Changing the {nameof(Animator)}.{nameof(Animator.updateMode)} to or from " +
@@ -299,8 +285,7 @@ namespace Animancer
         /// Destroys the <see cref="Graph"/> if it was initialized and searches for an <see cref="Animator"/> on
         /// this object, or it's children or parents.
         /// </summary>
-        protected virtual void Reset()
-        {
+        protected virtual void Reset() {
             OnDestroy();
             gameObject.GetComponentInParentOrChildren(ref _Animator);
         }
@@ -309,10 +294,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Ensures that the <see cref="PlayableGraph"/> is playing.</summary>
-        protected virtual void OnEnable()
-        {
-            if (IsGraphInitialized)
-            {
+        protected virtual void OnEnable() {
+            if (IsGraphInitialized) {
                 _Graph.UnpauseGraph();
 
 #if UNITY_EDITOR
@@ -322,13 +305,11 @@ namespace Animancer
         }
 
         /// <summary>Acts according to the <see cref="ActionOnDisable"/>.</summary>
-        protected virtual void OnDisable()
-        {
+        protected virtual void OnDisable() {
             if (!IsGraphInitialized)
                 return;
 
-            switch (_ActionOnDisable)
-            {
+            switch (_ActionOnDisable) {
                 case DisableAction.Stop:
                     _Graph.Stop();
                     _Graph.PauseGraph();
@@ -371,8 +352,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Creates and initializes the <see cref="Graph"/> if it wasn't already initialized.</summary>
-        public void InitializeGraph()
-        {
+        public void InitializeGraph() {
             if (IsGraphInitialized)
                 return;
 
@@ -391,8 +371,7 @@ namespace Animancer
         /// The <see cref="AnimancerGraph"/> is already initialized.
         /// You must call <see cref="AnimancerGraph.Destroy"/> before re-initializing it.
         /// </exception>
-        public void InitializeGraph(AnimancerGraph graph, bool createOutput = true)
-        {
+        public void InitializeGraph(AnimancerGraph graph, bool createOutput = true) {
             if (IsGraphInitialized)
                 throw new InvalidOperationException(
                     $"The {nameof(AnimancerGraph)} is already initialized." +
@@ -411,8 +390,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Called right after the <see cref="Graph"/> is initialized.</summary>
-        protected virtual void OnInitializeGraph()
-        {
+        protected virtual void OnInitializeGraph() {
 #if UNITY_ASSERTIONS
             ValidateGraphInitialization();
 #endif
@@ -434,8 +412,7 @@ namespace Animancer
         /// <summary>[Assert-Only]
         /// Validates various conditions relating to <see cref="AnimancerGraph"/> initialization.
         /// </summary>
-        private void ValidateGraphInitialization()
-        {
+        private void ValidateGraphInitialization() {
 #if UNITY_EDITOR
             if (_Animator != null)
                 InitialUpdateMode = UpdateMode;
@@ -460,8 +437,7 @@ namespace Animancer
 #endif
 #endif
 
-            if (_Animator != null)
-            {
+            if (_Animator != null) {
                 if (!_Animator.enabled)
                     OptionalWarning.AnimatorDisabled.Log(Strings.AnimatorDisabledMessage, this);
 
@@ -479,10 +455,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Ensures that the <see cref="Graph"/> is properly cleaned up.</summary>
-        protected virtual void OnDestroy()
-        {
-            if (IsGraphInitialized)
-            {
+        protected virtual void OnDestroy() {
+            if (IsGraphInitialized) {
                 _Graph.Destroy();
                 _Graph = null;
             }
@@ -495,12 +469,9 @@ namespace Animancer
         /// Ensures that the <see cref="AnimancerGraph"/> is destroyed in Edit Mode, but not in Play Mode since we want
         /// to let Unity complain if that happens.
         /// </summary>
-        ~AnimancerComponent()
-        {
-            if (_Graph != null)
-            {
-                UnityEditor.EditorApplication.delayCall += () =>
-                {
+        ~AnimancerComponent() {
+            if (_Graph != null) {
+                UnityEditor.EditorApplication.delayCall += () => {
                     if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
                         OnDestroy();
                 };
@@ -716,8 +687,7 @@ namespace Animancer
             => _Graph?.Stop(key);
 
         /// <summary>Stops all animations and rewinds them to the start.</summary>
-        public void Stop()
-        {
+        public void Stop() {
             if (IsGraphInitialized)
                 _Graph.Stop();
         }
@@ -793,8 +763,7 @@ namespace Animancer
         /// Just call <see cref="AnimancerState.Stop"/>.
         /// </summary>
         [Obsolete("You should not use an AnimancerState as a key. Just call AnimancerState.Stop().", true)]
-        public AnimancerState Stop(AnimancerState key)
-        {
+        public AnimancerState Stop(AnimancerState key) {
             key.Stop();
             return key;
         }
@@ -829,16 +798,14 @@ namespace Animancer
             => null;
 
         /// <summary>Does nothing.</summary>
-        void IEnumerator.Reset()
-        { }
+        void IEnumerator.Reset() { }
 
         /************************************************************************************************************************/
 
         /// <summary>[<see cref="IAnimationClipSource"/>]
         /// Calls <see cref="GatherAnimationClips(ICollection{AnimationClip})"/>.
         /// </summary>
-        public void GetAnimationClips(List<AnimationClip> clips)
-        {
+        public void GetAnimationClips(List<AnimationClip> clips) {
             var set = SetPool.Acquire<AnimationClip>();
             set.UnionWith(clips);
 
@@ -861,8 +828,7 @@ namespace Animancer
         /// <remarks>
         /// In the Unity Editor this method also gathers animations from other components on parent and child objects.
         /// </remarks>
-        public virtual void GatherAnimationClips(ICollection<AnimationClip> clips)
-        {
+        public virtual void GatherAnimationClips(ICollection<AnimationClip> clips) {
             if (_Transitions != null)
                 _Transitions.GatherAnimationClips(clips);
 

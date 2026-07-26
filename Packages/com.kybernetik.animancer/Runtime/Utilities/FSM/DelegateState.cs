@@ -2,8 +2,7 @@
 
 using System;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>An <see cref="IState"/> that uses delegates to define its behaviour.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -12,8 +11,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/DelegateState
     /// 
-    public class DelegateState : IState
-    {
+    public class DelegateState : IState {
         /************************************************************************************************************************/
 
         /// <summary>Determines whether this state can be entered. Null is treated as returning true.</summary>

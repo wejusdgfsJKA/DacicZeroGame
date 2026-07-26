@@ -9,8 +9,7 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] A custom Inspector for <see cref="DirectionalAnimationSet4"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/DirectionalAnimationSet4Editor
     [CustomEditor(typeof(DirectionalAnimationSet4), true)]
@@ -27,15 +26,13 @@ namespace Animancer.Editor
     /// </summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/DirectionalAnimationSetEditor
     [CanEditMultipleObjects]
-    public class DirectionalAnimationSetEditor : ScriptableObjectEditor
-    {
+    public class DirectionalAnimationSetEditor : ScriptableObjectEditor {
         /************************************************************************************************************************/
 
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet2) + "/Find Animations")]
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet4) + "/Find Animations")]
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet8) + "/Find Animations")]
-        private static void FindSimilarAnimations(MenuCommand command)
-        {
+        private static void FindSimilarAnimations(MenuCommand command) {
             var set = (DirectionalSet<AnimationClip>)command.context;
 
             var directory = AssetDatabase.GetAssetPath(set);
@@ -45,10 +42,8 @@ namespace Animancer.Editor
                 $"{set.name} t:{nameof(AnimationClip)}",
                 new string[] { directory });
 
-            using (new ModifySerializedField(set, "Find Animations"))
-            {
-                for (int i = 0; i < guids.Length; i++)
-                {
+            using (new ModifySerializedField(set, "Find Animations")) {
+                for (int i = 0; i < guids.Length; i++) {
                     var path = AssetDatabase.GUIDToAssetPath(guids[i]);
                     var clip = AssetDatabase.LoadAssetAtPath<AnimationClip>(path);
                     if (clip == null)
@@ -64,25 +59,21 @@ namespace Animancer.Editor
         [MenuItem(
             itemName: Strings.CreateMenuPrefix + "Directional Animation Set/From Selection",
             priority = Strings.AssetMenuOrder + 7)]
-        private static void CreateDirectionalAnimationSet()
-        {
+        private static void CreateDirectionalAnimationSet() {
             var nameToAnimations = new Dictionary<string, List<AnimationClip>>();
 
             var selection = Selection.objects;
-            for (int i = 0; i < selection.Length; i++)
-            {
+            for (int i = 0; i < selection.Length; i++) {
                 var clip = selection[i] as AnimationClip;
                 if (clip == null)
                     continue;
 
                 var name = clip.name;
-                for (Direction4 direction = 0; direction < (Direction4)4; direction++)
-                {
+                for (Direction4 direction = 0; direction < (Direction4)4; direction++) {
                     name = name.Replace(direction.ToString(), "");
                 }
 
-                if (!nameToAnimations.TryGetValue(name, out var clips))
-                {
+                if (!nameToAnimations.TryGetValue(name, out var clips)) {
                     clips = new();
                     nameToAnimations.Add(name, clips);
                 }
@@ -94,8 +85,7 @@ namespace Animancer.Editor
                 throw new InvalidOperationException("No animation clips are selected");
 
             var sets = new List<Object>();
-            foreach (var nameAndAnimations in nameToAnimations)
-            {
+            foreach (var nameAndAnimations in nameToAnimations) {
                 var count = nameAndAnimations.Value.Count;
                 DirectionalSet<AnimationClip> set = count <= 2
                     ? CreateInstance<DirectionalAnimationSet2>()
@@ -122,20 +112,17 @@ namespace Animancer.Editor
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet2) + "/Toggle Looping")]
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet4) + "/Toggle Looping")]
         [MenuItem("CONTEXT/" + nameof(DirectionalAnimationSet8) + "/Toggle Looping")]
-        private static void ToggleLooping(MenuCommand command)
-        {
+        private static void ToggleLooping(MenuCommand command) {
             var set = (DirectionalSet<AnimationClip>)command.context;
 
             var count = set.DirectionCount;
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 var clip = set.Get(i);
                 if (clip == null)
                     continue;
 
                 var isLooping = !clip.isLooping;
-                for (i = 0; i < count; i++)
-                {
+                for (i = 0; i < count; i++) {
                     clip = set.Get(i);
                     if (clip == null)
                         continue;

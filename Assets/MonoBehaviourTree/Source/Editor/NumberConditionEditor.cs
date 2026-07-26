@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(NumberCondition))]
-    public class NumberConditionEditor : Editor
-    {
+    public class NumberConditionEditor : Editor {
         SerializedProperty titleProp;
         SerializedProperty abortProp;
         SerializedProperty floatReferenceProp;
@@ -18,8 +16,7 @@ namespace MBTEditor
         SerializedProperty typeProp;
         SerializedProperty comparatorProp;
 
-        void OnEnable()
-        {
+        void OnEnable() {
             titleProp = serializedObject.FindProperty("title");
             floatReferenceProp = serializedObject.FindProperty("floatReference");
             intReferenceProp = serializedObject.FindProperty("intReference");
@@ -30,8 +27,7 @@ namespace MBTEditor
             comparatorProp = serializedObject.FindProperty("comparator");
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
@@ -40,25 +36,22 @@ namespace MBTEditor
             EditorGUILayout.PropertyField(typeProp);
             EditorGUILayout.Space();
             // GUILayout.Label("Condition");
-            if (typeProp.enumValueIndex == (int)NumberCondition.Type.Float)
-            {
+            if (typeProp.enumValueIndex == (int)NumberCondition.Type.Float) {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PropertyField(floatReferenceProp, GUIContent.none);
-                    EditorGUILayout.PropertyField(comparatorProp, GUIContent.none, GUILayout.MaxWidth(60f));
-                    EditorGUILayout.PropertyField(floatReference2Prop, GUIContent.none);
+                EditorGUILayout.PropertyField(floatReferenceProp, GUIContent.none);
+                EditorGUILayout.PropertyField(comparatorProp, GUIContent.none, GUILayout.MaxWidth(60f));
+                EditorGUILayout.PropertyField(floatReference2Prop, GUIContent.none);
                 EditorGUILayout.EndHorizontal();
             }
-            else
-            {
+            else {
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PropertyField(intReferenceProp, GUIContent.none);
-                    EditorGUILayout.PropertyField(comparatorProp, GUIContent.none, GUILayout.MaxWidth(60f));
-                    EditorGUILayout.PropertyField(intReference2Prop, GUIContent.none);
+                EditorGUILayout.PropertyField(intReferenceProp, GUIContent.none);
+                EditorGUILayout.PropertyField(comparatorProp, GUIContent.none, GUILayout.MaxWidth(60f));
+                EditorGUILayout.PropertyField(intReference2Prop, GUIContent.none);
                 EditorGUILayout.EndHorizontal();
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 serializedObject.ApplyModifiedProperties();
             }
         }
