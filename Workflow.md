@@ -4,7 +4,7 @@ How we move a task from Trello to `main`.
 
 ## Task lifecycle
 
-1. Pick a task from **To Do** on Trello and move it to **In Progress**.
+1. Pick a task (card) from **To Do** on Trello, assign it to yourself, and move it to **In Progress**.
    - **Backlog** tasks are out of scope until a team meeting decides moving them into To Do.
 2. Check out `main` and pull the latest changes.
 3. Create a new branch off `main` for the task.
