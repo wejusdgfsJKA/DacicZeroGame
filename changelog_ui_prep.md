@@ -1,12 +1,15 @@
-# scripts added in `ioanbranch`
+# ui_prep
+
+## summary
+implemented branching dialog system, interactive map table, npcs with dialog, and top-down 2d prep player controller with eventbus interaction.
 
 ## 📁 data
-- **DialogSequenceSO.cs** - one dialog conversation. (ScriptableObject)
+- **DialogSequenceSO.cs** - one dialog conversation. (scriptableobject)
 - **DialogNode.cs** - one dialog step within a dialog sequence.
 - **DialogOption.cs** - one response option selectable during a dialog.
-- **MissionDataSO.cs** - mission configuration and rewards. (ScriptableObject)
-- **WeaponDataSO.cs** - base stats and visuals for a weapon. (ScriptableObject)
-- **WeaponUpgradeSO.cs** - weapon upgrade requirements. (ScriptableObject)
+- **MissionDataSO.cs** - mission configuration and rewards. (scriptableobject)
+- **WeaponDataSO.cs** - base stats and visuals for a weapon. (scriptableobject)
+- **WeaponUpgradeSO.cs** - weapon upgrade requirements. (scriptableobject)
 
 ## 📁 global
 - **IsExternalInit.cs** - compiler polyfill allowing c# 9 `init` properties.
@@ -20,6 +23,7 @@
 
 ## 📁 player controller
 - **PrepPlayerController.cs** - 2d prep phase movement and interaction.
+- **Interactable.cs** - removed debug.logerror in ondisable (harmless eventbus cleanup error).
 
 ## 📁 ui
 - **ActionButtonUI.cs** - generic button firing unity/event bus actions.
@@ -36,6 +40,10 @@
 - **UpgradeMenuUI.cs** - weapon upgrade screen controller.
 - **WeaponComparisonUI.cs** - dual-panel view comparing weapon stats.
 - **WeaponListButtonUI.cs** - clickable button representing an available upgrade.
+
+## scenes & prefabs
+- **PrepScene.unity** - main testing scene for the ui and player.
+- **DialogOptionButton.prefab** - button spawned dynamically for dialog choices.
 
 ## to-updates
 - **c# 10+ update**: convert `DialogNode` and `DialogOption` to structs.
