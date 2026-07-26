@@ -5,15 +5,18 @@ using DacicZero.Data;
 using EventBus;
 
 namespace DacicZero.UI.MissionSelector {
+    #region Events
     /// <summary> fired when map opens/closes </summary>
     public readonly struct MapStateChangedEvent : IEvent {
         /// <summary> true if map opened, false if closed </summary>
         public readonly bool IsOpen;
         public MapStateChangedEvent(bool isOpen) { IsOpen = isOpen; }
     }
-    
+    #endregion
+
     /// <summary> handles map cursor, selecting nodes, and map overlays </summary>
     public class MissionSelectorUI : MonoBehaviour, IClosable {
+        #region Variables & Properties
         [Header("UI References")]
         /// <summary> root container </summary>
         [SerializeField] private GameObject _mapCanvas;
@@ -39,7 +42,10 @@ namespace DacicZero.UI.MissionSelector {
 
         private bool _isOpen = false;
         private Vector2 _moveInput;
+        public bool IsOpen => _isOpen;
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake() {
             EventBus<UI.Dialog.DialogActionFiredEvent>.AddActions(0, OnDialogActionFired);
             _availableNodes = new List<MissionNode>(GetComponentsInChildren<MissionNode>(true));
@@ -63,11 +69,6 @@ namespace DacicZero.UI.MissionSelector {
 
         private void OnDestroy() => EventBus<UI.Dialog.DialogActionFiredEvent>.RemoveActions(0, OnDialogActionFired);
 
-        private void OnDialogActionFired(UI.Dialog.DialogActionFiredEvent evt) {
-            if (string.Equals(evt.ActionID, "OpenMap", System.StringComparison.OrdinalIgnoreCase))
-                OpenMap();
-        }
-
         private void Update() {
             if (!_isOpen) return;
 
@@ -77,8 +78,13 @@ namespace DacicZero.UI.MissionSelector {
             if (_moveInput != Vector2.zero)
                 _crosshair.anchoredPosition += _moveInput * _cursorSpeed * Time.deltaTime;
         }
+        #endregion
 
-        public bool IsOpen => _isOpen;
+        #region Map Logic
+        private void OnDialogActionFired(UI.Dialog.DialogActionFiredEvent evt) {
+            if (string.Equals(evt.ActionID, "OpenMap", System.StringComparison.OrdinalIgnoreCase))
+                OpenMap();
+        }
 
         public void OpenMap() {
             _isOpen = true;
@@ -134,5 +140,6 @@ namespace DacicZero.UI.MissionSelector {
         }
 
         public void ReturnToRoom() => Close();
+        #endregion
     }
 }

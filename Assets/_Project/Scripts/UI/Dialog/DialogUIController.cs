@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 
 namespace DacicZero.UI.Dialog {
+    #region Events
     public readonly struct DialogActionFiredEvent : IEvent {
         public string ActionID { get; }
         public string ActionParams { get; }
@@ -19,9 +20,12 @@ namespace DacicZero.UI.Dialog {
     }
 
     public readonly struct EndDialogEvent : IEvent { }
+    #endregion
+
 
     /// <summary> main controller for visual dialog system </summary>
     public class DialogUIController : MonoBehaviour, IClosable {
+        #region Variables & Properties
         /// <summary> checks if dialog canvas is active </summary>
         public bool IsOpen => _dialogCanvas != null && _dialogCanvas.activeSelf;
 
@@ -56,7 +60,9 @@ namespace DacicZero.UI.Dialog {
         private Sprite _defaultNpcSprite;
         private Sprite _defaultPlayerSprite;
         private Sprite _originalDefaultNpcSprite;
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake() {
             EventBus<StartDialogEvent>.AddActions(0, OnStartDialog);
             _dialogCanvas.SetActive(false);
@@ -71,7 +77,9 @@ namespace DacicZero.UI.Dialog {
             EventBus<StartDialogEvent>.RemoveActions(0, OnStartDialog);
             if (_inputReader != null) _inputReader.Interact -= OnAdvanceText;
         }
+        #endregion
 
+        #region Sprite Management
         private Sprite GetSpriteFromNPC(NPCController npc) {
             if (npc == null) return null;
             if (npc.TryGetComponent(out SpriteRenderer sr) || (sr = npc.GetComponentInChildren<SpriteRenderer>()))
@@ -93,7 +101,9 @@ namespace DacicZero.UI.Dialog {
             }
             return null;
         }
+        #endregion
 
+        #region Dialog Logic
         private void OnStartDialog(StartDialogEvent evt) {
             if (evt.Sequence == null || evt.Sequence.Nodes.Count == 0) return;
 
@@ -219,5 +229,6 @@ namespace DacicZero.UI.Dialog {
             UIManager.UnregisterMenu(this);
             EventBus<EndDialogEvent>.Raise(0, new EndDialogEvent());
         }
+        #endregion
     }
 }

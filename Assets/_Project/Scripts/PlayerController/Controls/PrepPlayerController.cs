@@ -6,6 +6,7 @@ using EventBus;
 namespace DacicZero.Prep {
     /// <summary> handles 2d prep phase movement and interaction. </summary>
     public class PrepPlayerController : MonoBehaviour {
+        #region Variables & Properties
         [Header("References")]
         [SerializeField] private InputReader _inputReader;
 
@@ -23,7 +24,7 @@ namespace DacicZero.Prep {
         public float InteractionRadius => _interactionRadius;
         public LayerMask InteractionLayer => _interactionLayer;
 
-        // Calculam CanMove dinamic. Eliminam starea redundanta _canMove si functia UpdateCanMove()
+        // Calculate CanMove dynamically. Eliminated redundant _canMove state and UpdateCanMove() function.
         public bool CanMove => !_isDialogOpen && !_isMapOpen;
 
         private Vector2 _currentMoveInput;
@@ -31,7 +32,9 @@ namespace DacicZero.Prep {
         private bool _isMapOpen;
         private int _frameDialogEnded = -1;
         private readonly Collider[] _overlapResults = new Collider[10];
+        #endregion
 
+        #region Unity Lifecycle
         private void OnEnable() {
             if (_inputReader != null) {
                 _inputReader.EnablePlayerActions();
@@ -54,8 +57,24 @@ namespace DacicZero.Prep {
             EventBus<UI.MissionSelector.MapStateChangedEvent>.RemoveActions(0, OnMapStateChanged);
         }
 
-        // Folosim Expression-Bodied Methods pentru evenimentele scurte
+        private void Update() {
+            // Micro-optimization: If there is no movement, skip redundant vector multiplications.
+            if (!CanMove || _currentMoveInput == Vector2.zero) return;
+
+            Vector3 movement = new Vector3(_currentMoveInput.x, _currentMoveInput.y, 0f);
+            transform.Translate(movement * MoveSpeed * Time.deltaTime);
+        }
+
+        private void OnDrawGizmosSelected() {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, InteractionRadius);
+        }
+        #endregion
+
+        #region Event Handlers
+        // Using Expression-Bodied Methods for short events.
         private void OnStartDialog(NPC.StartDialogEvent evt) => _isDialogOpen = true;
+        
         private void OnEndDialog(UI.Dialog.EndDialogEvent evt) {
             _isDialogOpen = false;
             _frameDialogEnded = Time.frameCount;
@@ -67,19 +86,13 @@ namespace DacicZero.Prep {
         }
 
         private void OnMove(Vector2 input) => _currentMoveInput = input;
+        #endregion
 
-        private void Update() {
-            // Micro-optimizare: Daca nu ne miscam, nu facem inmultiri de vectori inutile
-            if (!CanMove || _currentMoveInput == Vector2.zero) return;
-
-            Vector3 movement = new Vector3(_currentMoveInput.x, _currentMoveInput.y, 0f);
-            transform.Translate(movement * MoveSpeed * Time.deltaTime);
-        }
-
+        #region Interaction Logic
         private void OnInteract() {
             if (!CanMove || Time.frameCount == _frameDialogEnded) return;
 
-            // 1. Optimizare Fizica: Cautam doar pe layer-ul specificat
+            // 1. Physics Optimization: Search only on the specified layer mask.
             int hitCount = Physics.OverlapSphereNonAlloc(transform.position, InteractionRadius, _overlapResults, InteractionLayer);
 
             float closestSqrDistance = float.MaxValue;
@@ -87,7 +100,7 @@ namespace DacicZero.Prep {
 
             for (int i = 0; i < hitCount; i++) {
                 if (_overlapResults[i].TryGetComponent(out Interactable interactable)) {
-                    // 2. Optimizare Matematica: sqrMagnitude e mult mai rapid decat Vector3.Distance
+                    // 2. Math Optimization: sqrMagnitude is significantly faster than Vector3.Distance.
                     float sqrDist = (transform.position - _overlapResults[i].transform.position).sqrMagnitude;
 
                     if (sqrDist < closestSqrDistance) {
@@ -101,10 +114,6 @@ namespace DacicZero.Prep {
                 EventBus<InteractionEvent>.Raise(closestInteractable.transform.GetInstanceID(), new InteractionEvent(transform));
             }
         }
-
-        private void OnDrawGizmosSelected() {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, InteractionRadius);
-        }
+        #endregion
     }
 }
