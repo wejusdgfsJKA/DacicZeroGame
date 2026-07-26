@@ -8,7 +8,7 @@ namespace Spawning {
     }
     public class MonoBehaviourData<Id, T> : ObjectData<Id> where T : ISpawnable<Id> {
         /// <summary>
-        /// The prefab of this MonoBehaviour.
+        /// The projectile of this MonoBehaviour.
         /// </summary>
         [field: SerializeField] public T Prefab { get; protected set; }
     }
