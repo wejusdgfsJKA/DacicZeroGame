@@ -6,13 +6,12 @@ implemented branching dialog system, interactive map table, npcs with dialog, an
 ## 📁 data
 - **DialogSequenceSO.cs** - one dialog conversation. (scriptableobject)
 - **DialogNode.cs** - one dialog step within a dialog sequence.
-- **DialogOption.cs** - one response option selectable during a dialog.
+- **DialogOption.cs** - one response option selectable during a dialog step.
 - **MissionDataSO.cs** - mission configuration and rewards. (scriptableobject)
 - **WeaponDataSO.cs** - base stats and visuals for a weapon. (scriptableobject)
 - **WeaponUpgradeSO.cs** - weapon upgrade requirements. (scriptableobject)
 
 ## 📁 global
-- **IsExternalInit.cs** - compiler polyfill allowing c# 9 `init` properties.
 - **MissionParameters.cs** - static container passing data between scenes.
 - **PlayerLoadout.cs** - static manager tracking weapon inventory.
 - **PlayerResources.cs** - static class managing global player scrap.
