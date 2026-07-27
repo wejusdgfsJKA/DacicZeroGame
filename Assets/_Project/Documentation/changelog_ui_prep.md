@@ -40,7 +40,7 @@ implemented branching dialog system, interactive map table, npcs with dialog, an
 - **WeaponListButtonUI.cs** - clickable button representing an available upgrade.
 
 ## scenes & prefabs
-- **PrepScene.unity** - main testing scene for the ui and player.
+- **scn_Preparation.unity** - main testing scene for the ui and player.
 - **btn_DialogOption.prefab** - button spawned dynamically for dialog choices.
 - **btn_Weapon.prefab** - button spawned dynamically for the upgrade list.
 
