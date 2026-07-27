@@ -44,8 +44,12 @@ namespace DacicZero.UI.Dialog {
         [Header("Options")]
         [SerializeField] private Transform _optionsContainer;
         [SerializeField] private GameObject _optionButtonPrefab;
-        /// <summary> vertical gap between button centers </summary>
-        [SerializeField] private float _optionSpacing = 35f;
+        /// <summary> vertical gap between button edges </summary>
+        [SerializeField] private float _optionSpacing = 10f;
+        [Tooltip("padding inside the options container background.")]
+        [SerializeField] private float _containerPadding = 20f;
+        [Tooltip("whether to show the image background on the options container.")]
+        [SerializeField] private bool _showOptionsBackground = true;
 
         [Header("Visual Settings")]
         [SerializeField] private Color _activeSpeakerColor = Color.white;
@@ -60,6 +64,10 @@ namespace DacicZero.UI.Dialog {
         private Sprite _defaultNpcSprite;
         private Sprite _defaultPlayerSprite;
         private Sprite _originalDefaultNpcSprite;
+        
+        private Image _optionsContainerBg;
+        private RectTransform _containerRT;
+        private float _buttonHeight = 50f;
         #endregion
 
         #region Unity Lifecycle
@@ -71,6 +79,12 @@ namespace DacicZero.UI.Dialog {
 
             if (_playerImage != null) _defaultPlayerSprite = _playerImage.sprite;
             if (_npcImage != null) _originalDefaultNpcSprite = _npcImage.sprite;
+
+            _optionsContainerBg = _optionsContainer != null ? _optionsContainer.GetComponent<Image>() : null;
+            _containerRT = _optionsContainer as RectTransform;
+            if (_optionButtonPrefab != null && _optionButtonPrefab.TryGetComponent(out RectTransform prefabRT)) {
+                _buttonHeight = prefabRT.sizeDelta.y;
+            }
         }
 
         private void OnDestroy() {
@@ -162,15 +176,23 @@ namespace DacicZero.UI.Dialog {
                 _optionsPanel.SetActive(true);
                 GameObject firstButton = null;
 
-                RectTransform containerRT = _optionsContainer as RectTransform;
-                float containerWidth = containerRT != null ? containerRT.rect.width : 300f;
-                
-                // vertical gap between button centers
-                float spacing = _optionSpacing; 
-                // calculate starting Y so the whole group is perfectly centered around Y=0
-                float startY = ((node.Options.Count - 1) * spacing) / 2f;
+                if (_optionsContainerBg != null) {
+                    _optionsContainerBg.enabled = _showOptionsBackground;
+                }
 
-                for (int i = 0; i < node.Options.Count; i++) {
+                int n = node.Options.Count;
+                float containerWidth = _containerRT != null ? _containerRT.rect.width : 300f;
+                
+                float centerSpacing = _optionSpacing + _buttonHeight;
+                // calculate starting Y so the whole group is perfectly centered around Y=0
+                float startY = ((n - 1) * centerSpacing) / 2f;
+
+                if (_containerRT != null) {
+                    float totalHeight = (n * _buttonHeight) + ((n - 1) * _optionSpacing) + (_containerPadding * 2f);
+                    _containerRT.sizeDelta = new Vector2(containerWidth, totalHeight);
+                }
+
+                for (int i = 0; i < n; i++) {
                     var opt = node.Options[i];
                     GameObject go;
 
@@ -184,10 +206,10 @@ namespace DacicZero.UI.Dialog {
                         go = Instantiate(_optionButtonPrefab, _optionsContainer);
 
                     if (go.TryGetComponent(out RectTransform rt)) {
-                        // match container width, keep original height
-                        rt.sizeDelta = new Vector2(containerWidth, rt.sizeDelta.y);
+                        // match container width minus padding, keep original height
+                        rt.sizeDelta = new Vector2(containerWidth - (_containerPadding * 2f), rt.sizeDelta.y);
                         // anchor to the exact center of the container
-                        rt.anchoredPosition = new Vector2(0f, startY - (i * spacing));
+                        rt.anchoredPosition = new Vector2(0f, startY - (i * centerSpacing));
                     }
                     
                     // ensure the button goes to the bottom of the layout group
