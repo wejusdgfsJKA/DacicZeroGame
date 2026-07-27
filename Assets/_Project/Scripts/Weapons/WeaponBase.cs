@@ -8,6 +8,7 @@ namespace Weapons
 {
     public abstract class WeaponBase : MonoBehaviour
     {
+        [SerializeField] protected int Damage { get; set; } = 2;
         [SerializeField] protected float fireCooldown;
         [SerializeField] protected float altFireCooldown;
         [SerializeField] public bool Firing { get; set; }
