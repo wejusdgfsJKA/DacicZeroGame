@@ -28,7 +28,6 @@ implemented branching dialog system, interactive map table, npcs with dialog, an
 - **ActionButtonUI.cs** - generic button firing unity/event bus actions.
 - **IClosable.cs** - interface for closing ui panels.
 - **UIManager.cs** - global manager tracking open menus and escape key stack.
-- **UniversalCloseButtonUI.cs** - generic button closing the nearest parent panel.
 - **DialogUIController.cs** - centralized visual dialog system controller.
 - **DialogOptionUI.cs** - visual option button inside the dialog panel.
 - **InteractableMapTable.cs** - environment object that opens the mission map.
