@@ -7,6 +7,9 @@ using DacicZero.Data.Weapons;
 namespace DacicZero.UI.Upgrades {
     /// <summary> main controller for the weapon upgrade screen. </summary>
     public class UpgradeMenuUI : MonoBehaviour, IClosable {
+        #region Variables & Properties
+        public bool IsOpen => _upgradeCanvas != null && _upgradeCanvas.activeSelf;
+
         [Header("UI References")]
         [SerializeField] private GameObject _upgradeCanvas;
         [SerializeField] private TextMeshProUGUI _scrapText;
@@ -16,7 +19,9 @@ namespace DacicZero.UI.Upgrades {
         [SerializeField] private WeaponListButtonUI _weaponButtonPrefab;
         [SerializeField] private Transform _weaponListContainer;
         [SerializeField] private WeaponUpgradeSO[] _allAvailableUpgrades;
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake() {
 #if UNITY_EDITOR
             if (_upgradeCanvas == null) Debug.LogError($"[UpgradeMenuUI] Upgrade Canvas missing on {gameObject.name}!");
@@ -36,13 +41,13 @@ namespace DacicZero.UI.Upgrades {
         }
 
         private void Start() => UpdateScrapUI(PlayerResources.Scrap);
+        #endregion
 
+        #region Core Logic
         private void OnDialogAction(Dialog.DialogActionFiredEvent evt) {
             if (string.Equals(evt.ActionID, "OpenUpgradeMenu", System.StringComparison.OrdinalIgnoreCase))
                 OpenMenu();
         }
-
-        public bool IsOpen => _upgradeCanvas != null && _upgradeCanvas.activeSelf;
 
         public void OpenMenu() {
             if (_upgradeCanvas != null) _upgradeCanvas.SetActive(true);
@@ -77,5 +82,6 @@ namespace DacicZero.UI.Upgrades {
         }
 
         public void SelectWeaponUpgrade(WeaponUpgradeSO upgradeData) { if (_comparisonUI != null) _comparisonUI.DisplayUpgrade(upgradeData); }
+        #endregion
     }
 }

@@ -7,6 +7,7 @@ using DacicZero.Global;
 namespace DacicZero.UI.Upgrades {
     /// <summary> dual-panel view comparing current and upgraded weapons. </summary>
     public class WeaponComparisonUI : MonoBehaviour {
+        #region Variables & Properties
         [Header("Containers")]
         [SerializeField] private GameObject _comparisonContainer;
 
@@ -27,7 +28,9 @@ namespace DacicZero.UI.Upgrades {
         [SerializeField] private Button _purchaseButton;
 
         private WeaponUpgradeSO _activeUpgrade;
+        #endregion
 
+        #region Unity Lifecycle
         private void Awake() {
 #if UNITY_EDITOR
             if (_comparisonContainer == null) Debug.LogError($"[WeaponComparisonUI] Comparison Container missing on {gameObject.name}!");
@@ -46,7 +49,9 @@ namespace DacicZero.UI.Upgrades {
             if (_purchaseButton == null) Debug.LogError($"[WeaponComparisonUI] Purchase Button missing on {gameObject.name}!");
 #endif
         }
+        #endregion
 
+        #region UI Logic
         public void ClearComparison() {
             _activeUpgrade = null;
             if (_comparisonContainer != null) _comparisonContainer.SetActive(false);
@@ -94,5 +99,6 @@ namespace DacicZero.UI.Upgrades {
                 ClearComparison();
             }
         }
+        #endregion
     }
 }
