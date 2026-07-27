@@ -22,7 +22,7 @@ implemented branching dialog system, interactive map table, npcs with dialog, an
 
 ## 📁 player controller
 - **PrepPlayerController.cs** - 2d prep phase movement and interaction.
-- **Interactable.cs** - removed debug.logerror in ondisable (harmless eventbus cleanup error).
+- **Interactable.cs** - removed debug.logerror in ondisable
 
 ## 📁 ui
 - **ActionButtonUI.cs** - generic button firing unity/event bus actions.
@@ -42,7 +42,8 @@ implemented branching dialog system, interactive map table, npcs with dialog, an
 
 ## scenes & prefabs
 - **PrepScene.unity** - main testing scene for the ui and player.
-- **DialogOptionButton.prefab** - button spawned dynamically for dialog choices.
+- **btn_DialogOption.prefab** - button spawned dynamically for dialog choices.
+- **btn_Weapon.prefab** - button spawned dynamically for the upgrade list.
 
 ## to-updates
 - **c# 10+ update**: convert `DialogNode` and `DialogOption` to structs.
