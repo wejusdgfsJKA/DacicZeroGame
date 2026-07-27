@@ -12,6 +12,7 @@ namespace DacicZero.UI.MissionSelector {
         [SerializeField] private GameObject _overlayPanel;
         [SerializeField] private TextMeshProUGUI _missionTitleText;
         [SerializeField] private TextMeshProUGUI _missionDescriptionText;
+        [SerializeField] private Image _missionImageDisplay;
 
         private MissionDataSO _currentMission;
 
@@ -20,6 +21,11 @@ namespace DacicZero.UI.MissionSelector {
 
             _missionTitleText.text = missionData.MissionTitle;
             _missionDescriptionText.text = missionData.MissionDescription;
+
+            if (_missionImageDisplay != null) {
+                _missionImageDisplay.sprite = missionData.MissionImage;
+                _missionImageDisplay.gameObject.SetActive(missionData.MissionImage != null);
+            }
 
             if (_overlayPanel != null) _overlayPanel.SetActive(true);
             UIManager.RegisterMenu(this);

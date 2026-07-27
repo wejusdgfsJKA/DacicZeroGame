@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 5538129902366412339}
   - component: {fileID: 696203899714532973}
   m_Layer: 5
-  m_Name: DialogOptionButton
+  m_Name: btn_DialogOption
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

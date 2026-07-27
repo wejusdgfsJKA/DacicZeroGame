@@ -15,6 +15,9 @@ namespace DacicZero.Data {
         [field: TextArea(3, 5)]
         [field: SerializeField] public string MissionDescription { get; private set; }
 
+        [field: Tooltip("preview image for the mission overlay.")]
+        [field: SerializeField] public Sprite MissionImage { get; private set; }
+
         [field: Header("Scene Routing")]
         [field: Tooltip("scene name to load for this mission.")]
         [field: SerializeField] public string SceneName { get; private set; }
