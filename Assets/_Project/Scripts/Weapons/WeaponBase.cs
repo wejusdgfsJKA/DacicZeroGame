@@ -10,9 +10,9 @@ namespace Weapons
     {
         [SerializeField] protected float fireCooldown;
         [SerializeField] protected float altFireCooldown;
-        [SerializeField] public bool Firing { get; set; }
-        [SerializeField] public bool AltFiring { get; set; }
-        [SerializeField] public bool IsEnhanced { get; set; }
+        [field: SerializeField] public bool Firing { get; set; }
+        [field: SerializeField] public bool AltFiring { get; set; }
+        [field: SerializeField] public bool IsEnhanced { get; set; }
 
         protected float cooldownTo = -1;
         protected float timeLastShot = -1;
