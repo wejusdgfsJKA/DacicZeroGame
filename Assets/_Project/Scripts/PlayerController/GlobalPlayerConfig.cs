@@ -16,6 +16,10 @@ public static class GlobalPlayerConfig {
     /// </summary>
     public static float AirControlMultiplier { get; set; } = 0.25f;
     /// <summary>
+    /// Multiplier applied to PlayerAcceleration while sliding. Code is made with it being 0 in mind.
+    /// </summary>
+    public static float SlidingControlMultiplier { get; set; } = 0f;
+    /// <summary>
     /// How much to multiply the speed by when player is crouching.
     /// </summary>
     public static float PlayerCrouchSpeedMultiplier { get; set; } = 0.3f;
@@ -24,9 +28,29 @@ public static class GlobalPlayerConfig {
     /// </summary>
     public static float PlayerSprintSpeedMultiplier { get; set; } = 1.5f;
     /// <summary>
+    /// Height of the player's capuse collider when not crouching.
+    /// </summary>
+    public static float PlayerStandingHeight { get; set; } = 2f;
+    /// <summary>
+    /// Height of the player's capuse collider when crouching.
+    /// </summary>
+    public static float PlayerCrouchingHeight { get; set; } = 1f;
+    /// <summary>
+    /// Y coordinate of the campivot when not crouching.
+    /// </summary>
+    public static float PlayerCameraStandingHeight { get; set; } = 0.5f;
+    /// <summary>
+    /// Y coordinate of the campivot when crouching.
+    /// </summary>
+    public static float PlayerCameraCrouchingHeight { get; set; } = 0.2f;
+    /// <summary>
     /// How much force to apply when jumping.
     /// </summary>
     public static float JumpForce { get; set; } = 7f;
+    /// <summary>
+    /// How much force to apply when groundpounding. (should be negative)
+    /// </summary>
+    public static float GroundPoundForce { get; set; } = -14f;
     /// <summary>
     /// How much gravity to apply downwards when not grounded.
     /// </summary>

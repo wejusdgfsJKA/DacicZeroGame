@@ -412,7 +412,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 685811877318736729}
-  - {fileID: 22300066448090509}
+  - {fileID: 2551457120479074606}
   - {fileID: 1670086840361848845}
   - {fileID: 7018115202370278170}
   - {fileID: 5766331725589260871}
@@ -737,13 +737,6 @@ MonoBehaviour:
   camPivot: {fileID: 6776431533047406821}
   playerCamera: {fileID: 2102838470461650688}
   groundCheckPoint: {fileID: 3741848804775637333}
-  <Grounded>k__BackingField: 0
-  onSlope: 0
-  inputVector: {x: 0, y: 0}
-  isCrouching: 0
-  isSliding: 0
-  isSprinting: 0
-  targetFOV: 60
 --- !u!114 &8672219811969518626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -759,7 +752,7 @@ MonoBehaviour:
   PlayerBody: {fileID: 3832161061893258359}
   inputReader: {fileID: 11400000, guid: be09657888a79554f8b2e7a8931f0bba, type: 2}
   weapons:
-  - {fileID: 3766815802039025068}
+  - {fileID: 8020870557400867552}
   - {fileID: 7704259871769142411}
   - {fileID: 5495233550731241654}
 --- !u!114 &3464305454432268230
@@ -1136,6 +1129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de430c809773a64099eaa65ab688217, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Damage: 2
   fireCooldown: 0
   altFireCooldown: 0
   projectile: {fileID: 3828718443384397336, guid: 768e04c6db2aaea47a540174ecf69776, type: 3}
@@ -1253,6 +1247,79 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8121218739952842804, guid: 80d8b7d87dfcc5845bab89b18f1c6c66, type: 3}
   m_PrefabInstance: {fileID: 1283816155008396078}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6042922305354047770
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6776431533047406821}
+    m_Modifications:
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0982
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.11689
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.47614
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8629466349362021416, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+      propertyPath: m_Name
+      value: FalxMK1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+--- !u!4 &2551457120479074606 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8121218739952842804, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+  m_PrefabInstance: {fileID: 6042922305354047770}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8020870557400867552 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4364866099564315642, guid: 4e9a25ae8da4f3f42bacee77a4c810e4, type: 3}
+  m_PrefabInstance: {fileID: 6042922305354047770}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf777a18e226a5d44b06fe65f6599dd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7465009176829290553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1326,76 +1393,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7fb0d9a83a88c4a805f26716fe774d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.SicaMK1
---- !u!1001 &8141211392598957497
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 6776431533047406821}
-    m_Modifications:
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8629466349362021416, guid: 643a285569c21b34890b651153bf4842, type: 3}
-      propertyPath: m_Name
-      value: FalxMK2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 643a285569c21b34890b651153bf4842, type: 3}
---- !u!4 &22300066448090509 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8121218739952842804, guid: 643a285569c21b34890b651153bf4842, type: 3}
-  m_PrefabInstance: {fileID: 8141211392598957497}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &3766815802039025068 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4953132358466560021, guid: 643a285569c21b34890b651153bf4842, type: 3}
-  m_PrefabInstance: {fileID: 8141211392598957497}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 505cca3f23a2a1e43bc99b3543758c35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Weapons.FalxMK2

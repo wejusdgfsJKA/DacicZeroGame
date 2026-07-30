@@ -25,7 +25,10 @@ namespace Weapons
         protected override void Fire()
         {
             animancer.Play(clip).Time = 0;
-            CreateSphereAttack(radius, dist, 1);
+            StatusEffect effect = null;
+            if (IsEnhanced) effect = new DamageOverTimeStatusEffect(1, 3);
+            CreateSphereAttack(radius, dist, Damage,null, effect);
+
         }
 
         protected override void AltFire()
@@ -44,14 +47,14 @@ namespace Weapons
             float elapsed = 0f;
             while (elapsed < lungeDuration)
             {
-                CreateSphereAttack(radius, dist, 1, hitsThisLunge);
+                CreateSphereAttack(radius, dist, Damage, hitsThisLunge);
 
                 yield return new WaitForSeconds(hitCheckInterval);
                 elapsed += hitCheckInterval;
             }
             if (IsEnhanced)
             {
-                CreateSphereAttack(5, 0, 1);
+                CreateSphereAttack(5, 0, Damage);
             }
         }
 

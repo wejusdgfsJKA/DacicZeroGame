@@ -22,8 +22,9 @@ namespace Weapons
 
         protected override void Fire()
         {
-            animancer.Play(clip).Time = 0;
-            CreateSphereAttack(radius, dist, 1);
+            StatusEffect effect = null;
+            if (IsEnhanced) effect = new DamageOverTimeStatusEffect(1, 3);
+            CreateSphereAttack(radius, dist, Damage, null, effect);
         }
         protected override void AltFire()
         {

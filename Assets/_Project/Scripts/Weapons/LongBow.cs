@@ -1,63 +1,35 @@
-using Animancer;
-using EventBus;
-using HP;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
 namespace Weapons
 {
-    public class LongBow: Bow
+    public class LongBow : Bow
     {
-        protected override void Update()
+        protected override void UpdateAltFireInput()
         {
-            if (Firing && !AltFiring && ammo >= 1)
-            {
-                if (Time.time >= cooldownTo)
-                {
-                    currentCharge += chargeIncrement * Time.deltaTime;
-                    currentCharge = Mathf.Clamp(currentCharge, 0, maxCharge);
-                    chargeType = "fire";
-                }
-            }
-            else if (AltFiring && !Firing)
-            {
-                if (Time.time >= cooldownTo)
-                {
-                    currentCharge += chargeIncrement * Time.deltaTime;
-                    AltFire();
-                }
-            }
-            else if (AltFiring && Firing)
-            {
-                currentCharge = 0;
+            if (Time.time < cooldownTo)
+                return;
 
-            }
-            else
-            {
-                if (currentCharge > 30)
-                {
-                    if (chargeType == "fire") Fire();
-                    else AltFire();
-                }
-                currentCharge = 0;
-                HandleNotFiring();
-            }
+            currentCharge += chargeIncrement * Time.deltaTime;
+            AltFire();
         }
 
         protected override void Fire()
         {
             animancer.Play(clip).Time = 0;
-
             cooldownTo = Time.time + fireCooldown;
-            shootArrow(currentCharge);
+            ShootArrow(currentCharge);
             ammo -= 1;
         }
+
         protected override void AltFire()
         {
+            const float SphereRadius = 2f;
+            const float SphereDistance = 0f;
+            const int SphereDamage = 1;
+
             animancer.Play(clip).Time = 0;
             cooldownTo = Time.time + fireCooldown;
-            CreateSphereAttack(2, 0f, 1);
+            CreateSphereAttack(SphereRadius, SphereDistance, SphereDamage);
         }
     }
 }
