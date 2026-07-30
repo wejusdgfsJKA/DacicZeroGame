@@ -39,19 +39,6 @@ public class SicaProjectile : Projectile
         Bounce(collision);
     }
 
-    protected virtual void OnCollisionStay(Collision collision)
-    {
-        if (isReturning) return;
-        if (((1 << collision.gameObject.layer) & wallLayers) == 0) return;
-        if (Time.time - lastBounceTime < bounceCooldown) return;
-
-        Vector3 normal = collision.contacts[0].normal;
-        if (Vector3.Dot(ProjectileBody.linearVelocity, normal) < -0.01f)
-        {
-            Bounce(collision);
-        }
-    }
-
     private void Bounce(Collision collision)
     {
         float speed = ProjectileBody.linearVelocity.magnitude;

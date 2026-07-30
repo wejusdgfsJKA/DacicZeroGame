@@ -31,10 +31,9 @@ namespace PlayerController
             weapons[selectedWeaponIndex].BoostPlayer -= OnBoostPlayer;
         }
         /// <summary>
-        /// Takes in an input context for a certain selectedWeaponIndex. Displays an error log if the selectedWeaponIndex is not found.
+        /// Takes in an input context. Triggers the selected weapon's primary fire.
         /// </summary>
         /// <param name="context">The input context that the selectedWeaponIndex must receive.</param>
-        /// <param name="weapon">The selectedWeaponIndex that must receive the input.</param>
         protected void OnFire(InputAction.CallbackContext context)
         {
             if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
@@ -51,6 +50,11 @@ namespace PlayerController
                 weapons[selectedWeaponIndex].Firing = false;
             }
         }
+
+        /// <summary>
+        /// Takes in an input context. Triggers the selected weapon's alternative fire.
+        /// </summary>
+        /// <param name="context">The input context that the selectedWeaponIndex must receive.</param>
         protected void OnAltFire(InputAction.CallbackContext context)
         {
             if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
@@ -67,11 +71,19 @@ namespace PlayerController
                 weapons[selectedWeaponIndex].AltFiring = false;
             }
         }
-
+        /// <summary>
+        /// Used for weapon abilities that affect player's velocity such as lunges.
+        /// </summary>
+        /// <param name="velocity"> The foward force we add to the player. </param>
         protected void OnBoostPlayer(float velocity)
         {
             PlayerBody.AddForce(transform.forward * velocity);
         }
+        /// <summary>
+        /// Used to switch between weapons.
+        /// Hides the previously selected weapon and shows the new one.
+        /// </summary>
+        /// <param name="weaponNumber"> The index of the weapon we want to switch to.</param>
         protected void OnSwitchWeapon(int weaponNumber)
         {
             weapons[selectedWeaponIndex].Firing = false;
