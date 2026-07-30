@@ -61,9 +61,20 @@ namespace Weapons
         }
 
         protected virtual void HandleNotFiring() { }
+        /// <summary>
+        /// Primary fire of the weapon (left click)
+        /// </summary>
         protected abstract void Fire();
+        
+        /// <summary>
+        /// Alternative fire of the weapon (right click)
+        /// </summary>
         protected virtual void AltFire() { }
 
+        /// <summary>
+        /// Used to hide the weapon models when not needed.
+        /// </summary>
+        /// <param name="visible"> Visible or not.</param>
         public virtual void SetModelVisible(bool visible)
         {
             foreach (var renderer in ModelRenderers)

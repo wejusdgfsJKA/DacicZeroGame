@@ -112,6 +112,11 @@ namespace Weapons
             ammo -= AmmoUsed;
         }
 
+        /// <summary>
+        /// Standardised way to shoot an arrow.
+        /// </summary>
+        /// <param name="charge">The current charge for the bow, used to determine the damage and velocity of the arrow.</param>
+        /// <param name="yawOffset"> Amount of degrees the arrow should be offset by on the XoZ plane. Can be used for random spread or multi-arrow attacks.</param>
         protected void ShootArrow(float charge, float yawOffset = 0)
         {
             Projectile newProjectile = Instantiate(projectile, transform.position, transform.rotation);
