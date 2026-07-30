@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/_Project/Scenes/PrepScene.unity
+    path: Assets/_Project/Scenes/scn_Preparation.unity
     guid: 3c6f734f6f72c814eb7bd2857937b339
   - enabled: 1
     path: Assets/_Project/Scenes/SampleScene.unity
