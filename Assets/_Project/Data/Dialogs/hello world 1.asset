@@ -36,8 +36,13 @@ MonoBehaviour:
       <ActionEventID>k__BackingField: OpenMap
       <ActionParams>k__BackingField: 
       <JumpToNodeIndex>k__BackingField: -1
-    - <OptionText>k__BackingField: open map 222
+    - <OptionText>k__BackingField: open map 22222222222
       <FontSize>k__BackingField: 0
       <ActionEventID>k__BackingField: OpenMap
+      <ActionParams>k__BackingField: 
+      <JumpToNodeIndex>k__BackingField: -1
+    - <OptionText>k__BackingField: open upgrade menu
+      <FontSize>k__BackingField: 0
+      <ActionEventID>k__BackingField: OpenUpgradeMenu
       <ActionParams>k__BackingField: 
       <JumpToNodeIndex>k__BackingField: -1
