@@ -65,7 +65,7 @@ namespace DacicZero.UI.Upgrades {
 
             if (_allAvailableUpgrades != null)
                 foreach (var upgrade in _allAvailableUpgrades)
-                    if (upgrade != null && PlayerLoadout.OwnedWeapons.Contains(upgrade.CurrentWeapon)) {
+                    if (upgrade != null) {
                         var buttonInstance = Instantiate(_weaponButtonPrefab, _weaponListContainer);
                         buttonInstance.Initialize(upgrade, this);
                     }
