@@ -6,6 +6,8 @@ namespace Weapons
     public class RapidFireBow : Bow
     {
         protected override int AltFireAmmoCost => 1;
+        [SerializeField] int ArrowsPerReload = 5;
+        int arrowsFiredWithoutReloading = 0;
 
         protected override void UpdateFireInput()
         {
@@ -18,9 +20,20 @@ namespace Weapons
 
         protected override void Fire()
         {
+            IsEnhanced = true;
             animancer.Play(clip).Time = 0;
             ShootArrow(MaxCharge);
-            ammo -= 1;
+            if(!IsEnhanced)
+                ammo -= 1;
+            else
+            {
+                if (arrowsFiredWithoutReloading == ArrowsPerReload)
+                {
+                    arrowsFiredWithoutReloading = 0;
+                    ammo -= 1;
+                }
+                else arrowsFiredWithoutReloading++;
+            }
         }
 
         protected override void AltFire()
