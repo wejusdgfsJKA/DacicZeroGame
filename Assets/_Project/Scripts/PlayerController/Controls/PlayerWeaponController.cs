@@ -9,6 +9,7 @@ namespace PlayerController
     {
         [SerializeField] Rigidbody PlayerBody;
         [SerializeField] protected InputReader inputReader;
+        [SerializeField] protected CameraController cameraController;
         [SerializeField] protected List<WeaponBase> weapons = new();
         protected int selectedWeaponIndex = 0;
 
@@ -78,6 +79,14 @@ namespace PlayerController
         {
             PlayerBody.AddForce(transform.forward * velocity);
         }
+
+        protected void OnTeleportPlayer(Vector3 position, Quaternion? rotation = null)
+        {
+            PlayerBody.position = position;
+            if(rotation != null)
+                cameraController.SetCameraRotation((Quaternion)rotation);
+        }
+
         /// <summary>
         /// Used to switch between weapons.
         /// Hides the previously selected weapon and shows the new one.
@@ -97,10 +106,12 @@ namespace PlayerController
         void bindWeaponActions(int weaponNumber)
         {
             weapons[weaponNumber].BoostPlayer += OnBoostPlayer;
+            weapons[weaponNumber].TeleportPlayer += OnTeleportPlayer;
         }
         void clearWeaponACtions(int weaponNumber)
         {
             weapons[weaponNumber].BoostPlayer -= OnBoostPlayer;
+            weapons[weaponNumber].TeleportPlayer -= OnTeleportPlayer;
 
         }
     }
