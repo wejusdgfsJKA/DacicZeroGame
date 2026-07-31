@@ -17,18 +17,17 @@ namespace PlayerController
             inputReader.Fire += OnFire;
             inputReader.AltFire += OnAltFire;
             inputReader.SwitchWeapon += OnSwitchWeapon;
-            weapons[selectedWeaponIndex].BoostPlayer += OnBoostPlayer;
-            for (int i = 1; i < weapons.Count; i++)
+            for (int i = 0; i < weapons.Count; i++)
             {
                 weapons[i].SetModelVisible(false);
             }
+            OnSwitchWeapon(0);
         }
         private void OnDisable()
         {
             inputReader.Fire -= OnFire;
             inputReader.AltFire -= OnAltFire;
             inputReader.SwitchWeapon -= OnSwitchWeapon;
-            weapons[selectedWeaponIndex].BoostPlayer -= OnBoostPlayer;
         }
         /// <summary>
         /// Takes in an input context. Triggers the selected weapon's primary fire.
@@ -88,9 +87,21 @@ namespace PlayerController
         {
             weapons[selectedWeaponIndex].Firing = false;
             weapons[selectedWeaponIndex].AltFiring = false;
+            clearWeaponACtions(selectedWeaponIndex);
+            bindWeaponActions(weaponNumber);
             weapons[selectedWeaponIndex].SetModelVisible(false);
             weapons[weaponNumber].SetModelVisible(true);
             selectedWeaponIndex = weaponNumber;
+        }
+
+        void bindWeaponActions(int weaponNumber)
+        {
+            weapons[weaponNumber].BoostPlayer += OnBoostPlayer;
+        }
+        void clearWeaponACtions(int weaponNumber)
+        {
+            weapons[weaponNumber].BoostPlayer -= OnBoostPlayer;
+
         }
     }
 }
