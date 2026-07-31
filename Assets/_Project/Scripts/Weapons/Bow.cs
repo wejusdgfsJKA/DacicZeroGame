@@ -122,7 +122,7 @@ namespace Weapons
             Projectile newProjectile = Instantiate(projectile, transform.position, transform.rotation);
             newProjectile.Owner = transform;
             newProjectile.velocity = projectileVelocity * charge / MaxCharge;
-            newProjectile.damage = Damage * (int)(charge / MaxCharge);
+            newProjectile.damage = (int)(Damage * charge / MaxCharge);
             newProjectile.hasGravity = true;
             newProjectile.yawOffset = yawOffset;
             newProjectile.gameObject.SetActive(true);

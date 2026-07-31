@@ -1,5 +1,7 @@
 using EventBus;
 using Interaction;
+using System.Collections;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 namespace PlayerController
@@ -17,6 +19,9 @@ namespace PlayerController
         [Range(1f, 50f)] public float cameraSmoothingFactor = 25f;
         [SerializeField] Transform cam;
         [SerializeField] InputReader inputReader;
+
+        Mutex cameraMutex = new();
+        bool justGotForceRotated = false;
 
         //The interactable we are currently able to interact with. DO NOT CHANGE!!!
         [SerializeField] protected Transform currentInteractable = null;
@@ -75,9 +80,16 @@ namespace PlayerController
             inputReader.Interact -= OnInteract;
         }
 
-        void Update()
+        Quaternion TargetRotation;
+        void LateUpdate()
         {
-            RotateCamera(inputReader.LookDirection.x, -inputReader.LookDirection.y);
+            if (!justGotForceRotated)
+                RotateCamera(inputReader.LookDirection.x, -inputReader.LookDirection.y);
+            else
+            {
+                SnapCameraToTargetRotation();
+                justGotForceRotated = false;
+            }
             InteractionCheck();
         }
 
@@ -91,6 +103,21 @@ namespace PlayerController
 
             currentXAngle += verticalInput * cameraSpeed;
             currentYAngle += horizontalInput * cameraSpeed;
+
+            currentXAngle = Mathf.Clamp(currentXAngle, -VerticalLimit, VerticalLimit);
+
+            transform.localRotation = Quaternion.Euler(0, currentYAngle, 0);
+            cam.localRotation = Quaternion.Euler(currentXAngle, 0, 0);
+        }
+
+        public void SetCameraRotation(Quaternion rotation)
+        {
+            justGotForceRotated = true;
+            TargetRotation = rotation;
+        }
+        void SnapCameraToTargetRotation()
+        {
+            currentYAngle = TargetRotation.eulerAngles.y;
 
             currentXAngle = Mathf.Clamp(currentXAngle, -VerticalLimit, VerticalLimit);
 
