@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae5df35495c552d4baa4a0eb1dffb524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.LongBow
+  Damage: 2
   fireCooldown: 2
   altFireCooldown: 1
   projectile: {fileID: 3828718443384397336, guid: 768e04c6db2aaea47a540174ecf69776, type: 3}

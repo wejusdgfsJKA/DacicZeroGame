@@ -18,6 +18,7 @@ namespace Weapons
         protected float cooldownTo = -1;
         protected float timeLastShot = -1;
         public UnityAction<float> BoostPlayer = delegate { };
+        public UnityAction<Vector3, Quaternion?> TeleportPlayer = delegate { };
 
         protected Renderer[] modelRenderers;
 
