@@ -1,16 +1,21 @@
 using UnityEngine;
 
 namespace DacicZero.Data.Weapons {
-    /// <summary> scriptableobject defining weapon upgrade requirements and outcome. </summary>
     [CreateAssetMenu(fileName = "NewWeaponUpgrade", menuName = "DacicZero/Weapon Upgrade", order = 3)]
     public class WeaponUpgradeSO : ScriptableObject {
-        [field: Tooltip("weapon required to purchase this upgrade.")]
-        [field: SerializeField] public WeaponDataSO CurrentWeapon { get; private set; }
+        
+        [Tooltip("weapon required to purchase this upgrade.")]
+        [SerializeField] private WeaponDataSO _currentWeapon;
 
-        [field: Tooltip("weapon received after purchasing this upgrade.")]
-        [field: SerializeField] public WeaponDataSO UpgradedWeapon { get; private set; }
+        [Tooltip("weapon received after purchasing this upgrade.")]
+        [SerializeField] private WeaponDataSO _upgradedWeapon;
 
-        [field: Tooltip("scrap material cost required for upgrade.")]
-        [field: SerializeField] public int ScrapCost { get; private set; }
+        [Tooltip("scrap material cost required for upgrade.")]
+        [Min(0)] // constrait for unity inspector
+        [SerializeField] private int _scrapCost;
+
+        public WeaponDataSO CurrentWeapon => _currentWeapon;
+        public WeaponDataSO UpgradedWeapon => _upgradedWeapon;
+        public int ScrapCost => _scrapCost;
     }
 }

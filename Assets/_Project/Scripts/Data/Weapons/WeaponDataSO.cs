@@ -3,7 +3,6 @@ using UnityEngine;
 namespace DacicZero.Data.Weapons {
     public enum WeaponType { Primary, Secondary, Melee }
 
-    /// <summary> scriptableobject storing weapon combat stats, identity, and visuals. </summary>
     [CreateAssetMenu(fileName = "NewWeaponData", menuName = "DacicZero/Weapon Data", order = 2)]
     public class WeaponDataSO : ScriptableObject {
         [field: Header("Classification")]
@@ -13,6 +12,10 @@ namespace DacicZero.Data.Weapons {
         [field: Header("Identity")]
         [field: Tooltip("unique identifier for the weapon.")]
         [field: SerializeField] public string WeaponId { get; private set; }
+
+        [field: Tooltip("current upgrade level of the weapon.")]
+        [field: Min(1)]
+        [field: SerializeField] public int WeaponLevel { get; private set; } = 1;
 
         [field: Tooltip("display name in the inventory.")]
         [field: SerializeField] public string WeaponName { get; private set; }

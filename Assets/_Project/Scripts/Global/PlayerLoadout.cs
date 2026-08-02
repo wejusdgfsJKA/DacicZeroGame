@@ -3,51 +3,73 @@ using System.Collections.Generic;
 using DacicZero.Data.Weapons;
 
 namespace DacicZero.Global {
-    /// <summary> static manager tracking the player's weapon inventory. </summary>
     public static class PlayerLoadout {
+        
+        /// <summary> activated whenever weapons are added, removed, or equipped </summary>
         public static event Action OnLoadoutChanged;
 
-        public static List<WeaponDataSO> OwnedWeapons { get; private set; } = new();
+        private static readonly List<WeaponDataSO> _ownedWeapons = new();
+        public static IReadOnlyList<WeaponDataSO> OwnedWeapons => _ownedWeapons;
 
         public static WeaponDataSO EquippedPrimary { get; private set; }
         public static WeaponDataSO EquippedSecondary { get; private set; }
 
         public static void Initialize(WeaponDataSO startingPrimary, WeaponDataSO startingSecondary) {
-            OwnedWeapons.Clear();
-            if (startingPrimary != null) AddWeapon(startingPrimary);
-            if (startingSecondary != null) AddWeapon(startingSecondary);
-            EquipWeapon(startingPrimary);
-            EquipWeapon(startingSecondary);
+            _ownedWeapons.Clear();
+            EquippedPrimary = null;
+            EquippedSecondary = null;
+
+            if (startingPrimary != null) {
+                _ownedWeapons.Add(startingPrimary);
+                EquippedPrimary = startingPrimary;
+            }
+            
+            if (startingSecondary != null) {
+                if (!_ownedWeapons.Contains(startingSecondary)) _ownedWeapons.Add(startingSecondary);
+                EquippedSecondary = startingSecondary;
+            }
+
+            OnLoadoutChanged?.Invoke();
         }
 
         public static void AddWeapon(WeaponDataSO weapon) {
-            if (weapon == null || OwnedWeapons.Contains(weapon)) return;
-            OwnedWeapons.Add(weapon);
+            if (weapon == null || _ownedWeapons.Contains(weapon)) return;
+            
+            _ownedWeapons.Add(weapon);
             OnLoadoutChanged?.Invoke();
         }
 
         public static void UpgradeWeapon(WeaponDataSO oldWeapon, WeaponDataSO newWeapon) {
-            if (OwnedWeapons.Contains(oldWeapon)) {
-                OwnedWeapons.Remove(oldWeapon);
-                OwnedWeapons.Add(newWeapon);
+            if (oldWeapon == null || newWeapon == null) return;
 
-                if (EquippedPrimary == oldWeapon) EquippedPrimary = newWeapon;
-                if (EquippedSecondary == oldWeapon) EquippedSecondary = newWeapon;
+            if (_ownedWeapons.Contains(oldWeapon)) _ownedWeapons.Remove(oldWeapon);
+            if (!_ownedWeapons.Contains(newWeapon)) _ownedWeapons.Add(newWeapon);
 
-                OnLoadoutChanged?.Invoke();
-            }
+            if (EquippedPrimary == oldWeapon) EquippedPrimary = newWeapon;
+            if (EquippedSecondary == oldWeapon) EquippedSecondary = newWeapon;
+
+            OnLoadoutChanged?.Invoke();
         }
 
         public static void EquipWeapon(WeaponDataSO weapon) {
             if (weapon == null) return;
-            if (!OwnedWeapons.Contains(weapon)) AddWeapon(weapon);
+            bool changedState = false;
 
-            if (weapon.Type == WeaponType.Primary)
+            if (!_ownedWeapons.Contains(weapon)) {
+                _ownedWeapons.Add(weapon);
+                changedState = true;
+            }
+
+            if (weapon.Type == WeaponType.Primary && EquippedPrimary != weapon) {
                 EquippedPrimary = weapon;
-            else if (weapon.Type == WeaponType.Secondary)
+                changedState = true;
+            }
+            else if (weapon.Type == WeaponType.Secondary && EquippedSecondary != weapon) {
                 EquippedSecondary = weapon;
+                changedState = true;
+            }
 
-            OnLoadoutChanged?.Invoke();
+            if (changedState) OnLoadoutChanged?.Invoke();
         }
     }
 }

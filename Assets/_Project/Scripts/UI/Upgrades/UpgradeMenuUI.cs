@@ -1,17 +1,15 @@
 using UnityEngine;
 using TMPro;
-using EventBus;
+using System.Collections.Generic;
 using DacicZero.Global;
 using DacicZero.Data.Weapons;
 
 namespace DacicZero.UI.Upgrades {
-    /// <summary> main controller for the weapon upgrade screen. </summary>
-    public class UpgradeMenuUI : MonoBehaviour, IClosable {
+    public class UpgradeMenuUI : MonoBehaviour {
         #region Variables & Properties
-        public bool IsOpen => _upgradeCanvas != null && _upgradeCanvas.activeSelf;
+        public bool IsOpen => gameObject.activeSelf;
 
         [Header("UI References")]
-        [SerializeField] private GameObject _upgradeCanvas;
         [SerializeField] private TextMeshProUGUI _scrapText;
         [SerializeField] private WeaponComparisonUI _comparisonUI;
 
@@ -19,61 +17,76 @@ namespace DacicZero.UI.Upgrades {
         [SerializeField] private WeaponListButtonUI _weaponButtonPrefab;
         [SerializeField] private Transform _weaponListContainer;
         [SerializeField] private WeaponUpgradeSO[] _allAvailableUpgrades;
-        #endregion
 
+        private readonly List<WeaponListButtonUI> _activeButtons = new();
+        private readonly List<WeaponListButtonUI> _buttonPool = new();
+
+        private readonly Dictionary<WeaponDataSO, WeaponUpgradeSO> _upgradeDictionary = new();
+        
+        #endregion
         #region Unity Lifecycle
+
         private void Awake() {
-#if UNITY_EDITOR
-            if (_upgradeCanvas == null) Debug.LogError($"[UpgradeMenuUI] Upgrade Canvas missing on {gameObject.name}!");
-            if (_scrapText == null) Debug.LogError($"[UpgradeMenuUI] Scrap Text missing on {gameObject.name}!");
-#endif
-            if (_upgradeCanvas != null) _upgradeCanvas.SetActive(false);
+            if (_weaponButtonPrefab == null) Debug.LogError("Weapon Button Prefab missing on " + gameObject.name);
+            if (_weaponListContainer == null) Debug.LogError("Weapon List Container missing on " + gameObject.name);
+            if (_comparisonUI == null) Debug.LogWarning("Comparison UI is not assigned on " + gameObject.name);
+
+            if (_allAvailableUpgrades != null) 
+                foreach (var upgrade in _allAvailableUpgrades) 
+                    if (upgrade != null && upgrade.CurrentWeapon != null) 
+                        _upgradeDictionary[upgrade.CurrentWeapon] = upgrade;
         }
 
+        private void Start() {if (_comparisonUI != null) _comparisonUI.Initialize(this); }
+        
         private void OnEnable() {
-            EventBus<Dialog.DialogActionFiredEvent>.AddActions(0, OnDialogAction);
             PlayerResources.OnScrapChanged += UpdateScrapUI;
-        }
-
-        private void OnDisable() {
-            EventBus<Dialog.DialogActionFiredEvent>.RemoveActions(0, OnDialogAction);
-            PlayerResources.OnScrapChanged -= UpdateScrapUI;
-        }
-
-        private void Start() => UpdateScrapUI(PlayerResources.Scrap);
-        #endregion
-
-        #region Core Logic
-        private void OnDialogAction(Dialog.DialogActionFiredEvent evt) {
-            if (string.Equals(evt.ActionID, "OpenUpgradeMenu", System.StringComparison.OrdinalIgnoreCase))
-                OpenMenu();
-        }
-
-        public void OpenMenu() {
-            if (_upgradeCanvas != null) _upgradeCanvas.SetActive(true);
+            
             UpdateScrapUI(PlayerResources.Scrap);
             if (_comparisonUI != null) _comparisonUI.ClearComparison();
+            
             PopulateUpgradeList();
-            UIManager.RegisterMenu(this);
         }
+        private void OnDisable() { PlayerResources.OnScrapChanged -= UpdateScrapUI; }
+
+        #endregion
+        #region UI Logic
 
         private void PopulateUpgradeList() {
             if (_weaponButtonPrefab == null || _weaponListContainer == null) return;
 
-            foreach (Transform child in _weaponListContainer)
-                Destroy(child.gameObject);
+            foreach (var btn in _activeButtons) {
+                btn.gameObject.SetActive(false);
+                _buttonPool.Add(btn);
+            }
+            _activeButtons.Clear();
 
-            if (_allAvailableUpgrades != null)
-                foreach (var upgrade in _allAvailableUpgrades)
-                    if (upgrade != null) {
-                        var buttonInstance = Instantiate(_weaponButtonPrefab, _weaponListContainer);
-                        buttonInstance.Initialize(upgrade, this);
-                    }
+            if (_allAvailableUpgrades != null) {
+                foreach (var upgrade in _allAvailableUpgrades) {
+                    if (upgrade == null) continue;
+
+                    // uncomment to only show upgrades for weapons the player owns:
+                    // if (!PlayerLoadout.OwnedWeapons.Contains(upgrade.CurrentWeapon)) continue;
+
+                    WeaponListButtonUI btn;
+
+                    if (_buttonPool.Count > 0) {
+                        int lastIdx = _buttonPool.Count - 1;
+                        btn = _buttonPool[lastIdx];
+                        _buttonPool.RemoveAt(lastIdx);
+                        btn.gameObject.SetActive(true);
+                    } else btn = Instantiate(_weaponButtonPrefab, _weaponListContainer);
+
+                    btn.Initialize(upgrade, this);
+                    _activeButtons.Add(btn);
+                }
+            }
         }
 
-        public void Close() {
-            if (_upgradeCanvas != null) _upgradeCanvas.SetActive(false);
-            UIManager.UnregisterMenu(this);
+        public WeaponUpgradeSO GetNextUpgrade(WeaponDataSO currentWeapon) {
+            if (currentWeapon != null && _upgradeDictionary.TryGetValue(currentWeapon, out WeaponUpgradeSO nextUpgrade)) 
+                return nextUpgrade;
+            return null;
         }
 
         private void UpdateScrapUI(int scrapAmount) {
@@ -81,7 +94,9 @@ namespace DacicZero.UI.Upgrades {
             if (_comparisonUI != null) _comparisonUI.RefreshPurchaseButtonState(scrapAmount);
         }
 
-        public void SelectWeaponUpgrade(WeaponUpgradeSO upgradeData) { if (_comparisonUI != null) _comparisonUI.DisplayUpgrade(upgradeData); }
+        public void SelectWeaponUpgrade(WeaponUpgradeSO upgradeData) { 
+            if (_comparisonUI != null) _comparisonUI.DisplayUpgrade(upgradeData); 
+        }
         #endregion
     }
 }
