@@ -4,12 +4,15 @@ using UnityEngine.EventSystems;
 using TMPro;
 using EventBus;
 using DacicZero.Data.Dialog;
-using DacicZero.NPC;
 using System;
 using System.Collections.Generic;
 
 namespace DacicZero.UI.Dialog {
+
     #region Events
+#warning when upgrading to c# 10, uncomment the record struct below and remove the standard struct to reduce boilerplate.
+    // public readonly record struct DialogActionFiredEvent(string ActionID, string ActionParams = "") : IEvent;
+    
     public readonly struct DialogActionFiredEvent : IEvent {
         public string ActionID { get; }
         public string ActionParams { get; }
@@ -22,116 +25,137 @@ namespace DacicZero.UI.Dialog {
     public readonly struct EndDialogEvent : IEvent { }
     #endregion
 
+    public class DialogUIController : MonoBehaviour {
 
-    /// <summary> main controller for visual dialog system </summary>
-    public class DialogUIController : MonoBehaviour, IClosable {
         #region Variables & Properties
-        /// <summary> checks if dialog canvas is active </summary>
-        public bool IsOpen => _dialogCanvas != null && _dialogCanvas.activeSelf;
-
-        [Header("UI Panels")]
-        [SerializeField] private GameObject _dialogCanvas;
-        [SerializeField] private GameObject _optionsPanel;
+        public enum ExtendDirection { Up, Down, Both }
 
         [Header("Input")]
         [SerializeField] private PlayerController.InputReader _inputReader;
 
         [Header("Text & Images")]
         [SerializeField] private TextMeshProUGUI _dialogText;
-        [SerializeField] private Image _npcImage;
-        [SerializeField] private Image _playerImage;
+        [SerializeField] private Image img_LeftPortrait;
+        [SerializeField] private Image img_RightPortrait;
 
         [Header("Options")]
-        [SerializeField] private Transform _optionsContainer;
+        [SerializeField] private RectTransform _optionsContainer;
         [SerializeField] private GameObject _optionButtonPrefab;
-        /// <summary> vertical gap between button edges </summary>
-        [SerializeField] private float _optionSpacing = 10f;
-        [Tooltip("padding inside the options container background.")]
-        [SerializeField] private float _containerPadding = 20f;
-        [Tooltip("whether to show the image background on the options container.")]
+        [SerializeField] private Image _containerBackground;
+        [SerializeField] private ExtendDirection _extendDirection = ExtendDirection.Both;
         [SerializeField] private bool _showOptionsBackground = true;
 
         [Header("Visual Settings")]
         [SerializeField] private Color _activeSpeakerColor = Color.white;
-        [SerializeField] private Color _inactiveSpeakerColor = new Color(0.5f, 0.5f, 0.5f, 1f);
+        [SerializeField] private Color _inactiveSpeakerColor = Color.gray;
 
         private DialogSequenceSO _currentSequence;
         private int _currentNodeIndex;
-        private readonly List<GameObject> _activeOptionButtons = new List<GameObject>();
-        private readonly List<GameObject> _optionButtonPool = new List<GameObject>();
+        
+        private readonly List<GameObject> _activeOptionButtons = new();
+        private readonly List<GameObject> _optionButtonPool = new();
+        
+        private readonly Dictionary<string, Sprite> _portraitCache = new(StringComparer.OrdinalIgnoreCase);
 
         private int _frameOpened = -1;
-        private Sprite _defaultNpcSprite;
-        private Sprite _defaultPlayerSprite;
-        private Sprite _originalDefaultNpcSprite;
-        
         private Image _optionsContainerBg;
-        private RectTransform _containerRT;
-        private float _buttonHeight = 50f;
+        private UnityEngine.UI.VerticalLayoutGroup _cachedLayoutGroup;
+        private float _cachedButtonWidth = 130f;
+        private float _cachedButtonHeight = 40f;
+        
+        private Transform _cachedRoomTransform;
+        private bool _isInitialized;
         #endregion
 
         #region Unity Lifecycle
         private void Awake() {
-            EventBus<StartDialogEvent>.AddActions(0, OnStartDialog);
-            _dialogCanvas.SetActive(false);
+            _isInitialized = true;
+            EventBus<NPC.StartDialogEvent>.AddActions(0, OnStartDialog);
 
-            if (_inputReader != null) _inputReader.Interact += OnAdvanceText;
-
-            if (_playerImage != null) _defaultPlayerSprite = _playerImage.sprite;
-            if (_npcImage != null) _originalDefaultNpcSprite = _npcImage.sprite;
-
-            _optionsContainerBg = _optionsContainer != null ? _optionsContainer.GetComponent<Image>() : null;
-            _containerRT = _optionsContainer as RectTransform;
-            if (_optionButtonPrefab != null && _optionButtonPrefab.TryGetComponent(out RectTransform prefabRT)) {
-                _buttonHeight = prefabRT.sizeDelta.y;
+            if (_optionsContainer != null) {
+                _optionsContainer.TryGetComponent(out _optionsContainerBg);
+                _optionsContainer.TryGetComponent(out _cachedLayoutGroup);
             }
+
+            if (_optionButtonPrefab != null && _optionButtonPrefab.TryGetComponent(out RectTransform prefabRT)) {
+                _cachedButtonHeight = prefabRT.sizeDelta.y;
+                _cachedButtonWidth = prefabRT.sizeDelta.x;
+            }
+                
+            if (transform.parent != null) _cachedRoomTransform = transform.parent.Find("pnl_Room");
         }
 
-        private void OnDestroy() {
-            EventBus<StartDialogEvent>.RemoveActions(0, OnStartDialog);
-            if (_inputReader != null) _inputReader.Interact -= OnAdvanceText;
+        private void OnEnable() { 
+            if (!_isInitialized) {
+                Debug.LogError($"[DialogUI] awake did not run", gameObject);
+            }
+            if (_inputReader != null) _inputReader.Interact += OnAdvanceText; 
         }
+
+        private void OnDisable() { 
+            if (_inputReader != null) _inputReader.Interact -= OnAdvanceText; 
+            if (_currentSequence != null) EndDialog();
+        }
+
+        private void OnDestroy() {  EventBus<NPC.StartDialogEvent>.RemoveActions(0, OnStartDialog);  }
         #endregion
 
         #region Sprite Management
-        private Sprite GetSpriteFromNPC(NPCController npc) {
-            if (npc == null) return null;
-            if (npc.TryGetComponent(out SpriteRenderer sr) || (sr = npc.GetComponentInChildren<SpriteRenderer>()))
-                return sr.sprite;
-            if (npc.TryGetComponent(out Image img) || (img = npc.GetComponentInChildren<Image>()))
-                return img.sprite;
-            return null;
-        }
+        private Sprite GetSpriteForID(string id) {
+            if (string.IsNullOrEmpty(id) || _cachedRoomTransform == null) return null;
 
-        private Sprite GetSpriteForSpeaker(string speakerID) {
-            NPCDirector director = FindObjectOfType<NPCDirector>();
-            if (director != null) {
-                foreach (var npc in director.NpcsInScene) {
-                    if (string.Equals(npc.gameObject.name, speakerID, StringComparison.OrdinalIgnoreCase) || 
-                        npc.gameObject.name.IndexOf(speakerID, StringComparison.OrdinalIgnoreCase) >= 0) {
-                        return GetSpriteFromNPC(npc);
-                    }
+            if (_portraitCache.TryGetValue(id, out Sprite cachedSprite)) 
+                return cachedSprite;
+
+            string cleanId = id.Replace("NPC_", "").Replace("img_", "");
+            Sprite foundSprite = null;
+            
+            if (cleanId.Equals("Player", StringComparison.OrdinalIgnoreCase)) {
+                Transform playerImg = _cachedRoomTransform.Find("img_Player");
+                if (playerImg != null) foundSprite = GetSpriteFromGameObject(playerImg.gameObject);
+            } else {
+                Transform grpNPCs = _cachedRoomTransform.Find("grp_NPCs");
+                if (grpNPCs != null) {
+                    Transform npc = grpNPCs.Find($"NPC_{cleanId}") ?? grpNPCs.Find($"img_{cleanId}") ?? grpNPCs.Find(cleanId);
+                    if (npc != null) foundSprite = GetSpriteFromGameObject(npc.gameObject);
                 }
             }
+
+            if (foundSprite == null) {
+                GameObject fallbackObj = GameObject.Find($"NPC_{cleanId}") ?? GameObject.Find($"img_{cleanId}");
+                if (fallbackObj != null) foundSprite = GetSpriteFromGameObject(fallbackObj);
+            }
+
+            if (foundSprite != null) {
+                _portraitCache[id] = foundSprite;
+            }
+
+            return foundSprite;
+        }
+
+        private Sprite GetSpriteFromGameObject(GameObject go) {
+            if (go == null) return null;
+            if (go.TryGetComponent(out SpriteRenderer sr) && sr.sprite != null) return sr.sprite;
+            if (go.TryGetComponent(out Image img) && img.sprite != null) return img.sprite;
+            
+            sr = go.GetComponentInChildren<SpriteRenderer>();
+            if (sr != null && sr.sprite != null) return sr.sprite;
+            
+            img = go.GetComponentInChildren<Image>();
+            if (img != null && img.sprite != null) return img.sprite;
+            
             return null;
         }
         #endregion
 
         #region Dialog Logic
-        private void OnStartDialog(StartDialogEvent evt) {
+        private void OnStartDialog(NPC.StartDialogEvent evt) {
             if (evt.Sequence == null || evt.Sequence.Nodes.Count == 0) return;
 
             _currentSequence = evt.Sequence;
             _currentNodeIndex = 0;
             _frameOpened = Time.frameCount;
 
-            Sprite dynamicSprite = GetSpriteFromNPC(evt.NPC);
-
-            _defaultNpcSprite = _currentSequence.DefaultSprite != null ? _currentSequence.DefaultSprite :
-                               (dynamicSprite != null ? dynamicSprite : _originalDefaultNpcSprite);
-
-            _dialogCanvas.SetActive(true);
-            UIManager.RegisterMenu(this);
             ShowNode(_currentNodeIndex);
         }
 
@@ -142,28 +166,21 @@ namespace DacicZero.UI.Dialog {
             }
 
             DialogNode node = _currentSequence.Nodes[index];
-            _dialogText.text = node.DialogText;
+            if (_dialogText != null) _dialogText.text = node.DialogText;
 
-            bool isPlayer = string.Equals(node.SpeakerID, "Player", StringComparison.OrdinalIgnoreCase);
-            Sprite displaySprite = node.SpeakerSprite;
+            bool isLeftSpeaker = node.ActiveSpeaker is SpeakerSide.Left or SpeakerSide.Both;
+            bool isRightSpeaker = node.ActiveSpeaker is SpeakerSide.Right or SpeakerSide.Both;
 
-            if (displaySprite == null) {
-                if (isPlayer) {
-                    displaySprite = _defaultPlayerSprite;
-                } else {
-                    displaySprite = GetSpriteForSpeaker(node.SpeakerID);
-                    if (displaySprite == null) displaySprite = _defaultNpcSprite;
-                }
+            if (img_LeftPortrait != null) {
+                img_LeftPortrait.color = isLeftSpeaker ? _activeSpeakerColor : _inactiveSpeakerColor;
+                Sprite finalLeftSprite = node.LeftSprite != null ? node.LeftSprite : GetSpriteForID(node.LeftID);
+                if (finalLeftSprite != null) img_LeftPortrait.sprite = finalLeftSprite;
             }
 
-            if (_npcImage != null) {
-                _npcImage.color = isPlayer ? _inactiveSpeakerColor : _activeSpeakerColor;
-                if (!isPlayer) _npcImage.sprite = displaySprite;
-            }
-
-            if (_playerImage != null) {
-                _playerImage.color = isPlayer ? _activeSpeakerColor : _inactiveSpeakerColor;
-                if (isPlayer) _playerImage.sprite = node.SpeakerSprite != null ? node.SpeakerSprite : _defaultPlayerSprite;
+            if (img_RightPortrait != null) {
+                img_RightPortrait.color = isRightSpeaker ? _activeSpeakerColor : _inactiveSpeakerColor;
+                Sprite finalRightSprite = node.RightSprite != null ? node.RightSprite : GetSpriteForID(node.RightID);
+                if (finalRightSprite != null) img_RightPortrait.sprite = finalRightSprite;
             }
 
             foreach (var btn in _activeOptionButtons) {
@@ -173,65 +190,62 @@ namespace DacicZero.UI.Dialog {
             _activeOptionButtons.Clear();
 
             if (node.Options != null && node.Options.Count > 0) {
-                _optionsPanel.SetActive(true);
-                GameObject firstButton = null;
-
-                if (_optionsContainerBg != null) {
-                    _optionsContainerBg.enabled = _showOptionsBackground;
-                }
+                _optionsContainer.gameObject.SetActive(true);
+                if (_optionsContainerBg != null) _optionsContainerBg.enabled = _showOptionsBackground;
 
                 int n = node.Options.Count;
-                float containerWidth = _containerRT != null ? _containerRT.rect.width : 300f;
-                
-                float centerSpacing = _optionSpacing + _buttonHeight;
-                // calculate starting Y so the whole group is perfectly centered around Y=0
-                float startY = ((n - 1) * centerSpacing) / 2f;
+        
+                if (_containerBackground != null) {
+                    _containerBackground.enabled = _showOptionsBackground;
+                    
+                    if (_extendDirection == ExtendDirection.Both)
+                        _containerBackground.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+                    else if (_extendDirection == ExtendDirection.Up) 
+                        _containerBackground.rectTransform.pivot = new Vector2(0.5f, 0f);
+                    else if (_extendDirection == ExtendDirection.Down)
+                        _containerBackground.rectTransform.pivot = new Vector2(0.5f, 1f);
+                    
+                    float activeSpacing = 0f;
+                    float padX = 0f, padY = 0f;
 
-                if (_containerRT != null) {
-                    float totalHeight = (n * _buttonHeight) + ((n - 1) * _optionSpacing) + (_containerPadding * 2f);
-                    _containerRT.sizeDelta = new Vector2(containerWidth, totalHeight);
+                    if (_cachedLayoutGroup != null) {
+                        activeSpacing = _cachedLayoutGroup.spacing;
+                        padX = _cachedLayoutGroup.padding.left + _cachedLayoutGroup.padding.right;
+                        padY = _cachedLayoutGroup.padding.top + _cachedLayoutGroup.padding.bottom;
+                    }
+
+                    float newWidth = _cachedButtonWidth + padX;
+                    float newHeight = (_cachedButtonHeight * n) + (activeSpacing * (n - 1)) + padY;
+                    _containerBackground.rectTransform.sizeDelta = new Vector2(newWidth, newHeight);
                 }
 
-                for (int i = 0; i < n; i++) {
-                    var opt = node.Options[i];
-                    GameObject go;
+                GameObject firstButton = null;
 
+                for (int i = 0; i < n; i++) {
+                    GameObject go;
                     if (_optionButtonPool.Count > 0) {
                         int lastIdx = _optionButtonPool.Count - 1;
                         go = _optionButtonPool[lastIdx];
                         _optionButtonPool.RemoveAt(lastIdx);
                         go.SetActive(true);
-                    }
-                    else
+                    } else 
                         go = Instantiate(_optionButtonPrefab, _optionsContainer);
-
-                    if (go.TryGetComponent(out RectTransform rt)) {
-                        // match container width minus padding, keep original height
-                        rt.sizeDelta = new Vector2(containerWidth - (_containerPadding * 2f), rt.sizeDelta.y);
-                        // anchor to the exact center of the container
-                        rt.anchoredPosition = new Vector2(0f, startY - (i * centerSpacing));
-                    }
                     
-                    // ensure the button goes to the bottom of the layout group
+                    if (go.TryGetComponent(out DialogOptionUI optUI))  optUI.Setup(node.Options[i], this);
+                     else   Debug.LogError("[DialogUI] Option Button Prefab is missing the DialogOptionUI component!");
+                    
                     go.transform.SetAsLastSibling();
-
-                    if (go.TryGetComponent(out DialogOptionUI optUI))
-                        optUI.Setup(opt, this);
-
                     _activeOptionButtons.Add(go);
-                    if (firstButton == null) firstButton = go;
+                    firstButton ??= go; 
                 }
 
                 if (firstButton != null) EventSystem.current.SetSelectedGameObject(firstButton);
-            }
-            else {
-                _optionsPanel.SetActive(false);
-            }
+            } else 
+                if (_optionsContainer != null) _optionsContainer.gameObject.SetActive(false);
         }
 
         public void OnAdvanceText() {
-            if (!_dialogCanvas.activeSelf || _optionsPanel.activeSelf || Time.frameCount <= _frameOpened + 1) return;
-
+            if (_currentSequence == null || !gameObject.activeInHierarchy || _optionsContainer.gameObject.activeSelf || Time.frameCount <= _frameOpened + 1) return;
             ShowNode(++_currentNodeIndex);
         }
 
@@ -243,12 +257,8 @@ namespace DacicZero.UI.Dialog {
             else EndDialog();
         }
 
-        public void Close() => EndDialog();
-
         public void EndDialog() {
-            if (_dialogCanvas != null) _dialogCanvas.SetActive(false);
             _currentSequence = null;
-            UIManager.UnregisterMenu(this);
             EventBus<EndDialogEvent>.Raise(0, new EndDialogEvent());
         }
         #endregion

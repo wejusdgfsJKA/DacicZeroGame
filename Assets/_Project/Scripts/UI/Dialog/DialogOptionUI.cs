@@ -3,9 +3,9 @@ using UnityEngine.UI;
 using TMPro;
 
 namespace DacicZero.UI.Dialog {
-    /// <summary> visual option button component inside the dialog panel. </summary>
     [RequireComponent(typeof(Button))]
     public class DialogOptionUI : MonoBehaviour {
+        
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI _optionText;
 
@@ -14,32 +14,25 @@ namespace DacicZero.UI.Dialog {
         private Button _button;
         private DialogUIController _controller;
 
-        private void Awake() => EnsureReferences();
-
-        private void EnsureReferences() {
-            if (_button == null) TryGetComponent(out _button);
+        private void Awake() {
+            _button = GetComponent<Button>();
+            
             if (_optionText == null) _optionText = GetComponentInChildren<TextMeshProUGUI>();
+            
+            _button.onClick.AddListener(OnClicked);
         }
+
+        private void OnDestroy() { if (_button != null) _button.onClick.RemoveListener(OnClicked); }
+        private void OnClicked() { if (_controller != null && OptionData != null) _controller.OnOptionSelected(OptionData); }
 
         public void Setup(Data.Dialog.DialogOption data, DialogUIController ctrl) {
             if (data == null) return;
 
-            EnsureReferences();
-
             OptionData = data;
             _controller = ctrl;
 
-            if (_optionText != null) {
-                _optionText.text = data.OptionText;
-                if (data.FontSize > 0) _optionText.fontSize = data.FontSize;
-            }
-
-            if (_button != null) {
-                _button.onClick.RemoveListener(OnClicked);
-                _button.onClick.AddListener(OnClicked);
-            }
+            if (_optionText != null) _optionText.text = data.OptionText;
         }
 
-        private void OnClicked() { if (_controller != null) _controller.OnOptionSelected(OptionData); }
     }
 }

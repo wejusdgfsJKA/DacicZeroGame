@@ -2,23 +2,24 @@ using System;
 using UnityEngine;
 
 namespace DacicZero.Data.Dialog {
-    /// <summary> selectable dialog response. </summary>
+    /// <summary> selectable dialog response </summary>
     [Serializable]
-#warning when upgrading from c# 9 to c# 10, you must change 'class' to 'struct' to optimize memory allocation, cache locality and allow member definition.
     public class DialogOption {
-        [field: Tooltip("text displayed on the option button.")]
-        [field: SerializeField] public string OptionText { get; private set; }
+        [Tooltip("text displayed on the option button")]
+        [SerializeField] private string _optionText;
 
-        [field: Tooltip("font size. leave at 0 for prefab default.")]
-        [field: SerializeField] public float FontSize { get; private set; }
+        [Tooltip("event id triggered on selection ('OpenMap', 'OpenUpgradeMenu')")]
+        [SerializeField] private string _actionEventID;
 
-        [field: Tooltip("event id triggered on selection (e.g., 'OpenMap', 'OpenUpgradeMenu').")]
-        [field: SerializeField] public string ActionEventID { get; private set; }
+        [Tooltip("optional parameters passed with the event")]
+        [SerializeField] private string _actionParams;
 
-        [field: Tooltip("optional parameters passed with the event.")]
-        [field: SerializeField] public string ActionParams { get; private set; }
+        [Tooltip("target node index. -1 continues linearly or ends")]
+        [SerializeField] private int _jumpToNodeIndex = -1;
 
-        [field: Tooltip("target node index. -1 continues linearly or ends.")]
-        [field: SerializeField] public int JumpToNodeIndex { get; private set; } = -1;
+        public string OptionText => _optionText;
+        public string ActionEventID => _actionEventID;
+        public string ActionParams => _actionParams;
+        public int JumpToNodeIndex => _jumpToNodeIndex;
     }
 }
