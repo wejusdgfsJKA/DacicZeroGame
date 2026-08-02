@@ -1,20 +1,29 @@
 using DacicZero.Data.Weapons;
+using UnityEngine;
 
 namespace DacicZero.Global {
-    /// <summary> static state passing data between scenes. </summary>
     public static class MissionParameters {
-        public static bool IsReplay { get; set; }
-
-        /// <summary> snapshots the current loadout at the moment the mission starts. </summary>
+        
+        public static bool IsReplay { get; private set; }
+        
         public static WeaponDataSO ActivePrimary { get; private set; }
         public static WeaponDataSO ActiveSecondary { get; private set; }
 
-        public static void PrepareMissionLaunch(bool isReplay) {
+        /// <summary> caches the mission parameters right before loading the scene </summary>
+        public static void PrepareMissionLaunch(bool isReplay, WeaponDataSO primaryWeapon, WeaponDataSO secondaryWeapon) {
             IsReplay = isReplay;
-            ActivePrimary = PlayerLoadout.EquippedPrimary;
-            ActiveSecondary = PlayerLoadout.EquippedSecondary;
+            
+            ActivePrimary = primaryWeapon;
+            ActiveSecondary = secondaryWeapon;
 
-            UnityEngine.Debug.Log($"[MissionParameters] Launching Mission... Replay: {IsReplay} | Primary: {(ActivePrimary != null ? ActivePrimary.WeaponId : "None")} | Secondary: {(ActiveSecondary != null ? ActiveSecondary.WeaponId : "None")}");
+            Debug.Log($"[MISSION PARAMETERS] Launching Mission... Replay: {IsReplay} | Primary: {(ActivePrimary != null ? ActivePrimary.WeaponId : "None")} | Secondary: {(ActiveSecondary != null ? ActiveSecondary.WeaponId : "None")}");
+        }
+
+        /// <summary> clears the static data, call this when returning to the main menu to prevent data bleed </summary>
+        public static void ClearSessionData() {
+            IsReplay = false;
+            ActivePrimary = null;
+            ActiveSecondary = null;
         }
     }
 }

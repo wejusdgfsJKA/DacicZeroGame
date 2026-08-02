@@ -1,36 +1,51 @@
 using UnityEngine;
 
 namespace DacicZero.Data {
-    /// <summary> scriptableobject storing mission configuration, scene routing, and rewards. </summary>
     [CreateAssetMenu(fileName = "NewMissionData", menuName = "DacicZero/Mission Data", order = 1)]
     public class MissionDataSO : ScriptableObject {
-        [field: Header("Mission Identity")]
-        [field: Tooltip("unique identifier for this mission.")]
-        [field: SerializeField] public string MissionId { get; private set; }
+        
+        [Header("Mission Identity")]
+        [Tooltip("unique identifier for this mission")]
+        [SerializeField] private string _missionId;
 
-        [field: Tooltip("title displayed in mission selector.")]
-        [field: SerializeField] public string MissionTitle { get; private set; }
+        [Tooltip("title displayed in mission selector")]
+        [SerializeField] private string _missionTitle;
 
-        [field: Tooltip("description of mission objectives.")]
-        [field: TextArea(3, 5)]
-        [field: SerializeField] public string MissionDescription { get; private set; }
+        [Tooltip("description of mission objectives")]
+        [TextArea(3, 5)]
+        [SerializeField] private string _missionDescription;
 
-        [field: Tooltip("preview image for the mission overlay.")]
-        [field: SerializeField] public Sprite MissionImage { get; private set; }
+        [Tooltip("preview image for the mission overlay")]
+        [SerializeField] private Sprite _missionImage;
 
-        [field: Header("Scene Routing")]
-        [field: Tooltip("scene name to load for this mission.")]
-        [field: SerializeField] public string SceneName { get; private set; }
+        [Header("Scene Routing")]
+        [Tooltip("scene name to load for this mission")]
+        [SerializeField] private string _sceneName;
 
-        [field: Tooltip("-1 uses scene name instead of build index.")]
-        [field: SerializeField] public int SceneBuildIndex { get; private set; } = -1;
+        [Tooltip("-1 uses scene name instead of build index")]
+        [Min(-1)] // prevents invalid indices
+        [SerializeField] private int _sceneBuildIndex = -1;
 
-        [field: Header("Mission Status")]
-        [field: Tooltip("true if mission has been completed.")]
-        [field: SerializeField] public bool IsCleared { get; set; }
+        [Header("Mission Status")]
+        [Tooltip("do not save runtime player progress in ScriptableObjects")]
+        [SerializeField] private bool _isCleared;
 
-        [field: Header("Rewards")]
-        [field: Tooltip("scrap material awarded upon completion.")]
-        [field: SerializeField] public int ScrapReward { get; private set; }
+        [Header("Rewards")]
+        [Tooltip("scrap material awarded upon completion")]
+        [Min(0)] // prevents negative rewards
+        [SerializeField] private int _scrapReward;
+
+        public string MissionId => _missionId;
+        public string MissionTitle => _missionTitle;
+        public string MissionDescription => _missionDescription;
+        public Sprite MissionImage => _missionImage;
+        public string SceneName => _sceneName;
+        public int SceneBuildIndex => _sceneBuildIndex;
+        public int ScrapReward => _scrapReward;
+
+        public bool IsCleared {
+            get => _isCleared;
+            set => _isCleared = value;
+        }
     }
 }

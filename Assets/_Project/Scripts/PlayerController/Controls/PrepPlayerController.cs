@@ -4,8 +4,8 @@ using Interaction;
 using EventBus;
 
 namespace DacicZero.Prep {
-    /// <summary> handles 2d prep phase movement and interaction. </summary>
     public class PrepPlayerController : MonoBehaviour {
+        
         #region Variables & Properties
         [Header("References")]
         [SerializeField] private InputReader _inputReader;
@@ -24,18 +24,21 @@ namespace DacicZero.Prep {
         public float InteractionRadius => _interactionRadius;
         public LayerMask InteractionLayer => _interactionLayer;
 
-        // calculate CanMove dynamically based on open UI.
         public bool CanMove => !_isDialogOpen && !_isMapOpen;
 
         private Vector2 _currentMoveInput;
         private bool _isDialogOpen;
         private bool _isMapOpen;
-        private int _frameDialogEnded = -1;
+        private int _frameMenuClosed = -1;
         private readonly Collider[] _overlapResults = new Collider[10];
         #endregion
 
         #region Unity Lifecycle
         private void OnEnable() {
+            _isDialogOpen = false;
+            _isMapOpen = false;
+            _currentMoveInput = Vector2.zero;
+
             if (_inputReader != null) {
                 _inputReader.EnablePlayerActions();
                 _inputReader.Move += OnMove;
@@ -50,7 +53,6 @@ namespace DacicZero.Prep {
             if (_inputReader != null) {
                 _inputReader.Move -= OnMove;
                 _inputReader.Interact -= OnInteract;
-                _inputReader.DisablePlayerActions();
             }
             EventBus<NPC.StartDialogEvent>.RemoveActions(0, OnStartDialog);
             EventBus<UI.Dialog.EndDialogEvent>.RemoveActions(0, OnEndDialog);
@@ -58,10 +60,13 @@ namespace DacicZero.Prep {
         }
 
         private void Update() {
-            // skip vector multiplication if not moving.
-            if (!CanMove || _currentMoveInput == Vector2.zero) return;
+            if (!CanMove) return;
 
-            Vector3 movement = new Vector3(_currentMoveInput.x, _currentMoveInput.y, 0f);
+            Vector2 dir = (_currentMoveInput == Vector2.zero && _inputReader != null) ? _inputReader.Direction : _currentMoveInput;
+            if (dir == Vector2.zero) return;
+
+            Vector3 movement = Vector3.ClampMagnitude(new Vector3(dir.x, dir.y, 0f), 1f);
+            
             transform.Translate(movement * MoveSpeed * Time.deltaTime);
         }
 
@@ -72,16 +77,21 @@ namespace DacicZero.Prep {
         #endregion
 
         #region Event Handlers
-        private void OnStartDialog(NPC.StartDialogEvent evt) => _isDialogOpen = true;
+        private void OnStartDialog(NPC.StartDialogEvent evt) {
+            _isDialogOpen = true;
+            _currentMoveInput = Vector2.zero;
+        }
         
         private void OnEndDialog(UI.Dialog.EndDialogEvent evt) {
             _isDialogOpen = false;
-            _frameDialogEnded = Time.frameCount;
+            _frameMenuClosed = Time.frameCount;
         }
 
         private void OnMapStateChanged(UI.MissionSelector.MapStateChangedEvent evt) {
             _isMapOpen = evt.IsOpen;
-            if (!evt.IsOpen) _frameDialogEnded = Time.frameCount;
+            
+            if (evt.IsOpen) _currentMoveInput = Vector2.zero;
+            else _frameMenuClosed = Time.frameCount;
         }
 
         private void OnMove(Vector2 input) => _currentMoveInput = input;
@@ -89,9 +99,8 @@ namespace DacicZero.Prep {
 
         #region Interaction Logic
         private void OnInteract() {
-            if (!CanMove || Time.frameCount == _frameDialogEnded) return;
+            if (!CanMove || Time.frameCount == _frameMenuClosed) return;
 
-            // search only on the specified layer mask.
             int hitCount = Physics.OverlapSphereNonAlloc(transform.position, InteractionRadius, _overlapResults, InteractionLayer);
 
             float closestSqrDistance = float.MaxValue;
@@ -99,7 +108,6 @@ namespace DacicZero.Prep {
 
             for (int i = 0; i < hitCount; i++) {
                 if (_overlapResults[i].TryGetComponent(out Interactable interactable)) {
-                    // use sqrMagnitude instead of Vector3.Distance for faster distance checks.
                     float sqrDist = (transform.position - _overlapResults[i].transform.position).sqrMagnitude;
 
                     if (sqrDist < closestSqrDistance) {
@@ -109,9 +117,8 @@ namespace DacicZero.Prep {
                 }
             }
 
-            if (closestInteractable != null) {
+            if (closestInteractable != null) 
                 EventBus<InteractionEvent>.Raise(closestInteractable.transform.GetInstanceID(), new InteractionEvent(transform));
-            }
         }
         #endregion
     }
