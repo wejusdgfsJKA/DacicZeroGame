@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 455bf0e3e60636342b51f7109318873d, type: 3}
-  m_Name: hello world wpn 1
+  m_Name: sample_weapon_2
   m_EditorClassIdentifier: Assembly-CSharp::DacicZero.Data.Weapons.WeaponDataSO
   <Type>k__BackingField: 0
-  <WeaponId>k__BackingField: wpn_upgradedhelloworld
-  <WeaponName>k__BackingField: hello world
+  <WeaponId>k__BackingField: wpn_2
+  <WeaponName>k__BackingField: 2
   <WeaponDescription>k__BackingField: 'dadasd
 
     upgrade'

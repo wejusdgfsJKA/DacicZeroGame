@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae92707ead299da429bfa8615328e233, type: 3}
+  m_Name: hello world 1
+  m_EditorClassIdentifier: Assembly-CSharp::DacicZero.Data.Dialog.DialogSequenceSO
+  _nodes:
+  - _activeSpeaker: 0
+    _leftID: NPC_TechGuy
+    _rightID: Player
+    _leftSprite: {fileID: 0}
+    _rightSprite: {fileID: 0}
+    _dialogText: hi from tech guy
+    _options: []
+  - _activeSpeaker: 0
+    _leftID: NPC_Test
+    _rightID: Player
+    _leftSprite: {fileID: 0}
+    _rightSprite: {fileID: 0}
+    _dialogText: hi from NPC
+    _options: []
+  - _activeSpeaker: 0
+    _leftID: NPC_TechGuy
+    _rightID: Player
+    _leftSprite: {fileID: 0}
+    _rightSprite: {fileID: 0}
+    _dialogText: 'hi from tech guy again
+
+      custom sprite: table
+
+      multiple
+      lines'
+    _options:
+    - _optionText: open map 11
+      _actionEventID: OpenMap
+      _actionParams: 
+      _jumpToNodeIndex: -1
+    - _optionText: open map 222
+      _actionEventID: OpenMap
+      _actionParams: 
+      _jumpToNodeIndex: -1
+    - _optionText: open upgrade
+      _actionEventID: OpenUpgradeMenu
+      _actionParams: 
+      _jumpToNodeIndex: -1

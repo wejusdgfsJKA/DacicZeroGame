@@ -10,18 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172b218b2fe57d04bafad40b4bc0de14, type: 3}
-  m_Name: SampleMissionData
+  m_Name: sample_mission_1
   m_EditorClassIdentifier: Assembly-CSharp::DacicZero.Data.MissionDataSO
-  <MissionId>k__BackingField: level 1
-  <MissionTitle>k__BackingField: Level 1
-  <MissionDescription>k__BackingField: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-    aaaaaaaaaaaaaaaaaa
-
-    aaaaaa
-
-    aaa'
-  <SceneName>k__BackingField: SampleScene
-  <SceneBuildIndex>k__BackingField: -1
-  <IsCleared>k__BackingField: 0
-  <ScrapReward>k__BackingField: 0
+  _missionId: id
+  _missionTitle: aaaa
+  _missionDescription: "asdaaz\tadaa\naaaa\nasd\t\t"
+  _missionImage: {fileID: 0}
+  _sceneName: FirstLevel
+  _sceneBuildIndex: -1
+  _isCleared: 0
+  _scrapReward: 0
