@@ -15,7 +15,7 @@ namespace Weapons
         [SerializeField] public bool AltFiring { get; set; }
         [SerializeField] public bool IsEnhanced { get; set; }
 
-        protected float cooldownTo = -1;
+        public float cooldownTo = -1;
         protected float timeLastShot = -1;
         public UnityAction<float> BoostPlayer = delegate { };
         public UnityAction<Vector3, Quaternion?> TeleportPlayer = delegate { };
