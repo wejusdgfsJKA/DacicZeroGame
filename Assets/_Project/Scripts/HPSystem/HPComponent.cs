@@ -12,7 +12,7 @@ namespace HP
         /// Fires when this entity dies.
         /// </summary>
         public UnityEvent OnDeath;
-        public UnityEvent<int> OnDamageTaken;
+        public UnityAction<int> OnDamageTaken = delegate { };
         protected void Awake()
         {
             //add damage binding for this entity
