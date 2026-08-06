@@ -13,6 +13,9 @@ namespace PlayerController
         [SerializeField] protected List<WeaponBase> weapons = new();
         protected int selectedWeaponIndex = 0;
 
+
+        public UnityAction<WeaponBase> SwitchedActiveWeapon = delegate { };
+
         private void OnEnable()
         {
             inputReader.Fire += OnFire;
@@ -102,6 +105,8 @@ namespace PlayerController
             weapons[selectedWeaponIndex].SetModelVisible(false);
             weapons[weaponNumber].SetModelVisible(true);
             selectedWeaponIndex = weaponNumber;
+
+            SwitchedActiveWeapon.Invoke(weapons[selectedWeaponIndex]);
         }
 
         void bindWeaponActions(int weaponNumber)
