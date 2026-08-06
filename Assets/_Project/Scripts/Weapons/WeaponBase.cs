@@ -3,6 +3,7 @@ using HP;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 namespace Weapons
 {
@@ -14,6 +15,8 @@ namespace Weapons
         [SerializeField] public bool Firing { get; set; }
         [SerializeField] public bool AltFiring { get; set; }
         [SerializeField] public bool IsEnhanced { get; set; }
+
+        [SerializeField] public Texture WeaponSprite;
 
         public float cooldownTo = -1;
         protected float timeLastShot = -1;
