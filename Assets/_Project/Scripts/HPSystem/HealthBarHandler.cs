@@ -10,6 +10,7 @@ namespace HP
         [SerializeField] HPComponent EntityHpComponent;
         [SerializeField] Slider HealthBar;
         [SerializeField] Slider FancyHealthBarBackground;
+        [SerializeField] RawImage ColorOverlay;
 
 
         private void Awake()
@@ -30,6 +31,13 @@ namespace HP
             FancyHealthBarBackground.value = Mathf.Lerp(FancyHealthBarBackground.value, 
                 HealthBar.value, 
                 Mathf.Max(1.5f, (FancyHealthBarBackground.value + HealthBar.value)/2) * Time.deltaTime);
+
+            ColorOverlay.color = new Color(1f, 0f, 0f,
+                    Mathf.Lerp(ColorOverlay.color.a,
+                    0f,
+                    5f*Time.deltaTime
+                    )
+                );
         }
 
         private void OnDisable()
@@ -39,6 +47,7 @@ namespace HP
 
         public void updateBar(int newHealth)
         {
+            ColorOverlay.color = new Color(1f, 0f, 0f, ((float)(HealthBar.value - newHealth)) / 10);
             HealthBar.value = newHealth;
         }
 
