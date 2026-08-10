@@ -2,21 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "SubTree", order = 250)]
-    public class SubTree : Node, IChildrenNode
-    {
+    public class SubTree : Node, IChildrenNode {
         public MonoBehaviourTree tree;
-        
-        public override void AddChild(Node node)
-        {
+
+        public override void AddChild(Node node) {
             return;
         }
 
-        public override NodeResult Execute()
-        {
+        public override NodeResult Execute() {
             // Return fialure when subtree is not defined
             if (tree == null) {
                 return NodeResult.failure;
@@ -28,13 +24,11 @@ namespace MBT
             return root.runningNodeResult;
         }
 
-        public override void RemoveChild(Node node)
-        {
+        public override void RemoveChild(Node node) {
             return;
         }
 
-        public override bool IsValid()
-        {
+        public override bool IsValid() {
             return tree != null;
         }
     }

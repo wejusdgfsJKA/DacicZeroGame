@@ -2,12 +2,10 @@
 
 using System;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>Extension methods for <see cref="FadeGroup"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer/FadeGroupExtensions
-    public static class FadeGroupExtensions
-    {
+    public static class FadeGroupExtensions {
         /************************************************************************************************************************/
 
         /// <summary>[Pro-Only]
@@ -33,8 +31,7 @@ namespace Animancer
         /// }
         /// </code>
         /// </remarks>
-        public static void SetEasing(this FadeGroup fade, Func<float, float> function)
-        {
+        public static void SetEasing(this FadeGroup fade, Func<float, float> function) {
             if (fade != null)
                 fade.Easing = function;
         }
@@ -65,8 +62,7 @@ namespace Animancer
         /// }
         /// </code>
         /// </remarks>
-        public static void SetEasing(this FadeGroup fade, Easing.Function function)
-        {
+        public static void SetEasing(this FadeGroup fade, Easing.Function function) {
             if (fade != null)
                 fade.Easing = function.GetDelegate();
         }

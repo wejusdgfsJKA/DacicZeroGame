@@ -15,6 +15,7 @@ namespace PlayerController
 
 
         public UnityAction<WeaponBase> SwitchedActiveWeapon = delegate { };
+        public UnityAction<float> UpdateWeaponCharge = delegate { };
 
         private void OnEnable()
         {
@@ -105,20 +106,26 @@ namespace PlayerController
             weapons[selectedWeaponIndex].SetModelVisible(false);
             weapons[weaponNumber].SetModelVisible(true);
             selectedWeaponIndex = weaponNumber;
-
+            OnWeaponChargeUpdated(0f);
             SwitchedActiveWeapon.Invoke(weapons[selectedWeaponIndex]);
+        }
+
+        public void OnWeaponChargeUpdated(float charge)
+        {
+            UpdateWeaponCharge?.Invoke(charge);
         }
 
         void bindWeaponActions(int weaponNumber)
         {
             weapons[weaponNumber].BoostPlayer += OnBoostPlayer;
             weapons[weaponNumber].TeleportPlayer += OnTeleportPlayer;
+            weapons[weaponNumber].UpdateWeaponCharge += OnWeaponChargeUpdated;
         }
         void clearWeaponACtions(int weaponNumber)
         {
             weapons[weaponNumber].BoostPlayer -= OnBoostPlayer;
             weapons[weaponNumber].TeleportPlayer -= OnTeleportPlayer;
-
+            weapons[weaponNumber].UpdateWeaponCharge -= OnWeaponChargeUpdated;
         }
     }
 }

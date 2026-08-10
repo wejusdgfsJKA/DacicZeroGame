@@ -3,10 +3,8 @@
 using System;
 using UnityEngine;
 
-namespace Animancer.FSM
-{
-    public partial class StateMachine<TState>
-    {
+namespace Animancer.FSM {
+    public partial class StateMachine<TState> {
         /// <summary>
         /// A simple system that can <see cref="InputBuffer{TStateMachine}.Buffer"/> a state then try to enter it every
         /// time <see cref="InputBuffer{TStateMachine}.Update(float)"/> is called until the
@@ -23,8 +21,7 @@ namespace Animancer.FSM
         /// 
         /// https://kybernetik.com.au/animancer/api/Animancer.FSM/InputBuffer
         /// 
-        public class InputBuffer : InputBuffer<StateMachine<TState>>
-        {
+        public class InputBuffer : InputBuffer<StateMachine<TState>> {
             /************************************************************************************************************************/
 
             /// <summary>Creates a new <see cref="InputBuffer"/>.</summary>
@@ -76,19 +73,16 @@ namespace Animancer.FSM
         /// 
         /// https://kybernetik.com.au/animancer/api/Animancer.FSM/InputBuffer_1
         /// 
-        public class InputBuffer<TStateMachine> where TStateMachine : StateMachine<TState>
-        {
+        public class InputBuffer<TStateMachine> where TStateMachine : StateMachine<TState> {
             /************************************************************************************************************************/
 
             private TStateMachine _StateMachine;
             private Action _ForceDefaultState;
 
             /// <summary>The <see cref="StateMachine{TState}"/> this buffer is feeding input to.</summary>
-            public TStateMachine StateMachine
-            {
+            public TStateMachine StateMachine {
                 get => _StateMachine;
-                set
-                {
+                set {
                     if (_StateMachine is WithDefault withDefault)
                         withDefault.ForceSetDefaultState = _ForceDefaultState;
 
@@ -99,10 +93,8 @@ namespace Animancer.FSM
                 }
             }
 
-            private void TryRegisterForceSetDefaultState()
-            {
-                if (_StateMachine is WithDefault withDefault)
-                {
+            private void TryRegisterForceSetDefaultState() {
+                if (_StateMachine is WithDefault withDefault) {
                     _ForceDefaultState = withDefault.ForceSetDefaultState;
                     withDefault.ForceSetDefaultState = TryEnterStateOrForceDefault;
                 }
@@ -127,8 +119,7 @@ namespace Animancer.FSM
             public InputBuffer() { }
 
             /// <summary>Creates a new <see cref="InputBuffer{TStateMachine}"/> for the specified `stateMachine`.</summary>
-            public InputBuffer(TStateMachine stateMachine)
-            {
+            public InputBuffer(TStateMachine stateMachine) {
                 _StateMachine = stateMachine;
                 TryRegisterForceSetDefaultState();
             }
@@ -137,8 +128,7 @@ namespace Animancer.FSM
 
             /// <summary>Sets the <see cref="State"/> and <see cref="TimeOut"/>.</summary>
             /// <remarks>Doesn't actually attempt to enter the state until <see cref="Update(float)"/> is called.</remarks>
-            public void Buffer(TState state, float timeOut)
-            {
+            public void Buffer(TState state, float timeOut) {
                 State = state;
                 TimeOut = timeOut;
             }
@@ -154,8 +144,7 @@ namespace Animancer.FSM
             /// <summary>
             /// Calls <see cref="TryEnterState"/>. If it fails, then <see cref="WithDefault.ForceSetDefaultState"/>.
             /// </summary>
-            public void TryEnterStateOrForceDefault()
-            {
+            public void TryEnterStateOrForceDefault() {
                 if (IsActive &&
                     TryEnterState())
                     return;
@@ -175,17 +164,13 @@ namespace Animancer.FSM
             /// <see cref="TimeOut"/> is decreased by `deltaTime` and <see cref="Clear"/> is called if it reaches 0.
             /// </summary>
             /// <remarks>This method should be called at the end of a frame after any calls to <see cref="Buffer"/>.</remarks>
-            public bool Update(float deltaTime)
-            {
-                if (IsActive)
-                {
-                    if (TryEnterState())
-                    {
+            public bool Update(float deltaTime) {
+                if (IsActive) {
+                    if (TryEnterState()) {
                         Clear();
                         return true;
                     }
-                    else
-                    {
+                    else {
                         TimeOut -= deltaTime;
 
                         if (TimeOut < 0)
@@ -199,8 +184,7 @@ namespace Animancer.FSM
             /************************************************************************************************************************/
 
             /// <summary>Clears this buffer so it stops trying to enter the <see cref="State"/>.</summary>
-            public virtual void Clear()
-            {
+            public virtual void Clear() {
                 State = null;
                 TimeOut = default;
             }

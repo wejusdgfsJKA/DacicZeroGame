@@ -2,32 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Tasks/Wait")]
-    public class Wait : Leaf
-    {
+    public class Wait : Leaf {
         [Tooltip("Wait time in seconds")]
         public FloatReference time = new FloatReference(1f);
         public float randomDeviation = 0f;
         public bool continueOnRestart = false;
         private float timer;
-        
-        public override void OnEnter()
-        {
+
+        public override void OnEnter() {
             if (!continueOnRestart) {
-                timer = (randomDeviation == 0f)? 0f : Random.Range(-randomDeviation, randomDeviation);
+                timer = (randomDeviation == 0f) ? 0f : Random.Range(-randomDeviation, randomDeviation);
             }
         }
 
-        public override NodeResult Execute()
-        {
+        public override NodeResult Execute() {
             if (timer >= time.Value) {
                 // Reset timer in case continueOnRestart option is active
-                if (continueOnRestart)
-                {
-                    timer = (randomDeviation == 0f)? 0f : Random.Range(-randomDeviation, randomDeviation);
+                if (continueOnRestart) {
+                    timer = (randomDeviation == 0f) ? 0f : Random.Range(-randomDeviation, randomDeviation);
                 }
                 return NodeResult.success;
             }
@@ -35,14 +30,11 @@ namespace MBT
             return NodeResult.running;
         }
 
-        void OnValidate()
-        {
-            if (time.isConstant)
-            {
+        void OnValidate() {
+            if (time.isConstant) {
                 randomDeviation = Mathf.Clamp(randomDeviation, 0f, time.GetConstant());
             }
-            else
-            {
+            else {
                 randomDeviation = Mathf.Clamp(randomDeviation, 0f, 600f);
             }
         }

@@ -5,8 +5,7 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A serializable <see cref="ITransition"/> which can create a particular type of
     /// <see cref="AnimancerState"/> when passed into <see cref="AnimancerLayer.Play(ITransition)"/>.
@@ -24,8 +23,7 @@ namespace Animancer
         ITransitionDetailed,
         ICopyable<Transition<TState>>,
         ICloneable<Transition<TState>>
-        where TState : AnimancerState
-    {
+        where TState : AnimancerState {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -37,11 +35,9 @@ namespace Animancer
         /// <inheritdoc/>
         /// <remarks>[<see cref="SerializeField"/>]</remarks>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when setting the value to a negative number.</exception>
-        public float FadeDuration
-        {
+        public float FadeDuration {
             get => _FadeDuration;
-            set
-            {
+            set {
                 if (value < 0)
                     throw new ArgumentOutOfRangeException(
                         nameof(value),
@@ -65,8 +61,7 @@ namespace Animancer
         /// <remarks>
         /// This sets the <see cref="AnimancerNodeBase.Speed"/> when this transition is played.
         /// </remarks>
-        public float Speed
-        {
+        public float Speed {
             get => _Speed;
             set => _Speed = value;
         }
@@ -78,8 +73,7 @@ namespace Animancer
         public virtual bool IsLooping => false;
 
         /// <inheritdoc/>
-        public virtual float NormalizedStartTime
-        {
+        public virtual float NormalizedStartTime {
             get => float.NaN;
             set { }
         }
@@ -94,8 +88,7 @@ namespace Animancer
 
         /// <inheritdoc/>
         /// <remarks>This property returns the <see cref="AnimancerEvent.Sequence.Serializable.Events"/>.</remarks>
-        public virtual AnimancerEvent.Sequence Events
-        {
+        public virtual AnimancerEvent.Sequence Events {
             get => (_Events ??= new()).Events;
             set => (_Events ??= new()).Events = value;
         }
@@ -143,8 +136,7 @@ namespace Animancer
         /// <see cref="Apply"/> instead of calling <see cref="CreateState"/>
         /// to make the correct type of state.
         /// </exception>
-        public TState State
-        {
+        public TState State {
             get => _State ??= (TState)BaseState;
             protected set => BaseState = _State = value;
         }
@@ -176,8 +168,7 @@ namespace Animancer
             => CreateAndInitializeState();
 
         /// <summary>Calls <see cref="CreateState"/> and assigns the <see cref="Events"/> to the state.</summary>
-        public TState CreateAndInitializeState()
-        {
+        public TState CreateAndInitializeState() {
             var state = CreateState();
 
             AnimancerState.SetExpectFade(state, _FadeDuration);
@@ -192,11 +183,9 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public virtual void Apply(AnimancerState state)
-        {
+        public virtual void Apply(AnimancerState state) {
 #if UNITY_ASSERTIONS
-            if (state.MainObject != MainObject)
-            {
+            if (state.MainObject != MainObject) {
                 OptionalWarning.MainObjectMismatch.Log(
                     $"A state.{nameof(MainObject)} doesn't match the transition.{nameof(MainObject)} being applied to it." +
                     $" transition.{nameof(ReconcileMainObject)} must be called for every state created by the transition" +
@@ -214,8 +203,7 @@ namespace Animancer
             }
 #endif
 
-            if (_State != state)
-            {
+            if (_State != state) {
                 _State = null;
                 BaseState = state;
             }
@@ -227,8 +215,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Applies the `normalizedStartTime` to the `state`.</summary>
-        public static void ApplyNormalizedStartTime(AnimancerState state, float normalizedStartTime)
-        {
+        public static void ApplyNormalizedStartTime(AnimancerState state, float normalizedStartTime) {
             if (!float.IsNaN(normalizedStartTime))
                 state.NormalizedTime = normalizedStartTime;
             else if (state.Weight == 0)
@@ -241,18 +228,15 @@ namespace Animancer
         public virtual Object MainObject { get; }
 
         /// <summary>The display name of this transition.</summary>
-        public virtual string Name
-        {
-            get
-            {
+        public virtual string Name {
+            get {
                 var mainObject = MainObject;
                 return mainObject != null ? mainObject.name : null;
             }
         }
 
         /// <summary>Returns the <see cref="Name"/> and type of this transition.</summary>
-        public override string ToString()
-        {
+        public override string ToString() {
             var type = GetType().FullName;
 
             var name = Name;
@@ -287,8 +271,7 @@ namespace Animancer
         /// If this transition is played on multiple different characters or used to create
         /// multiple states for the same character, this method must be called for each state.
         /// </remarks>
-        public AnimancerState ReconcileMainObject(AnimancerState state)
-        {
+        public AnimancerState ReconcileMainObject(AnimancerState state) {
             var newMainObject = MainObject;
             if (newMainObject == null)
                 return state;
@@ -312,8 +295,7 @@ namespace Animancer
             state.Key = oldMainObject;
 
             // If there was already a state for the new object, give it the correct key.
-            if (state.Graph.States.TryGet(newMainObject, out var existingState))
-            {
+            if (state.Graph.States.TryGet(newMainObject, out var existingState)) {
                 existingState.Key = Key;
                 state = existingState;
             }
@@ -336,10 +318,8 @@ namespace Animancer
         public abstract Transition<TState> Clone(CloneContext context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(Transition<TState> copyFrom, CloneContext context)
-        {
-            if (copyFrom == null)
-            {
+        public virtual void CopyFrom(Transition<TState> copyFrom, CloneContext context) {
+            if (copyFrom == null) {
                 _FadeDuration = AnimancerGraph.DefaultFadeDuration;
                 _Events = default;
                 _Speed = 1;

@@ -69,6 +69,7 @@ namespace Weapons
         {
             currentCharge += chargeIncrement * Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, 0, MaxCharge);
+            UpdateWeaponCharge.Invoke(currentCharge);
         }
 
         protected virtual void CancelCharge()
@@ -85,6 +86,7 @@ namespace Weapons
             }
             currentCharge = 0;
             HandleNotFiring();
+            UpdateWeaponCharge.Invoke(currentCharge);
         }
 
         protected override void Fire()

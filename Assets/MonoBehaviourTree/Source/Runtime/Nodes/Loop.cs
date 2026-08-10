@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Decorators/Loop")]
-    public class Loop : Decorator
-    {
+    public class Loop : Decorator {
         public IntReference loops = new IntReference(3);
         public BoolReference infinite = new BoolReference(false);
         [Tooltip("Break loop when selected result is returned by child.")]
@@ -19,8 +17,7 @@ namespace MBT
         public ResultRemapMode resultOnBreak = ResultRemapMode.Failure;
         private int count;
 
-        public enum ResultRemapMode
-        {
+        public enum ResultRemapMode {
             Success = 0,
             Failure = 1,
             Inherit = 2,
@@ -30,32 +27,26 @@ namespace MBT
         /// <summary>
         /// Enum mapped to Status enum. Disabled is casted to 'running' as this state is never returned by child.
         /// </summary>
-        public enum BreakMode
-        {
+        public enum BreakMode {
             Disabled = 2,
             Success = 0,
             Failure = 1,
         }
 
-        public override void OnEnter()
-        {
+        public override void OnEnter() {
             count = loops.Value;
         }
 
-        public override NodeResult Execute()
-        {
-            if (!TryGetChild(out Node node))
-            {
+        public override NodeResult Execute() {
+            if (!TryGetChild(out Node node)) {
                 return NodeResult.failure;
             }
 
-            if (node.status == (Status)breakOnStatus)
-            {
+            if (node.status == (Status)breakOnStatus) {
                 return RemapResult(resultOnBreak, node.status);
             }
 
-            if (count > 0 || infinite.Value)
-            {
+            if (count > 0 || infinite.Value) {
                 // Repeat children
                 behaviourTree.ResetNodesTo(this);
                 count -= 1;
@@ -65,10 +56,8 @@ namespace MBT
             return RemapResult(resultOnFinish, node.status);
         }
 
-        private NodeResult RemapResult(ResultRemapMode mode, Status childStatus)
-        {
-            switch (mode)
-            {
+        private NodeResult RemapResult(ResultRemapMode mode, Status childStatus) {
+            switch (mode) {
                 case ResultRemapMode.Success: return NodeResult.success;
                 case ResultRemapMode.Failure: return NodeResult.failure;
                 case ResultRemapMode.Inherit: return childStatus == Status.Success ? NodeResult.success : NodeResult.failure;

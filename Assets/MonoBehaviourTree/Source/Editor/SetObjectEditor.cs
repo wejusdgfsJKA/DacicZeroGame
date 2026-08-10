@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(SetObject))]
-    public class SetObjectEditor : Editor
-    {
+    public class SetObjectEditor : Editor {
         SerializedProperty titleProp;
         SerializedProperty typeProp;
         SerializedProperty sourceTransformProp;
@@ -19,8 +17,7 @@ namespace MBTEditor
         private static readonly GUIContent destinationLabel = new GUIContent("Destination");
         private static readonly GUIContent sourceLabel = new GUIContent("Source");
 
-        void OnEnable()
-        {
+        void OnEnable() {
             titleProp = serializedObject.FindProperty("title");
             typeProp = serializedObject.FindProperty("type");
             sourceGameObjectProp = serializedObject.FindProperty("sourceGameObject");
@@ -29,8 +26,7 @@ namespace MBTEditor
             destinationTransformProp = serializedObject.FindProperty("destinationTransform");
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
@@ -39,21 +35,18 @@ namespace MBTEditor
             EditorGUILayout.Space();
 
             const int transformIndex = 0;
-            if (typeProp.enumValueIndex == transformIndex)
-            {
+            if (typeProp.enumValueIndex == transformIndex) {
                 // Transform
                 EditorGUILayout.PropertyField(destinationTransformProp, destinationLabel);
                 EditorGUILayout.PropertyField(sourceTransformProp, sourceLabel);
             }
-            else
-            {
+            else {
                 // GameObject
                 EditorGUILayout.PropertyField(destinationGameObjectProp, destinationLabel);
                 EditorGUILayout.PropertyField(sourceGameObjectProp, sourceLabel);
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 serializedObject.ApplyModifiedProperties();
             }
         }

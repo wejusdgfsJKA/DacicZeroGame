@@ -9,8 +9,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only]
     /// A custom Inspector for <see cref="ScriptableObject"/>s which adds a message explaining that changes in play
     /// mode will persist.
@@ -20,20 +19,17 @@ namespace Animancer.Editor
 #if ANIMANCER_SCRIPTABLE_OBJECT_EDITOR
     [CustomEditor(typeof(ScriptableObject), true, isFallback = true), CanEditMultipleObjects]
 #endif
-    public class ScriptableObjectEditor : UnityEditor.Editor
-    {
+    public class ScriptableObjectEditor : UnityEditor.Editor {
         /************************************************************************************************************************/
 
         /// <summary>Draws the regular Inspector then adds a message explaining that changes in Play Mode will persist.</summary>
         /// <remarks>Called by the Unity editor to draw the custom Inspector GUI elements.</remarks>
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             base.OnInspectorGUI();
 
             if (target != null &&
                 EditorApplication.isPlayingOrWillChangePlaymode &&
-                EditorUtility.IsPersistent(target))
-            {
+                EditorUtility.IsPersistent(target)) {
                 EditorGUILayout.HelpBox("This is an asset, not a scene object," +
                     " which means that any changes you make to it are permanent" +
                     " and will NOT be undone when you exit Play Mode.", MessageType.Warning);

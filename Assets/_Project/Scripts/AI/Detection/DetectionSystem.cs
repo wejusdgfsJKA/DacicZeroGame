@@ -2,13 +2,11 @@ using EventBus;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-namespace Detection
-{
+namespace Detection {
     /// <summary>
     /// Detects targets by sight or proximity, and can hear sounds.
     /// </summary>
-    public class DetectionSystem : MonoBehaviour, IStunnable
-    {
+    public class DetectionSystem : MonoBehaviour, IStunnable {
         #region Parameters
         [SerializeField] protected DetectionParameters @params;
         #endregion
@@ -31,8 +29,7 @@ namespace Detection
         public Vector3? PosToLookAt { get; set; }
         #endregion
         #region Debugging
-        private void OnDrawGizmosSelected()
-        {
+        private void OnDrawGizmosSelected() {
             #region Visual 
             //draw visual cone and radius sphere in yellow
             Gizmos.color = Color.yellow;
@@ -69,13 +66,10 @@ namespace Detection
             Gizmos.DrawWireSphere(transform.position, @params.ProximityRange);
             #endregion
         }
-        private void OnDrawGizmos()
-        {
+        private void OnDrawGizmos() {
             //draw a line to each target; color of line depends on target awareness
-            foreach (var target in Targets.Values)
-            {
-                if (target.LastKnownPosition != null)
-                {
+            foreach (var target in Targets.Values) {
+                if (target.LastKnownPosition != null) {
                     Gizmos.color = new Color(target.Awareness, 0, 0);
                     Gizmos.DrawLine(transform.position, (Vector3)target.LastKnownPosition);
                 }
@@ -83,25 +77,21 @@ namespace Detection
 
             //draw a line to each audioClip we heard; color of line depends on how
             //recently the audioClip was heard
-            foreach (var sound in Sounds)
-            {
+            foreach (var sound in Sounds) {
                 Gizmos.color = new Color(0, (@params.TimeToForgetSound - (Time.time - sound.TimeHeard)) / @params.TimeToForgetSound, 0);
                 Gizmos.DrawLine(transform.position, sound.Position);
             }
         }
         #endregion
         #region Setup
-        protected void Awake()
-        {
+        protected void Awake() {
             //cache some stuff
             wait = new WaitForSeconds(@params.UpdateCooldown);
             targetMask = GlobalSettings.DetectionMasks[gameObject.layer];
         }
-        protected void OnEnable()
-        {
+        protected void OnEnable() {
             //add the action to the event bus so we can be notified when sounds happen
-            if (!EventBus<SoundEvent>.AddActions(0, HeardSound))
-            {
+            if (!EventBus<SoundEvent>.AddActions(0, HeardSound)) {
                 Debug.LogError($"{transform} unable to add action to SoundEvent bus.");
             }
             Targets.Clear();
@@ -109,30 +99,23 @@ namespace Detection
             stunned = false;
             coroutine = StartCoroutine(UpdateEnumerator());
         }
-        protected void OnDisable()
-        {
-            if (!EventBus<SoundEvent>.RemoveActions(0, HeardSound))
-            {
+        protected void OnDisable() {
+            if (!EventBus<SoundEvent>.RemoveActions(0, HeardSound)) {
                 Debug.LogError($"{transform} unable to remove action from SoundEvent bus.");
             }
-            if (coroutine != null)
-            {
+            if (coroutine != null) {
                 StopCoroutine(coroutine);
             }
         }
         #endregion
         #region Main methods
-        protected void Update()
-        {
+        protected void Update() {
             HandleEyeRotation();
         }
-        protected IEnumerator UpdateEnumerator()
-        {
-            while (true)
-            {
+        protected IEnumerator UpdateEnumerator() {
+            while (true) {
                 yield return wait;
-                if (!stunned)
-                {
+                if (!stunned) {
                     Detect();
                 }
                 ProcessInformation();
@@ -141,22 +124,18 @@ namespace Detection
         /// <summary>
         /// Detect nearby targets by sight or proximity (hearing is handled separately).
         /// </summary>
-        protected void Detect()
-        {
+        protected void Detect() {
             //gather all nearby targets
             int targetCount = Physics.OverlapSphereNonAlloc(transform.position,
                 @params.VisualRange, targetBuffer, targetMask);
             HashSet<int> transformSet = new();
-            for (int i = 0; i < targetCount; i++)
-            {
+            for (int i = 0; i < targetCount; i++) {
                 var tr = targetBuffer[i].transform.root;
                 //make sure we don't detect something twice if it has multiple colliders
-                if (transformSet.Add(tr.GetInstanceID()))
-                {
+                if (transformSet.Add(tr.GetInstanceID())) {
                     //check for proximity or visual
                     if (Vector3.Distance(transform.position, tr.position) <=
-                        @params.ProximityRange || CanSee(tr.position))
-                    {
+                        @params.ProximityRange || CanSee(tr.position)) {
                         Detected(tr);
                         continue;
                     }
@@ -168,16 +147,13 @@ namespace Detection
         /// </summary>
         /// <param name="pos">The position we are checking.</param>
         /// <returns>True if we can see the position.</returns>
-        public bool CanSee(Vector3 pos)
-        {
+        public bool CanSee(Vector3 pos) {
             Vector3 VectorToTarget = pos - Eye.position;
             VectorToTarget.Normalize();
-            if (Vector3.Dot(VectorToTarget, Eye.forward) < Mathf.Cos(Mathf.Deg2Rad * @params.VisualAngle / 2))
-            {
+            if (Vector3.Dot(VectorToTarget, Eye.forward) < Mathf.Cos(Mathf.Deg2Rad * @params.VisualAngle / 2)) {
                 return false;
             }
-            if (Physics.Linecast(Eye.position, pos, @params.ObstructionMask))
-            {
+            if (Physics.Linecast(Eye.position, pos, @params.ObstructionMask)) {
                 return false;
             }
             return true;
@@ -186,16 +162,13 @@ namespace Detection
         /// Add a target to memory, or refresh an old one.
         /// </summary>
         /// <param name="target">The object we have detected.</param>
-        public void Detected(Transform target)
-        {
+        public void Detected(Transform target) {
             TargetData targetData;
-            if (Targets.TryGetValue(target, out targetData))
-            {
+            if (Targets.TryGetValue(target, out targetData)) {
                 targetData.TimeLastSpotted = Time.time;
                 targetData.Awareness += @params.AwarenessBuildRate;
             }
-            else
-            {
+            else {
                 Targets.Add(target, new TargetData(target));
             }
         }
@@ -205,8 +178,7 @@ namespace Detection
         /// </summary>
         /// <param name="target">The target we need to check.</param>
         /// <returns>True if the target should be removed from memory.</returns>
-        protected bool Invalid(TargetData target)
-        {
+        protected bool Invalid(TargetData target) {
             return target.Transform == null ||
                     target.Transform.gameObject == null ||
                     !target.Transform.gameObject.activeSelf ||
@@ -218,94 +190,76 @@ namespace Detection
         /// old, update target awareness, track targets with high awareness, find 
         /// closest target/audioClip.
         /// </summary>
-        protected void ProcessInformation()
-        {
+        protected void ProcessInformation() {
             #region Targets
             ClosestTarget = null;
             Queue<TargetData> targetsToRemove = new();
-            foreach (var target in Targets.Values)
-            {
-                if (Invalid(target))
-                {
+            foreach (var target in Targets.Values) {
+                if (Invalid(target)) {
                     targetsToRemove.Enqueue(target);
                     continue;
                 }
                 target.Awareness -= @params.AwarenessLossRate;
-                if (target.Awareness >= 0.5f)
-                {
+                if (target.Awareness >= 0.5f) {
                     target.LastKnownPosition = target.Transform.position;
                 }
-                if (ClosestTarget == null)
-                {
+                if (ClosestTarget == null) {
                     ClosestTarget = target;
                     closestTargetDist = Vector3.Distance(transform.position, target.LastKnownPosition);
                     continue;
                 }
                 if (ClosestTarget.Awareness >= 0.5f && target.Awareness < 0.5f) continue;
                 float newDist = Vector3.Distance(transform.position, target.LastKnownPosition);
-                if (newDist < closestTargetDist)
-                {
+                if (newDist < closestTargetDist) {
                     closestTargetDist = newDist;
                     ClosestTarget = target;
                 }
             }
             TargetData target2;
-            while (targetsToRemove.TryDequeue(out target2))
-            {
+            while (targetsToRemove.TryDequeue(out target2)) {
                 Targets.Remove(target2.Transform);
             }
             #endregion
             #region Sounds
             ClosestSound = null;
             Queue<SoundData> soundsToRemove = new();
-            foreach (var sound in Sounds)
-            {
-                if (Time.time - sound.TimeHeard > @params.TimeToForgetSound)
-                {
+            foreach (var sound in Sounds) {
+                if (Time.time - sound.TimeHeard > @params.TimeToForgetSound) {
                     soundsToRemove.Enqueue(sound);
                     continue;
                 }
-                if (ClosestSound == null)
-                {
+                if (ClosestSound == null) {
                     ClosestSound = sound;
                     closestSoundDist = Vector3.Distance(transform.position, sound.Position);
                     continue;
                 }
                 float newDist = Vector3.Distance(transform.position, sound.Position);
-                if (newDist < closestSoundDist)
-                {
+                if (newDist < closestSoundDist) {
                     ClosestSound = sound;
                     closestSoundDist = newDist;
                 }
             }
             SoundData sound2;
-            while (soundsToRemove.TryDequeue(out sound2))
-            {
+            while (soundsToRemove.TryDequeue(out sound2)) {
                 Sounds.Remove(sound2);
             }
             #endregion
         }
-        protected void HandleEyeRotation()
-        {
-            if (!stunned)
-            {
-                if (ClosestTarget != null && @params.LookAtTarget)
-                {
+        protected void HandleEyeRotation() {
+            if (!stunned) {
+                if (ClosestTarget != null && @params.LookAtTarget) {
                     //Debug.Log("A");
                     Eye.LookAt(ClosestTarget.LastKnownPosition);
                 }
-                else if (ClosestSound != null && @params.LookAtSound)
-                {
+                else if (ClosestSound != null && @params.LookAtSound) {
                     //Debug.Log("B");
                     Eye.LookAt(ClosestSound.Value.Position);
                 }
-                else if (PosToLookAt != null)
-                {
+                else if (PosToLookAt != null) {
                     //Debug.Log("C");
                     Eye.LookAt(PosToLookAt.Value);
                 }
-                else
-                {
+                else {
                     //Debug.Log("D");
                     Eye.localRotation = Quaternion.identity;
                 }
@@ -317,8 +271,7 @@ namespace Detection
         /// by a friend, add it to memory.
         /// </summary>
         /// <param name="soundEvent">The audioClip we heard.</param>
-        public void HeardSound(SoundEvent soundEvent)
-        {
+        public void HeardSound(SoundEvent soundEvent) {
             if (stunned) return;
             //this audioClip was made by a friend
             if (soundEvent.Team == gameObject.layer) return;
@@ -326,12 +279,10 @@ namespace Detection
             if (soundEvent.Intensity + @params.AudioRange < Vector3.Distance(transform.position, soundEvent.Position)) return;
             Sounds.Add(new SoundData(soundEvent));
         }
-        public void Stun()
-        {
+        public void Stun() {
             stunned = true;
         }
-        public void EndStun()
-        {
+        public void EndStun() {
             stunned = false;
         }
         #endregion

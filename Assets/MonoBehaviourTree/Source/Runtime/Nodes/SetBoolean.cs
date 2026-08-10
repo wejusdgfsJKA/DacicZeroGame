@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Tasks/Set Boolean")]
-    public class SetBoolean : Leaf
-    {
+    public class SetBoolean : Leaf {
         public BoolReference source = new BoolReference(true);
         // [SerializeField]
         // private Operation operation = Operation.Set;
         public BoolReference destination = new BoolReference(VarRefMode.DisableConstant);
-        
-        public override NodeResult Execute()
-        {
+
+        public override NodeResult Execute() {
             destination.Value = source.Value;
             return NodeResult.success;
         }

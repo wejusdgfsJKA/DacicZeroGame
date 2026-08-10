@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A <see cref="ScriptableObject"/> which holds a <see cref="StringReference"/>
     /// based on its <see cref="Object.name"/>.
@@ -14,8 +13,7 @@ namespace Animancer
     [CreateAssetMenu(
         menuName = Strings.MenuPrefix + "String Asset",
         order = Strings.AssetMenuOrder + 3)]
-    public class StringAsset : StringAssetInternal
-    {
+    public class StringAsset : StringAssetInternal {
         /************************************************************************************************************************/
 #if UNITY_EDITOR
         /************************************************************************************************************************/
@@ -38,13 +36,11 @@ namespace Animancer
         /// <remarks>If multiple assets have the same `name`, any one of them will be returned.</remarks>
         public static StringAsset Find(
             StringReference name,
-            out string path)
-        {
+            out string path) {
             var filter = $"{name} t:{nameof(StringAsset)}";
             var guids = UnityEditor.AssetDatabase.FindAssets(filter);
 
-            for (int i = 0; i < guids.Length; i++)
-            {
+            for (int i = 0; i < guids.Length; i++) {
                 var guid = guids[i];
                 path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
                 var asset = UnityEditor.AssetDatabase.LoadAssetAtPath<StringAsset>(path);
@@ -63,17 +59,14 @@ namespace Animancer
         public static StringAsset Create(
             StringReference name,
             ref string directory,
-            out string path)
-        {
-            if (string.IsNullOrEmpty(directory))
-            {
+            out string path) {
+            if (string.IsNullOrEmpty(directory)) {
                 directory = UnityEditor.EditorUtility.SaveFolderPanel(
                     $"Select Folder to save String Asset - {name}",
                     "Assets",
                     "");
 
-                if (string.IsNullOrEmpty(directory))
-                {
+                if (string.IsNullOrEmpty(directory)) {
                     path = null;
                     return null;
                 }
@@ -108,8 +101,7 @@ namespace Animancer
         public static StringAsset FindOrCreate(
             StringReference name,
             string createDirectory,
-            out string path)
-        {
+            out string path) {
             var asset = Find(name, out path);
             return asset != null
                 ? asset

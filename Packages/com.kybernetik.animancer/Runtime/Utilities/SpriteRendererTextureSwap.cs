@@ -5,8 +5,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// Replaces the <see cref="SpriteRenderer.sprite"/> with a copy of it that uses a different <see cref="Texture"/>
     /// during every <see cref="LateUpdate"/>.
@@ -18,8 +17,7 @@ namespace Animancer
     [AddComponentMenu("Animancer/Sprite Renderer Texture Swap")]
     [HelpURL("https://kybernetik.com.au/animancer/api/Animancer/" + nameof(SpriteRendererTextureSwap))]
     [DefaultExecutionOrder(DefaultExecutionOrder)]
-    public class SpriteRendererTextureSwap : MonoBehaviour
-    {
+    public class SpriteRendererTextureSwap : MonoBehaviour {
         /************************************************************************************************************************/
 
         /// <summary>Execute very late (32000 is last).</summary>
@@ -49,11 +47,9 @@ namespace Animancer
         /// Call <see cref="ClearCache"/> before setting this if you want to destroy any sprites created for the
         /// previous texture.
         /// </remarks>
-        public Texture2D Texture
-        {
+        public Texture2D Texture {
             get => _Texture;
-            set
-            {
+            set {
                 _Texture = value;
                 RefreshSpriteMap();
             }
@@ -66,11 +62,9 @@ namespace Animancer
         private bool _SwapSecondaryTextures = true;
 
         /// <summary>Should the secondary textures be swapped as well?</summary>
-        public bool SwapSecondaryTextures
-        {
+        public bool SwapSecondaryTextures {
             get => _SwapSecondaryTextures;
-            set
-            {
+            set {
                 _SwapSecondaryTextures = value;
                 RefreshSpriteMap();
             }
@@ -90,11 +84,9 @@ namespace Animancer
         /// TextureB should always have TextureBNormals as a secondary texture. It would be possible to avoid this
         /// if necessary, but doing so would cost more performance and increase the complexity of this system.
         /// </remarks>
-        public SecondarySpriteTexture[] SecondaryTextures
-        {
+        public SecondarySpriteTexture[] SecondaryTextures {
             get => _SecondaryTextures;
-            set
-            {
+            set {
                 _SecondaryTextures = value;
                 RefreshSpriteMap();
             }
@@ -108,20 +100,17 @@ namespace Animancer
 
         /************************************************************************************************************************/
 
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             if (_Renderer == null)
                 TryGetComponent(out _Renderer);
 
             if (_SwapSecondaryTextures &&
                 (_SecondaryTextures == null || _SecondaryTextures.Length == 0) &&
                 _Renderer != null &&
-                _Renderer.sprite != null)
-            {
+                _Renderer.sprite != null) {
                 var sprite = _Renderer.sprite;
                 var count = sprite.GetSecondaryTextureCount();
-                if (count > 0)
-                {
+                if (count > 0) {
                     _SecondaryTextures = new SecondarySpriteTexture[count];
                     sprite.GetSecondaryTextures(_SecondaryTextures);
                 }
@@ -137,8 +126,7 @@ namespace Animancer
 
         /************************************************************************************************************************/
 
-        protected virtual void LateUpdate()
-        {
+        protected virtual void LateUpdate() {
             if (_Renderer == null)
                 return;
 
@@ -151,8 +139,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Destroys all sprites created for the current <see cref="Texture"/>.</summary>
-        public void ClearCache()
-        {
+        public void ClearCache() {
             DestroySprites(_SpriteMap);
         }
 
@@ -164,8 +151,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Returns a cached dictionary mapping original sprites to duplicates using the specified `texture`.</summary>
-        public static Dictionary<Sprite, Sprite> GetSpriteMap(Texture2D texture)
-        {
+        public static Dictionary<Sprite, Sprite> GetSpriteMap(Texture2D texture) {
             if (texture == null)
                 return null;
 
@@ -185,16 +171,14 @@ namespace Animancer
             Dictionary<Sprite, Sprite> spriteMap,
             Texture2D texture,
             SecondarySpriteTexture[] secondaryTextures,
-            ref Sprite sprite)
-        {
+            ref Sprite sprite) {
             if (spriteMap == null ||
                 sprite == null ||
                 texture == null ||
                 sprite.texture == texture)
                 return false;
 
-            if (!spriteMap.TryGetValue(sprite, out var otherSprite))
-            {
+            if (!spriteMap.TryGetValue(sprite, out var otherSprite)) {
                 var pivot = sprite.pivot;
                 pivot.x /= sprite.rect.width;
                 pivot.y /= sprite.rect.height;
@@ -209,8 +193,7 @@ namespace Animancer
                 var name = sprite.name;
                 var originalTextureName = sprite.texture.name;
                 var index = name.IndexOf(originalTextureName);
-                if (index >= 0)
-                {
+                if (index >= 0) {
                     var newName =
                         texture.name +
                         name[(index + originalTextureName.Length)..];
@@ -236,8 +219,7 @@ namespace Animancer
         private static List<SecondarySpriteTexture[]> _SecondaryTextureCache;
 
         /// <summary>A wrapper around <see cref="Sprite.GetSecondaryTextures"/> which reuses arrays of the same size.</summary>
-        public static SecondarySpriteTexture[] GetSecondaryTexturesCached(Sprite sprite)
-        {
+        public static SecondarySpriteTexture[] GetSecondaryTexturesCached(Sprite sprite) {
             var count = sprite.GetSecondaryTextureCount();
             if (count == 0)
                 return System.Array.Empty<SecondarySpriteTexture>();
@@ -248,8 +230,7 @@ namespace Animancer
                 _SecondaryTextureCache.Add(null);
 
             var textures = _SecondaryTextureCache[count - 1];
-            if (textures == null)
-            {
+            if (textures == null) {
                 textures = new SecondarySpriteTexture[count];
                 _SecondaryTextureCache[count - 1] = textures;
             }
@@ -259,8 +240,7 @@ namespace Animancer
         }
 
         /// <summary>A wrapper around <see cref="Sprite.GetSecondaryTextures"/>.</summary>
-        public static SecondarySpriteTexture[] GetSecondaryTextures(Sprite sprite)
-        {
+        public static SecondarySpriteTexture[] GetSecondaryTextures(Sprite sprite) {
             var count = sprite.GetSecondaryTextureCount();
             if (count == 0)
                 return System.Array.Empty<SecondarySpriteTexture>();
@@ -273,8 +253,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Destroys all the <see cref="Dictionary{TKey, TValue}.Values"/>.</summary>
-        public static void DestroySprites(Dictionary<Sprite, Sprite> spriteMap)
-        {
+        public static void DestroySprites(Dictionary<Sprite, Sprite> spriteMap) {
             if (spriteMap == null)
                 return;
 
@@ -287,10 +266,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Destroys all sprites created for the `texture`.</summary>
-        public static void DestroySprites(Texture2D texture)
-        {
-            if (TextureToSpriteMap.TryGetValue(texture, out var spriteMap))
-            {
+        public static void DestroySprites(Texture2D texture) {
+            if (TextureToSpriteMap.TryGetValue(texture, out var spriteMap)) {
                 TextureToSpriteMap.Remove(texture);
                 DestroySprites(spriteMap);
             }

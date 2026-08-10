@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A <see cref="ClipTransition"/> which gets its clip from a
     /// <see cref="DirectionalSet{T}"/> of <see cref="AnimationClip"/>s.
@@ -33,8 +32,7 @@ namespace Animancer
     /// 
     [Serializable]
     public class DirectionalClipTransition : ClipTransition,
-        ICopyable<DirectionalClipTransition>
-    {
+        ICopyable<DirectionalClipTransition> {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -71,8 +69,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void GatherAnimationClips(ICollection<AnimationClip> clips)
-        {
+        public override void GatherAnimationClips(ICollection<AnimationClip> clips) {
             base.GatherAnimationClips(clips);
             clips.GatherFromSource(_AnimationSet);
         }
@@ -80,12 +77,10 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(DirectionalClipTransition copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(DirectionalClipTransition copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _AnimationSet = default;
                 return;
             }

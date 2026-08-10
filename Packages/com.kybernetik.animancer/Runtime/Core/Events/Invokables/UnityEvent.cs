@@ -2,8 +2,7 @@
 
 using System;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A <see cref="UnityEngine.Events.UnityEvent"/> which implements <see cref="IInvokable"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer/UnityEvent
     [Serializable]

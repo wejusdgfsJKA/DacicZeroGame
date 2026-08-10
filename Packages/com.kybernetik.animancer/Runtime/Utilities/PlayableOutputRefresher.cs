@@ -2,8 +2,7 @@
 
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A utility for re-assigning Animancer's <see cref="PlayableOutput"/>.</summary>
     /// 
     /// <remarks>
@@ -42,8 +41,7 @@ namespace Animancer
     /// 
     /// https://kybernetik.com.au/animancer/api/Animancer/PlayableOutputRefresher
     /// 
-    public struct PlayableOutputRefresher
-    {
+    public struct PlayableOutputRefresher {
         /************************************************************************************************************************/
 
         /// <summary>The <see cref="PlayableOutput"/> of Animancer's <see cref="PlayableGraph"/>.</summary>
@@ -55,8 +53,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Creates a new <see cref="PlayableOutputRefresher"/>.</summary>
-        public PlayableOutputRefresher(PlayableOutput output)
-        {
+        public PlayableOutputRefresher(PlayableOutput output) {
             Output = output;
             Root = Output.GetSourcePlayable();
         }
@@ -65,8 +62,7 @@ namespace Animancer
 
         /// <summary>Creates a new <see cref="PlayableOutputRefresher"/>.</summary>
         public PlayableOutputRefresher(AnimancerGraph animancer)
-            : this(animancer.Output)
-        { }
+            : this(animancer.Output) { }
 
         /************************************************************************************************************************/
 

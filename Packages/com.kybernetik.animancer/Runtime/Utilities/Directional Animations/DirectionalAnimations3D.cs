@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A <see cref="DirectionalAnimations3D{T}"/> using <see cref="int"/> as the group type.</summary>
     /// 
     /// <remarks>
@@ -35,8 +34,7 @@ namespace Animancer
     /// https://kybernetik.com.au/animancer/api/Animancer/DirectionalAnimations3D_1
     /// 
     [AnimancerHelpUrl(typeof(DirectionalAnimations3D<>))]
-    public class DirectionalAnimations3D<TGroup> : MonoBehaviour
-    {
+    public class DirectionalAnimations3D<TGroup> : MonoBehaviour {
         /************************************************************************************************************************/
         #region Fields and Properties
         /************************************************************************************************************************/
@@ -65,12 +63,9 @@ namespace Animancer
         /// <remarks>
         /// Leave this <c>null</c> to automatically use the <see cref="Camera.main"/>.
         /// </remarks>
-        public Transform Camera
-        {
-            get
-            {
-                if (_Camera == null)
-                {
+        public Transform Camera {
+            get {
+                if (_Camera == null) {
                     var camera = UnityEngine.Camera.main;
                     if (camera != null)
                         _Camera = camera.transform;
@@ -116,11 +111,9 @@ namespace Animancer
         /// <summary>[<see cref="SerializeField"/>]
         /// The World-Space direction this character is facing used to select which animation to play.
         /// </summary>
-        public Vector3 Forward
-        {
+        public Vector3 Forward {
             get => _Forward;
-            set
-            {
+            set {
                 _Forward = value;
                 if (!enabled)
                     PlayCurrentAnimation(TimeSynchronizer.CurrentGroup);
@@ -130,8 +123,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Functions used to face the <see cref="Transform"/> towards the <see cref="Camera"/>.</summary>
-        public enum BillboardMode
-        {
+        public enum BillboardMode {
             /// <summary>Don't control the <see cref="Transform"/>.</summary>
             None,
 
@@ -175,11 +167,9 @@ namespace Animancer
         /// <summary>[<see cref="SerializeField"/>]
         /// The function used to face the <see cref="Transform"/> towards the <see cref="Camera"/>.
         /// </summary>
-        public BillboardMode Mode
-        {
+        public BillboardMode Mode {
             get => _Mode;
-            set
-            {
+            set {
                 _Mode = value;
                 ResetScaleIfNotStretched();
             }
@@ -204,8 +194,7 @@ namespace Animancer
         /// samples the current animation,
         /// and resets the scale to 1 if not using a stretched mode.
         /// </summary>
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             gameObject.GetComponentInParentOrChildren(ref _Transform);
             gameObject.GetComponentInParentOrChildren(ref _Animancer);
 
@@ -222,8 +211,7 @@ namespace Animancer
         /// samples the current animation,
         /// and resets the scale to 1 if not using a stretched mode.
         /// </summary>
-        protected virtual void OnDrawGizmosSelected()
-        {
+        protected virtual void OnDrawGizmosSelected() {
             if (TryGetCurrentAnimation(out var animation))
                 AnimancerUtilities.EditModeSampleAnimation(animation, _Animancer);
 
@@ -234,8 +222,7 @@ namespace Animancer
             var length = 1f;
 
             var renderer = GetComponentInChildren<Renderer>();
-            if (renderer != null)
-            {
+            if (renderer != null) {
                 var bounds = renderer.bounds;
                 position.y += bounds.extents.y;
                 length = bounds.extents.magnitude;
@@ -251,8 +238,7 @@ namespace Animancer
         /// Applies the <see cref="Mode"/> then plays the appropriate animation
         /// based on the current rotation and <see cref="Forward"/> direction.
         /// </summary>
-        protected virtual void Update()
-        {
+        protected virtual void Update() {
             UpdateTransform();
             PlayCurrentAnimation(TimeSynchronizer.CurrentGroup);
         }
@@ -260,10 +246,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Applies the <see cref="Mode"/>.</summary>
-        public void UpdateTransform()
-        {
-            switch (_Mode)
-            {
+        public void UpdateTransform() {
+            switch (_Mode) {
                 default:
                 case BillboardMode.None:
                     break;
@@ -307,8 +291,7 @@ namespace Animancer
         /// regardless of the <see cref="Camera"/>'s Euler X Angle.
         /// </summary>
         /// <remarks>This calculation only makes sense with an orthographic camera.</remarks>
-        private void StretchHeight(float eulerX)
-        {
+        private void StretchHeight(float eulerX) {
             if (eulerX > 180)
                 eulerX -= 360;
             else if (eulerX < -180)
@@ -323,13 +306,11 @@ namespace Animancer
         /// <summary>
         /// Resets the <see cref="Transform.localScale"/> to 1 if not using a stretched <see cref="Mode"/>.
         /// </summary>
-        private void ResetScaleIfNotStretched()
-        {
+        private void ResetScaleIfNotStretched() {
             if (_Transform == null)
                 return;
 
-            switch (_Mode)
-            {
+            switch (_Mode) {
                 case BillboardMode.UprightMatchRotationStretched:
                 case BillboardMode.UprightFacePositionStretched:
                     break;
@@ -346,8 +327,7 @@ namespace Animancer
         /// Sets the <see cref="Animations"/> and plays the appropriate animation
         /// based on the current rotation and <see cref="Forward"/> direction.
         /// </summary>
-        public void SetAnimations(DirectionalSet<AnimationClip> animations, TGroup group = default)
-        {
+        public void SetAnimations(DirectionalSet<AnimationClip> animations, TGroup group = default) {
             _Animations = animations;
             PlayCurrentAnimation(group);
         }
@@ -361,10 +341,8 @@ namespace Animancer
         /// If the `group` is the same as the previous, the new animation will be given the same
         /// <see cref="AnimancerState.NormalizedTime"/> as the previous.
         /// </remarks>
-        public void PlayCurrentAnimation(TGroup group)
-        {
-            if (TryGetCurrentAnimation(out var animation))
-            {
+        public void PlayCurrentAnimation(TGroup group) {
+            if (TryGetCurrentAnimation(out var animation)) {
                 TimeSynchronizer.StoreTime(_Animancer);
 
                 _Animancer.Play(animation);
@@ -378,11 +356,9 @@ namespace Animancer
         /// <summary>
         /// Tries to get an appropriate animation based on the current rotation and <see cref="Forward"/> direction.
         /// </summary>
-        private bool TryGetCurrentAnimation(out AnimationClip animation)
-        {
+        private bool TryGetCurrentAnimation(out AnimationClip animation) {
             if (_Animations == null ||
-                _Forward == default)
-            {
+                _Forward == default) {
                 animation = null;
                 return false;
             }

@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/MixerTransition2D
     [Serializable]
@@ -12,16 +11,14 @@ namespace Animancer
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
     public class MixerTransition2D : MixerTransition<Vector2MixerState, Vector2>,
-        ICopyable<MixerTransition2D>
-    {
+        ICopyable<MixerTransition2D> {
         /************************************************************************************************************************/
 
         /// <summary>
         /// A type of <see cref="ManualMixerState"/> which can be
         /// created by a <see cref="MixerTransition2D"/>.
         /// </summary>
-        public enum MixerType
-        {
+        public enum MixerType {
             /// <summary><see cref="CartesianMixerState"/></summary>
             Cartesian,
 
@@ -68,10 +65,8 @@ namespace Animancer
         /// <para></para>
         /// This method also assigns it as the <see cref="Transition{TState}.State"/>.
         /// </remarks>
-        public override Vector2MixerState CreateState()
-        {
-            State = _Type switch
-            {
+        public override Vector2MixerState CreateState() {
+            State = _Type switch {
                 MixerType.Cartesian => new CartesianMixerState(),
                 MixerType.Directional => new DirectionalMixerState(),
                 _ => throw new ArgumentOutOfRangeException(nameof(_Type)),
@@ -95,12 +90,10 @@ namespace Animancer
             => this.CopyFromBase(copyFrom, context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(MixerTransition2D copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(MixerTransition2D copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _Type = default;
                 return;
             }

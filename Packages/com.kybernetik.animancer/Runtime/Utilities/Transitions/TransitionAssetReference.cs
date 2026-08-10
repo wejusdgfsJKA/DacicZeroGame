@@ -4,8 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A [<see cref="SerializableAttribute"/>] wrapper around an <see cref="TransitionAssetBase"/>.</summary>
     /// <remarks>
     /// This allows Transition Assets to be referenced inside [<see cref="SerializeReference"/>]
@@ -22,8 +21,7 @@ namespace Animancer
         ICopyable<TransitionAssetReference>,
         IPolymorphic,
         ITransitionDetailed,
-        IWrapper
-    {
+        IWrapper {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -39,8 +37,7 @@ namespace Animancer
         public TransitionAssetReference() { }
 
         /// <summary>Creates a new <see cref="TransitionAssetReference"/>.</summary>
-        public TransitionAssetReference(TransitionAssetBase asset)
-        {
+        public TransitionAssetReference(TransitionAssetBase asset) {
             _Asset = asset;
         }
 
@@ -80,8 +77,7 @@ namespace Animancer
             && _Asset.IsLooping;
 
         /// <inheritdoc/>
-        public float NormalizedStartTime
-        {
+        public float NormalizedStartTime {
             get => _Asset != null
                 ? _Asset.NormalizedStartTime
                 : float.NaN;
@@ -95,8 +91,7 @@ namespace Animancer
             : 0;
 
         /// <inheritdoc/>
-        public float Speed
-        {
+        public float Speed {
             get => _Asset != null
                 ? _Asset.Speed
                 : 1;
@@ -138,10 +133,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public void CopyFrom(TransitionAssetReference copyFrom, CloneContext context)
-        {
-            if (copyFrom == null)
-            {
+        public void CopyFrom(TransitionAssetReference copyFrom, CloneContext context) {
+            if (copyFrom == null) {
                 _Asset = default;
                 return;
             }
