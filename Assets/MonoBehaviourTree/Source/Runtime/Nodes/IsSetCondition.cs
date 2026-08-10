@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Conditions/Is Set Condition")]
-    public class IsSetCondition : Condition
-    {
+    public class IsSetCondition : Condition {
         public Abort abort;
         public bool invert = false;
         public Type type = Type.Boolean;
         public BoolReference boolReference = new BoolReference(VarRefMode.DisableConstant);
         public GameObjectReference objectReference = new GameObjectReference(VarRefMode.DisableConstant);
         public TransformReference transformReference = new TransformReference(VarRefMode.DisableConstant);
-        
-        public override bool Check()
-        {
-            switch (type)
-            {
+
+        public override bool Check() {
+            switch (type) {
                 case Type.Boolean:
                     return (boolReference.Value == true) ^ invert;
                 case Type.GameObject:
@@ -29,13 +25,10 @@ namespace MBT
             return invert;
         }
 
-        public override void OnAllowInterrupt()
-        {
-            if (abort != Abort.None)
-            {
+        public override void OnAllowInterrupt() {
+            if (abort != Abort.None) {
                 ObtainTreeSnapshot();
-                switch (type)
-                {
+                switch (type) {
                     case Type.Boolean:
                         boolReference.GetVariable().AddListener(OnVariableChange);
                         break;
@@ -49,12 +42,9 @@ namespace MBT
             }
         }
 
-        public override void OnDisallowInterrupt()
-        {
-            if (abort != Abort.None)
-            {
-                switch (type)
-                {
+        public override void OnDisallowInterrupt() {
+            if (abort != Abort.None) {
+                switch (type) {
                     case Type.Boolean:
                         boolReference.GetVariable().RemoveListener(OnVariableChange);
                         break;
@@ -68,25 +58,20 @@ namespace MBT
             }
         }
 
-        private void OnVariableChange(bool oldValue, bool newValue)
-        {
+        private void OnVariableChange(bool oldValue, bool newValue) {
             EvaluateConditionAndTryAbort(abort);
         }
 
-        private void OnVariableChange(GameObject oldValue, GameObject newValue)
-        {
+        private void OnVariableChange(GameObject oldValue, GameObject newValue) {
             EvaluateConditionAndTryAbort(abort);
         }
 
-        private void OnVariableChange(Transform oldValue, Transform newValue)
-        {
+        private void OnVariableChange(Transform oldValue, Transform newValue) {
             EvaluateConditionAndTryAbort(abort);
         }
 
-        public override bool IsValid()
-        {
-            switch (type)
-            {
+        public override bool IsValid() {
+            switch (type) {
                 case Type.Boolean: return !boolReference.isInvalid;
                 case Type.GameObject: return !objectReference.isInvalid;
                 case Type.Transform: return !transformReference.isInvalid;
@@ -94,8 +79,7 @@ namespace MBT
             }
         }
 
-        public enum Type
-        {
+        public enum Type {
             Boolean, GameObject, Transform
         }
     }

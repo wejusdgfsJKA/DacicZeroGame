@@ -7,8 +7,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] Persistent settings used by Animancer.</summary>
     /// <remarks>
     /// This asset automatically creates itself when first accessed.

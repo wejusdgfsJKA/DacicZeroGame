@@ -2,8 +2,7 @@
 
 using System;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/ManualMixerTransition
     [Serializable]
@@ -11,13 +10,11 @@ namespace Animancer
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
     public class ManualMixerTransition : ManualMixerTransition<ManualMixerState>,
-        ICopyable<ManualMixerTransition>
-    {
+        ICopyable<ManualMixerTransition> {
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override ManualMixerState CreateState()
-        {
+        public override ManualMixerState CreateState() {
             State = new();
             InitializeState();
             return State;

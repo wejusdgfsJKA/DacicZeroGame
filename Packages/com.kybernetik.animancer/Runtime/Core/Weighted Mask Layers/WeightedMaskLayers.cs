@@ -4,8 +4,7 @@ using System;
 using Unity.Collections;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// Replaces the default <see cref="AnimancerLayerMixerList"/>
     /// with a <see cref="WeightedMaskLayerList"/>.
@@ -17,8 +16,7 @@ namespace Animancer
 #if !UNITY_EDITOR
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
-    public class WeightedMaskLayers : WeightedMaskLayersInternal
-    {
+    public class WeightedMaskLayers : WeightedMaskLayersInternal {
         /************************************************************************************************************************/
 
         [SerializeField] private AnimancerComponent _Animancer;
@@ -30,16 +28,14 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Finds the <see cref="Animancer"/> reference if it was missing.</summary>
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             gameObject.GetComponentInParentOrChildren(ref _Animancer);
         }
 
         /************************************************************************************************************************/
 
         /// <summary>Initializes the <see cref="Layers"/> and applies the default group weights.</summary>
-        protected virtual void Awake()
-        {
+        protected virtual void Awake() {
             if (Definition == null ||
                 !Definition.IsValid)
                 return;

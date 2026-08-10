@@ -1,11 +1,9 @@
 using System;
 
-namespace EventBus
-{
+namespace EventBus {
     public interface IEvent { }
 
-    public class EventBinding<T> where T : IEvent
-    {
+    public class EventBinding<T> where T : IEvent {
         Action<T> onEvent = _ => { };
         Action onEventNoArgs = () => { };
 
@@ -19,14 +17,12 @@ namespace EventBus
         public void Add(Action<T> onEvent) => this.onEvent += onEvent;
         public void Remove(Action<T> onEvent) => this.onEvent -= onEvent;
 
-        public void Invoke(T @event)
-        {
+        public void Invoke(T @event) {
             onEvent?.Invoke(@event);
             onEventNoArgs?.Invoke();
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             onEvent = null;
             onEventNoArgs = null;
         }

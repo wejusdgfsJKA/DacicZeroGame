@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(IsSetCondition))]
-    public class IsSetConditionEditor : Editor
-    {
+    public class IsSetConditionEditor : Editor {
         SerializedProperty titleProp;
         SerializedProperty abortProp;
         SerializedProperty boolReferenceProp;
@@ -17,8 +15,7 @@ namespace MBTEditor
         SerializedProperty typeProp;
         SerializedProperty invertProp;
 
-        void OnEnable()
-        {
+        void OnEnable() {
             titleProp = serializedObject.FindProperty("title");
             boolReferenceProp = serializedObject.FindProperty("boolReference");
             objectReferenceProp = serializedObject.FindProperty("objectReference");
@@ -28,8 +25,7 @@ namespace MBTEditor
             invertProp = serializedObject.FindProperty("invert");
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
@@ -38,21 +34,17 @@ namespace MBTEditor
             EditorGUILayout.PropertyField(invertProp);
             EditorGUILayout.Space();
             EditorGUILayout.PropertyField(typeProp);
-            if (typeProp.enumValueIndex == (int)IsSetCondition.Type.Boolean)
-            {
+            if (typeProp.enumValueIndex == (int)IsSetCondition.Type.Boolean) {
                 EditorGUILayout.PropertyField(boolReferenceProp, new GUIContent("Variable"));
             }
-            else if (typeProp.enumValueIndex == (int)IsSetCondition.Type.GameObject)
-            {
+            else if (typeProp.enumValueIndex == (int)IsSetCondition.Type.GameObject) {
                 EditorGUILayout.PropertyField(objectReferenceProp, new GUIContent("Variable"));
             }
-            else
-            {
+            else {
                 EditorGUILayout.PropertyField(transformReferenceProp, new GUIContent("Variable"));
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 serializedObject.ApplyModifiedProperties();
             }
         }

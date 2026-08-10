@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>Base class for <see cref="MonoBehaviour"/> states to be used in a <see cref="StateMachine{TState}"/>.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -13,8 +12,7 @@ namespace Animancer.FSM
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/StateBehaviour
     /// 
     // [HelpURL(StateExtensions.APIDocumentationURL + nameof(StateBehaviour))]
-    public abstract class StateBehaviour : MonoBehaviour, IState
-    {
+    public abstract class StateBehaviour : MonoBehaviour, IState {
         /************************************************************************************************************************/
 
         /// <summary>[<see cref="IState.CanEnterState"/>]
@@ -34,8 +32,7 @@ namespace Animancer.FSM
         /// <summary>[<see cref="IState.OnEnterState"/>]
         /// Asserts that this component isn't already enabled, then enables it.
         /// </summary>
-        public virtual void OnEnterState()
-        {
+        public virtual void OnEnterState() {
 #if UNITY_ASSERTIONS
             if (enabled)
                 Debug.LogError(
@@ -57,8 +54,7 @@ namespace Animancer.FSM
         /// <summary>[<see cref="IState.OnExitState"/>]
         /// Asserts that this component isn't already disabled, then disables it.
         /// </summary>
-        public virtual void OnExitState()
-        {
+        public virtual void OnExitState() {
             if (this == null)
                 return;
 
@@ -77,8 +73,7 @@ namespace Animancer.FSM
 #if UNITY_EDITOR
         /// <summary>[Editor-Only] States start disabled and only the current state gets enabled at runtime.</summary>
         /// <remarks>Called in Edit Mode whenever this script is loaded or a value is changed in the Inspector.</remarks>
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
                 return;
 

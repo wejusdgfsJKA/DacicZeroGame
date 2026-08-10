@@ -2,37 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     // [RequireComponent(typeof(Blackboard))]
-    public abstract class Variable<T> : BlackboardVariable, Observable<T>
-    {
+    public abstract class Variable<T> : BlackboardVariable, Observable<T> {
         // [HideInInspector]
         [SerializeField]
         protected T val = default(T);
-        protected event ChangeListener<T> listeners = delegate {};
+        protected event ChangeListener<T> listeners = delegate { };
 
         // This is required to correctly compare Unity Objects as generic fields
         protected abstract bool ValueEquals(T val1, T val2);
 
-        public void AddListener(ChangeListener<T> listener)
-        {
+        public void AddListener(ChangeListener<T> listener) {
             listeners += listener;
         }
 
-        public void RemoveListener(ChangeListener<T> listener)
-        {
+        public void RemoveListener(ChangeListener<T> listener) {
             listeners -= listener;
         }
 
-        public T Value
-        {
-            get
-            {
+        public T Value {
+            get {
                 return val;
             }
-            set
-            {
+            set {
                 if (!ValueEquals(val, value)) {
                     T oldValue = val;
                     val = value;
@@ -41,8 +34,7 @@ namespace MBT
             }
         }
 
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             // Special case: Invoke listeners when there was change in inspector
             listeners.Invoke(val, val);
         }
@@ -50,15 +42,13 @@ namespace MBT
 
     public delegate void ChangeListener<T>(T oldValue, T newValue);
 
-    public interface Observable<T>
-    {
+    public interface Observable<T> {
         void AddListener(ChangeListener<T> listener);
         void RemoveListener(ChangeListener<T> listener);
     }
 
     [System.Serializable]
-    public class VariableReference<T, U> : BaseVariableReference where T : BlackboardVariable
-    {
+    public class VariableReference<T, U> : BaseVariableReference where T : BlackboardVariable {
         // Cache
         protected T value = null;
         [SerializeField]
@@ -67,8 +57,7 @@ namespace MBT
         /// <summary>
         /// Returns observable Variable or null if it doesn't exists on blackboard.
         /// </summary>
-        public T GetVariable()
-        {
+        public T GetVariable() {
             if (value != null) {
                 return value;
             }
@@ -76,17 +65,15 @@ namespace MBT
                 return null;
             }
             value = blackboard.GetVariable<T>(key);
-            #if UNITY_EDITOR
-            if (value == null)
-            {
+#if UNITY_EDITOR
+            if (value == null) {
                 Debug.LogWarningFormat(blackboard, "Variable '{0}' does not exists on blackboard.", key);
             }
-            #endif
+#endif
             return value;
         }
 
-        public U GetConstant()
-        {
+        public U GetConstant() {
             return constantValue;
         }
     }
@@ -94,8 +81,7 @@ namespace MBT
     public enum VarRefMode { EnableConstant, DisableConstant }
 
     [System.Serializable]
-    public abstract class BaseVariableReference
-    {
+    public abstract class BaseVariableReference {
         [SerializeField]
         protected bool useConstant = false;
         // Additional editor feature to lock switch
@@ -104,8 +90,7 @@ namespace MBT
         public Blackboard blackboard;
         public string key;
 
-        public virtual bool isConstant
-        {
+        public virtual bool isConstant {
             get { return useConstant; }
         }
 
@@ -113,10 +98,8 @@ namespace MBT
         /// Returns true when constant value is valid
         /// </summary>
         /// <value></value>
-        protected virtual bool isConstantValid
-        {
-            get
-            {
+        protected virtual bool isConstantValid {
+            get {
                 return true;
             }
         }
@@ -124,15 +107,13 @@ namespace MBT
         /// <summary>
         /// Returns true when variable setup is invalid
         /// </summary>
-        public bool isInvalid
-        {
-            get { return (isConstant)? !isConstantValid : blackboard == null || string.IsNullOrEmpty(key); }
+        public bool isInvalid {
+            get { return (isConstant) ? !isConstantValid : blackboard == null || string.IsNullOrEmpty(key); }
         }
 
-        protected void SetMode(VarRefMode mode)
-        {
+        protected void SetMode(VarRefMode mode) {
             this.mode = mode;
-            useConstant = (mode == VarRefMode.DisableConstant)? false : useConstant;
+            useConstant = (mode == VarRefMode.DisableConstant) ? false : useConstant;
         }
     }
 }

@@ -8,15 +8,13 @@ using UnityEditor.Animations;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only]
     /// Context menu functions for generating <see cref="TransitionAsset"/>s
     /// based on the contents of Animator Controllers.
     /// </summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/TransitionAssetGenerator
-    public static class TransitionAssetGenerator
-    {
+    public static class TransitionAssetGenerator {
         /************************************************************************************************************************/
 
         /// <summary>
@@ -26,19 +24,15 @@ namespace Animancer.Editor
         [MenuItem("CONTEXT/" + nameof(BlendTree) + "/Generate Transition")]
         [MenuItem("CONTEXT/" + nameof(AnimatorStateTransition) + "/Generate Transition")]
         [MenuItem("CONTEXT/" + nameof(AnimatorStateMachine) + "/Generate Transitions")]
-        private static void GenerateTransition(MenuCommand command)
-        {
+        private static void GenerateTransition(MenuCommand command) {
             var context = command.context;
-            if (context is AnimatorState state)
-            {
+            if (context is AnimatorState state) {
                 Selection.activeObject = GenerateTransition(state);
             }
-            else if (context is BlendTree blendTree)
-            {
+            else if (context is BlendTree blendTree) {
                 Selection.activeObject = GenerateTransition(null, blendTree);
             }
-            else if (context is AnimatorStateTransition transition)
-            {
+            else if (context is AnimatorStateTransition transition) {
                 Selection.activeObject = GenerateTransition(transition);
             }
             else if (context is AnimatorStateMachine stateMachine)// Layer or Sub-State Machine.
@@ -56,17 +50,13 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Creates an <see cref="TransitionAssetBase"/> from the `motion`.</summary>
-        public static Object GenerateTransition(Object originalAsset, Motion motion)
-        {
-            if (motion is BlendTree blendTree)
-            {
+        public static Object GenerateTransition(Object originalAsset, Motion motion) {
+            if (motion is BlendTree blendTree) {
                 return GenerateTransition(originalAsset as AnimatorState, blendTree);
             }
-            else if (motion is AnimationClip || motion == null)
-            {
+            else if (motion is AnimationClip || motion == null) {
                 var asset = ScriptableObject.CreateInstance<TransitionAsset>();
-                asset.Transition = new ClipTransition
-                {
+                asset.Transition = new ClipTransition {
                     Clip = motion as AnimationClip,
                 };
 
@@ -76,8 +66,7 @@ namespace Animancer.Editor
                 SaveTransition(originalAsset, asset);
                 return asset;
             }
-            else
-            {
+            else {
                 Debug.LogError($"Unsupported {nameof(Motion)} Type: {motion.GetType()}");
                 return null;
             }
@@ -86,8 +75,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Initializes the `transition` based on the `state`.</summary>
-        public static void GetDetailsFromState(AnimatorState state, ITransitionDetailed transition)
-        {
+        public static void GetDetailsFromState(AnimatorState state, ITransitionDetailed transition) {
             if (state == null ||
                 transition == null)
                 return;
@@ -99,18 +87,14 @@ namespace Animancer.Editor
             var endTime = defaultEndTime;
 
             var exitTransitions = state.transitions;
-            for (int i = 0; i < exitTransitions.Length; i++)
-            {
+            for (int i = 0; i < exitTransitions.Length; i++) {
                 var exitTransition = exitTransitions[i];
-                if (exitTransition.hasExitTime)
-                {
-                    if (isForwards)
-                    {
+                if (exitTransition.hasExitTime) {
+                    if (isForwards) {
                         if (endTime > exitTransition.exitTime)
                             endTime = exitTransition.exitTime;
                     }
-                    else
-                    {
+                    else {
                         if (endTime < exitTransition.exitTime)
                             endTime = exitTransition.exitTime;
                     }
@@ -118,8 +102,7 @@ namespace Animancer.Editor
             }
 
             if (endTime != defaultEndTime &&
-                AnimancerUtilities.TryGetWrappedObject(transition, out IHasEvents events))
-            {
+                AnimancerUtilities.TryGetWrappedObject(transition, out IHasEvents events)) {
                 events.SerializedEvents ??= new();
                 events.SerializedEvents.SetNormalizedEndTime(endTime);
             }
@@ -128,8 +111,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Creates an <see cref="TransitionAssetBase"/> from the `blendTree`.</summary>
-        public static Object GenerateTransition(AnimatorState state, BlendTree blendTree)
-        {
+        public static Object GenerateTransition(AnimatorState state, BlendTree blendTree) {
             var asset = CreateTransition(blendTree);
             if (asset == null)
                 return null;
@@ -146,8 +128,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Creates an <see cref="TransitionAssetBase"/> from the `transition`.</summary>
-        public static Object GenerateTransition(AnimatorStateTransition transition)
-        {
+        public static Object GenerateTransition(AnimatorStateTransition transition) {
             Object animancerTransition = null;
 
             if (transition.destinationStateMachine != null)
@@ -162,8 +143,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Creates <see cref="TransitionAssetBase"/>s from all states in the `stateMachine`.</summary>
-        public static Object GenerateTransitions(AnimatorStateMachine stateMachine)
-        {
+        public static Object GenerateTransitions(AnimatorStateMachine stateMachine) {
             Object transition = null;
 
             foreach (var child in stateMachine.stateMachines)
@@ -178,10 +158,8 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Creates an <see cref="TransitionAssetBase"/> from the `blendTree`.</summary>
-        public static Object CreateTransition(BlendTree blendTree)
-        {
-            switch (blendTree.blendType)
-            {
+        public static Object CreateTransition(BlendTree blendTree) {
+            switch (blendTree.blendType) {
                 case BlendTreeType.Simple1D:
                     var linearAsset = ScriptableObject.CreateInstance<TransitionAsset>();
                     linearAsset.Transition = InitializeChildren1D(blendTree);
@@ -190,8 +168,7 @@ namespace Animancer.Editor
                 case BlendTreeType.SimpleDirectional2D:
                 case BlendTreeType.FreeformDirectional2D:
                     var directionalAsset = ScriptableObject.CreateInstance<TransitionAsset>();
-                    directionalAsset.Transition = new MixerTransition2D
-                    {
+                    directionalAsset.Transition = new MixerTransition2D {
                         Type = MixerTransition2D.MixerType.Directional
                     };
                     directionalAsset.Transition = InitializeChildren2D(blendTree);
@@ -199,8 +176,7 @@ namespace Animancer.Editor
 
                 case BlendTreeType.FreeformCartesian2D:
                     var cartesianAsset = ScriptableObject.CreateInstance<TransitionAsset>();
-                    cartesianAsset.Transition = new MixerTransition2D
-                    {
+                    cartesianAsset.Transition = new MixerTransition2D {
                         Type = MixerTransition2D.MixerType.Cartesian
                     };
                     cartesianAsset.Transition = InitializeChildren2D(blendTree);
@@ -221,8 +197,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Initializes the `transition` based on the <see cref="BlendTree.children"/>.</summary>
-        public static LinearMixerTransition InitializeChildren1D(BlendTree blendTree)
-        {
+        public static LinearMixerTransition InitializeChildren1D(BlendTree blendTree) {
             var children = InitializeChildren<LinearMixerTransition, LinearMixerState>(
                 out var transition,
                 blendTree);
@@ -235,8 +210,7 @@ namespace Animancer.Editor
         }
 
         /// <summary>Initializes the `transition` based on the <see cref="BlendTree.children"/>.</summary>
-        public static MixerTransition2D InitializeChildren2D(BlendTree blendTree)
-        {
+        public static MixerTransition2D InitializeChildren2D(BlendTree blendTree) {
             var children = InitializeChildren<MixerTransition2D, Vector2MixerState>(
                 out var transition,
                 blendTree);
@@ -253,8 +227,7 @@ namespace Animancer.Editor
             out TTransition transition,
             BlendTree blendTree)
             where TTransition : ManualMixerTransition<TState>, new()
-            where TState : ManualMixerState
-        {
+            where TState : ManualMixerState {
             transition = new();
 
             var children = blendTree.children;
@@ -262,8 +235,7 @@ namespace Animancer.Editor
             float[] speeds = new float[children.Length];
             var hasCustomSpeeds = false;
 
-            for (int i = 0; i < children.Length; i++)
-            {
+            for (int i = 0; i < children.Length; i++) {
                 var child = children[i];
                 transition.Animations[i] = child.motion is AnimationClip
                     ? child.motion
@@ -282,8 +254,7 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Saves the `transition` in the same folder as the `originalAsset`.</summary>
-        public static void SaveTransition(Object originalAsset, Object transition)
-        {
+        public static void SaveTransition(Object originalAsset, Object transition) {
             if (string.IsNullOrEmpty(transition.name))
                 transition.name = originalAsset.name;
 

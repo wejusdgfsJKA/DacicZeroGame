@@ -4,11 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(SetNumber))]
-    public class SetNumberEditor : Editor
-    {
+    public class SetNumberEditor : Editor {
         SerializedProperty titleProp;
         SerializedProperty typeProp;
         SerializedProperty operationProp;
@@ -17,8 +15,7 @@ namespace MBTEditor
         SerializedProperty destinationFloatProp;
         SerializedProperty destinationIntProp;
 
-        void OnEnable()
-        {
+        void OnEnable() {
             titleProp = serializedObject.FindProperty("title");
             typeProp = serializedObject.FindProperty("type");
             operationProp = serializedObject.FindProperty("operation");
@@ -28,8 +25,7 @@ namespace MBTEditor
             destinationIntProp = serializedObject.FindProperty("destinationInt");
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
@@ -38,27 +34,24 @@ namespace MBTEditor
             EditorGUILayout.Space();
 
             const int floatIndex = 0;
-            if (typeProp.enumValueIndex == floatIndex)
-            {
+            if (typeProp.enumValueIndex == floatIndex) {
                 // Float
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PropertyField(destinationFloatProp, GUIContent.none);
-                    EditorGUILayout.PropertyField(operationProp, GUIContent.none, GUILayout.MaxWidth(60f));
-                    EditorGUILayout.PropertyField(sourceFloatProp, GUIContent.none);
+                EditorGUILayout.PropertyField(destinationFloatProp, GUIContent.none);
+                EditorGUILayout.PropertyField(operationProp, GUIContent.none, GUILayout.MaxWidth(60f));
+                EditorGUILayout.PropertyField(sourceFloatProp, GUIContent.none);
                 EditorGUILayout.EndHorizontal();
             }
-            else
-            {
+            else {
                 // Int
                 EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.PropertyField(destinationIntProp, GUIContent.none);
-                    EditorGUILayout.PropertyField(operationProp, GUIContent.none, GUILayout.MaxWidth(60f));
-                    EditorGUILayout.PropertyField(sourceIntProp, GUIContent.none);
+                EditorGUILayout.PropertyField(destinationIntProp, GUIContent.none);
+                EditorGUILayout.PropertyField(operationProp, GUIContent.none, GUILayout.MaxWidth(60f));
+                EditorGUILayout.PropertyField(sourceIntProp, GUIContent.none);
                 EditorGUILayout.EndHorizontal();
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 serializedObject.ApplyModifiedProperties();
             }
         }

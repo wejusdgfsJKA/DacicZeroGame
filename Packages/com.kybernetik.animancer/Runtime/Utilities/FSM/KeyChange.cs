@@ -2,8 +2,7 @@
 
 using System;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>A static access point for the details of a key change in a <see cref="StateMachine{TKey, TState}"/>.</summary>
     /// <remarks>
     /// This system is thread-safe.
@@ -14,8 +13,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/KeyChange_1
     /// 
-    public struct KeyChange<TKey> : IDisposable
-    {
+    public struct KeyChange<TKey> : IDisposable {
         /************************************************************************************************************************/
 
         [ThreadStatic]
@@ -40,10 +38,8 @@ namespace Animancer.FSM
         /// <exception cref="InvalidOperationException">[Assert-Only]
         /// <see cref="IsActive"/> is false so this property is likely being accessed on the wrong generic type.
         /// </exception>
-        public static TKey PreviousKey
-        {
-            get
-            {
+        public static TKey PreviousKey {
+            get {
 #if UNITY_ASSERTIONS
                 if (!IsActive)
                     throw new InvalidOperationException(StateExtensions.GetChangeError(typeof(TKey), typeof(StateMachine<,>), "Key"));
@@ -58,10 +54,8 @@ namespace Animancer.FSM
         /// <exception cref="InvalidOperationException">[Assert-Only]
         /// <see cref="IsActive"/> is false so this property is likely being accessed on the wrong generic type.
         /// </exception>
-        public static TKey NextKey
-        {
-            get
-            {
+        public static TKey NextKey {
+            get {
 #if UNITY_ASSERTIONS
                 if (!IsActive)
                     throw new InvalidOperationException(StateExtensions.GetChangeError(typeof(TKey), typeof(StateMachine<,>), "Key"));
@@ -86,8 +80,7 @@ namespace Animancer.FSM
         /// }
         /// </code></remarks>
         /// 
-        internal KeyChange(IKeyedStateMachine<TKey> stateMachine, TKey previousKey, TKey nextKey)
-        {
+        internal KeyChange(IKeyedStateMachine<TKey> stateMachine, TKey previousKey, TKey nextKey) {
             this = _Current;
 
             _Current._StateMachine = stateMachine;
@@ -105,8 +98,7 @@ namespace Animancer.FSM
         /// Usually this will be returning to default values (nulls), but if one state change causes another then the
         /// second one ending will return to the first which will then return to the defaults.
         /// </remarks>
-        public readonly void Dispose()
-        {
+        public readonly void Dispose() {
             _Current = this;
         }
 

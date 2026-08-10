@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Root", order = 200)]
-    public class Root : Node, IParentNode
-    {
-        public override void AddChild(Node node)
-        {
+    public class Root : Node, IParentNode {
+        public override void AddChild(Node node) {
             // Allow only one children
-            if (this.children.Count > 0)
-            {
+            if (this.children.Count > 0) {
                 Node child = this.children[0];
                 if (child == node) {
                     return;
@@ -28,8 +24,7 @@ namespace MBT
             node.parent = this;
         }
 
-        public override NodeResult Execute()
-        {
+        public override NodeResult Execute() {
             if (children.Count == 1) {
                 Node child = children[0];
                 if (child.status == Status.Success || child.status == Status.Failure) {
@@ -42,10 +37,8 @@ namespace MBT
             return NodeResult.failure;
         }
 
-        public override void RemoveChild(Node node)
-        {
-            if (children.Contains(node))
-            {
+        public override void RemoveChild(Node node) {
+            if (children.Contains(node)) {
                 children.Remove(node);
                 node.parent = null;
             }

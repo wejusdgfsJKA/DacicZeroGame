@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/ManualMixerTransition_1
 #if !UNITY_EDITOR
@@ -18,8 +17,7 @@ namespace Animancer
         IMotion,
         IAnimationClipCollection,
         ICopyable<ManualMixerTransition<TMixer>>
-        where TMixer : ManualMixerState
-    {
+        where TMixer : ManualMixerState {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -70,15 +68,12 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>[<see cref="ITransitionDetailed"/>] Are any of the <see cref="Animations"/> looping?</summary>
-        public override bool IsLooping
-        {
-            get
-            {
+        public override bool IsLooping {
+            get {
                 if (_Animations == null)
                     return false;
 
-                for (int i = _Animations.Length - 1; i >= 0; i--)
-                {
+                for (int i = _Animations.Length - 1; i >= 0; i--) {
                     if (AnimancerUtilities.TryGetIsLooping(_Animations[i], out var isLooping) &&
                         isLooping)
                         return true;
@@ -89,18 +84,15 @@ namespace Animancer
         }
 
         /// <inheritdoc/>
-        public override float MaximumDuration
-        {
-            get
-            {
+        public override float MaximumDuration {
+            get {
                 if (_Animations == null)
                     return 0;
 
                 var duration = 0f;
                 var hasSpeeds = HasSpeeds;
 
-                for (int i = _Animations.Length - 1; i >= 0; i--)
-                {
+                for (int i = _Animations.Length - 1; i >= 0; i--) {
                     if (!AnimancerUtilities.TryGetLength(_Animations[i], out var length))
                         continue;
 
@@ -116,10 +108,8 @@ namespace Animancer
         }
 
         /// <inheritdoc/>
-        public virtual float AverageAngularSpeed
-        {
-            get
-            {
+        public virtual float AverageAngularSpeed {
+            get {
                 if (_Animations == null)
                     return default;
 
@@ -127,10 +117,8 @@ namespace Animancer
                 var hasSpeeds = HasSpeeds;
 
                 var count = 0;
-                for (int i = _Animations.Length - 1; i >= 0; i--)
-                {
-                    if (AnimancerUtilities.TryGetAverageAngularSpeed(_Animations[i], out var speed))
-                    {
+                for (int i = _Animations.Length - 1; i >= 0; i--) {
+                    if (AnimancerUtilities.TryGetAverageAngularSpeed(_Animations[i], out var speed)) {
                         if (hasSpeeds)
                             speed *= _Speeds[i];
 
@@ -144,10 +132,8 @@ namespace Animancer
         }
 
         /// <inheritdoc/>
-        public virtual Vector3 AverageVelocity
-        {
-            get
-            {
+        public virtual Vector3 AverageVelocity {
+            get {
                 if (_Animations == null)
                     return default;
 
@@ -155,10 +141,8 @@ namespace Animancer
                 var hasSpeeds = HasSpeeds;
 
                 var count = 0;
-                for (int i = _Animations.Length - 1; i >= 0; i--)
-                {
-                    if (AnimancerUtilities.TryGetAverageVelocity(_Animations[i], out var velocity))
-                    {
+                for (int i = _Animations.Length - 1; i >= 0; i--) {
+                    if (AnimancerUtilities.TryGetAverageVelocity(_Animations[i], out var velocity)) {
                         if (hasSpeeds)
                             velocity *= _Speeds[i];
 
@@ -174,10 +158,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Are all <see cref="Animations"/> assigned?</summary>
-        public override bool IsValid
-        {
-            get
-            {
+        public override bool IsValid {
+            get {
                 if (_Animations == null ||
                     _Animations.Length == 0)
                     return false;
@@ -197,26 +179,22 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Initializes the <see cref="Transition{TState}.State"/> immediately after it is created.</summary>
-        public virtual void InitializeState()
-        {
+        public virtual void InitializeState() {
             var mixer = State;
             var childCount = mixer.ChildCount;
 
             var auto = ManualMixerState.SynchronizeNewChildren;
-            try
-            {
+            try {
                 ManualMixerState.SynchronizeNewChildren = false;
                 mixer.AddRange(_Animations);
             }
-            finally
-            {
+            finally {
                 ManualMixerState.SynchronizeNewChildren = auto;
             }
 
             mixer.InitializeSynchronizedChildren(_SynchronizeChildren);
 
-            if (_Speeds != null)
-            {
+            if (_Speeds != null) {
 #if UNITY_ASSERTIONS
                 if (_Speeds.Length != 0 && _Speeds.Length != _Animations.Length)
                     Debug.LogError(
@@ -234,8 +212,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void Apply(AnimancerState state)
-        {
+        public override void Apply(AnimancerState state) {
             base.Apply(state);
 
             for (int i = 0; i < _Animations.Length; i++)
@@ -256,12 +233,10 @@ namespace Animancer
             => this.CopyFromBase(copyFrom, context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(ManualMixerTransition<TMixer> copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(ManualMixerTransition<TMixer> copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _Animations = default;
                 _Speeds = default;
                 _SynchronizeChildren = default;

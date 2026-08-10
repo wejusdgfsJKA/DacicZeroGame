@@ -5,21 +5,17 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] A custom Inspector for <see cref="HybridAnimancerComponentEditor"/>s.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/HybridAnimancerComponentEditor
     /// 
     [CustomEditor(typeof(HybridAnimancerComponent), true), CanEditMultipleObjects]
-    public class HybridAnimancerComponentEditor : NamedAnimancerComponentEditor
-    {
+    public class HybridAnimancerComponentEditor : NamedAnimancerComponentEditor {
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override bool DoOverridePropertyGUI(string path, SerializedProperty property, GUIContent label)
-        {
-            switch (path)
-            {
+        protected override bool DoOverridePropertyGUI(string path, SerializedProperty property, GUIContent label) {
+            switch (path) {
                 case "_Controller":
 
                     EditorGUILayout.PropertyField(property, label, true);
@@ -28,8 +24,7 @@ namespace Animancer.Editor
 
                     var hasAnimatorController = property?.objectReferenceValue != null;
                     var warning = GetAnimatorControllerWarning(hasAnimatorController, out var messageType);
-                    if (warning is not null)
-                    {
+                    if (warning is not null) {
                         EditorGUILayout.HelpBox(warning, messageType);
                         if (AnimancerGUI.TryUseClickEventInLastRect())
                             Application.OpenURL(Strings.DocsURLs.AnimatorControllers);
@@ -43,23 +38,19 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private string GetAnimatorControllerWarning(bool hasAnimatorController, out MessageType messageType)
-        {
+        private string GetAnimatorControllerWarning(bool hasAnimatorController, out MessageType messageType) {
             messageType = MessageType.Warning;
 
-            if (!hasAnimatorController)
-            {
+            if (!hasAnimatorController) {
                 return
                     $"No Animator Controller is assigned to this component so" +
                     $" you should likely use a base {nameof(AnimancerComponent)} instead." +
                     $" Click here for more information.";
             }
 
-            if (Targets.Length > 0)
-            {
+            if (Targets.Length > 0) {
                 var animator = Targets[0].Animator;
-                if (animator != null && animator.runtimeAnimatorController != null)
-                {
+                if (animator != null && animator.runtimeAnimatorController != null) {
                     return
                         $"A Native Animator Controller is assigned to the Animator component" +
                         $" and a Hybrid Animator Controller is also assigned to this component." +

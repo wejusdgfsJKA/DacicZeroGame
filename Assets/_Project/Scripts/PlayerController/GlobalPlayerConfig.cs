@@ -1,8 +1,7 @@
 /// <summary>
 /// Global player settings. Things like player speed coefficient and interaction distance. 
 /// </summary>
-public static class GlobalPlayerConfig
-{
+public static class GlobalPlayerConfig {
     public static float PlayerGroundCheckRadius { get; set; } = 0.4f;
     /// <summary>
     /// How fast can the player move.

@@ -2,45 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     // TODO: This should be GameObject
     [AddComponentMenu("")]
-    public class GameObjectVariable : Variable<GameObject>
-    {
-        protected override bool ValueEquals(GameObject val1, GameObject val2)
-        {
+    public class GameObjectVariable : Variable<GameObject> {
+        protected override bool ValueEquals(GameObject val1, GameObject val2) {
             return val1 == val2;
         }
     }
 
     [System.Serializable]
-    public class GameObjectReference : VariableReference<GameObjectVariable, GameObject>
-    {
-        public GameObjectReference(VarRefMode mode = VarRefMode.EnableConstant)
-        {
+    public class GameObjectReference : VariableReference<GameObjectVariable, GameObject> {
+        public GameObjectReference(VarRefMode mode = VarRefMode.EnableConstant) {
             SetMode(mode);
         }
 
-        protected override bool isConstantValid
-        {
+        protected override bool isConstantValid {
             get { return constantValue != null; }
         }
 
-        public GameObject Value
-        {
-            get
-            {
-                return (useConstant)? constantValue : this.GetVariable().Value;
+        public GameObject Value {
+            get {
+                return (useConstant) ? constantValue : this.GetVariable().Value;
             }
-            set
-            {
-                if (useConstant)
-                {
+            set {
+                if (useConstant) {
                     constantValue = value;
                 }
-                else
-                {
+                else {
                     this.GetVariable().Value = value;
                 }
             }

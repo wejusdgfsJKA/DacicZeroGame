@@ -2,8 +2,7 @@
 
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A component which takes the root motion from an <see cref="UnityEngine.Animator"/>
     /// and applies it to a different object.
@@ -22,8 +21,7 @@ namespace Animancer
     /// 
     [HelpURL("https://kybernetik.com.au/animancer/api/Animancer/" + nameof(RedirectRootMotion))]
     [RequireComponent(typeof(Animator))]
-    public abstract class RedirectRootMotion : MonoBehaviour
-    {
+    public abstract class RedirectRootMotion : MonoBehaviour {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -50,16 +48,14 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Automatically finds the <see cref="Animator"/>.</summary>
-        protected virtual void OnValidate()
-        {
+        protected virtual void OnValidate() {
             TryGetComponent(out _Animator);
         }
 
         /************************************************************************************************************************/
 
         /// <summary>Applies the root motion from the <see cref="Animator"/> to the <see cref="Target"/>.</summary>
-        protected virtual void OnAnimatorMove()
-        {
+        protected virtual void OnAnimatorMove() {
             if (!ApplyRootMotion)
                 return;
 
@@ -75,8 +71,7 @@ namespace Animancer
     /// 
     [HelpURL("https://kybernetik.com.au/animancer/api/Animancer/" + nameof(RedirectRootMotion<T>) + "_1")]
     public abstract class RedirectRootMotion<T> : RedirectRootMotion
-        where T : Object
-    {
+        where T : Object {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -99,12 +94,10 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Automatically finds the <see cref="RedirectRootMotion.Animator"/> and <see cref="Target"/>.</summary>
-        protected override void OnValidate()
-        {
+        protected override void OnValidate() {
             base.OnValidate();
 
-            if (_Target == null)
-            {
+            if (_Target == null) {
                 var parent = transform.parent;
                 if (parent != null)
                     _Target = parent.GetComponentInParent<T>();

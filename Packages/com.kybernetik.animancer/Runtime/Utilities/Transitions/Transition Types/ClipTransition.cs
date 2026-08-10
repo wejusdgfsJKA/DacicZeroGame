@@ -10,16 +10,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/ClipTransition
     [Serializable]
     public class ClipTransition : Transition<ClipState>,
         IMotion,
         IAnimationClipCollection,
-        ICopyable<ClipTransition>
-    {
+        ICopyable<ClipTransition> {
         /************************************************************************************************************************/
 
         /// <summary>The name of the serialized backing field of <see cref="Clip"/>.</summary>
@@ -34,11 +32,9 @@ namespace Animancer
         /// you will need to call <see cref="Transition{T}.ReconcileMainObject(AnimancerGraph)"/>
         /// for each of them to create new states for the newly assigned object.
         /// </remarks>
-        public AnimationClip Clip
-        {
+        public AnimationClip Clip {
             get => _Clip;
-            set
-            {
+            set {
                 Validate.AssertAnimationClip(value, false, $"set {nameof(ClipTransition)}.{nameof(Clip)}");
                 _Clip = value;
 
@@ -61,8 +57,7 @@ namespace Animancer
         private float _NormalizedStartTime = float.NaN;
 
         /// <inheritdoc/>
-        public override float NormalizedStartTime
-        {
+        public override float NormalizedStartTime {
             get => _NormalizedStartTime;
             set => _NormalizedStartTime = value;
         }
@@ -82,10 +77,8 @@ namespace Animancer
         /// The length of the <see cref="Clip"/> (in seconds), accounting for the <see cref="NormalizedStartTime"/> and
         /// <see cref="AnimancerEvent.Sequence.NormalizedEndTime"/> (but not <see cref="Speed"/>).
         /// </summary>
-        public virtual float Length
-        {
-            get
-            {
+        public virtual float Length {
+            get {
                 if (!IsValid)
                     return 0;
 
@@ -122,8 +115,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override ClipState CreateState()
-        {
+        public override ClipState CreateState() {
 #if UNITY_ASSERTIONS
             if (_Clip == null)
                 throw new ArgumentException(
@@ -137,8 +129,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void Apply(AnimancerState state)
-        {
+        public override void Apply(AnimancerState state) {
             ApplyNormalizedStartTime(state, _NormalizedStartTime);
             base.Apply(state);
         }
@@ -160,12 +151,10 @@ namespace Animancer
             => this.CopyFromBase(copyFrom, context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(ClipTransition copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(ClipTransition copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _Clip = default;
                 _NormalizedStartTime = float.NaN;
                 return;
@@ -185,8 +174,7 @@ namespace Animancer
         public static ITransitionDetailed TryCreateTransition(Object target)
             => target is not AnimationClip clip
             ? null
-            : new ClipTransition()
-            {
+            : new ClipTransition() {
                 Clip = clip,
             };
 
