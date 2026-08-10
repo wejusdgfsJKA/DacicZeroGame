@@ -7,31 +7,26 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/LinearMixerTransitionDrawer
     [CustomPropertyDrawer(typeof(LinearMixerTransition), true)]
-    public class LinearMixerTransitionDrawer : MixerTransitionDrawer
-    {
+    public class LinearMixerTransitionDrawer : MixerTransitionDrawer {
         /************************************************************************************************************************/
 
         private static GUIContent _SortingErrorContent;
         private static GUIStyle _SortingErrorStyle;
 
         /// <inheritdoc/>
-        protected override void DoThresholdGUI(Rect area, int index)
-        {
+        protected override void DoThresholdGUI(Rect area, int index) {
             var color = GUI.color;
 
             var iconArea = default(Rect);
 
-            if (index > 0)
-            {
+            if (index > 0) {
                 var previousThreshold = CurrentThresholds.GetArrayElementAtIndex(index - 1);
                 var currentThreshold = CurrentThresholds.GetArrayElementAtIndex(index);
-                if (previousThreshold.floatValue >= currentThreshold.floatValue)
-                {
+                if (previousThreshold.floatValue >= currentThreshold.floatValue) {
                     iconArea = AnimancerGUI.StealFromRight(
                         ref area,
                         area.height,
@@ -43,22 +38,18 @@ namespace Animancer.Editor
 
             base.DoThresholdGUI(area, index);
 
-            if (iconArea != default)
-            {
-                _SortingErrorContent ??= new(AnimancerIcons.Error)
-                {
+            if (iconArea != default) {
+                _SortingErrorContent ??= new(AnimancerIcons.Error) {
                     tooltip =
                         "Linear Mixer Thresholds must always be unique" +
                         " and sorted in ascending order (click to sort)"
                 };
 
-                _SortingErrorStyle ??= new(GUI.skin.label)
-                {
+                _SortingErrorStyle ??= new(GUI.skin.label) {
                     padding = new(),
                 };
 
-                if (GUI.Button(iconArea, _SortingErrorContent, _SortingErrorStyle))
-                {
+                if (GUI.Button(iconArea, _SortingErrorContent, _SortingErrorStyle)) {
                     AnimancerGUI.Deselect();
                     Serialization.RecordUndo(Context.Property);
                     ((LinearMixerTransition)Context.Transition).SortByThresholds();
@@ -71,27 +62,22 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override void AddThresholdFunctionsToMenu(GenericMenu menu)
-        {
+        protected override void AddThresholdFunctionsToMenu(GenericMenu menu) {
             const string EvenlySpaced = "Evenly Spaced";
 
             var count = CurrentThresholds.arraySize;
-            if (count <= 1)
-            {
+            if (count <= 1) {
                 menu.AddDisabledItem(new(EvenlySpaced));
             }
-            else
-            {
+            else {
                 var first = CurrentThresholds.GetArrayElementAtIndex(0).floatValue;
                 var last = CurrentThresholds.GetArrayElementAtIndex(count - 1).floatValue;
 
                 if (last == first)
                     last++;
 
-                AddPropertyModifierFunction(menu, $"{EvenlySpaced} ({first} to {last})", _ =>
-                {
-                    for (int i = 0; i < count; i++)
-                    {
+                AddPropertyModifierFunction(menu, $"{EvenlySpaced} ({first} to {last})", _ => {
+                    for (int i = 0; i < count; i++) {
                         CurrentThresholds.GetArrayElementAtIndex(i).floatValue =
                             Mathf.Lerp(first, last, i / (float)(count - 1));
                     }
@@ -129,13 +115,10 @@ namespace Animancer.Editor
         private void AddCalculateThresholdsFunction(
             GenericMenu menu,
             string label,
-            Func<Object, float, float> calculateThreshold)
-        {
-            AddPropertyModifierFunction(menu, label, (property) =>
-            {
+            Func<Object, float, float> calculateThreshold) {
+            AddPropertyModifierFunction(menu, label, (property) => {
                 var count = CurrentAnimations.arraySize;
-                for (int i = 0; i < count; i++)
-                {
+                for (int i = 0; i < count; i++) {
                     var state = CurrentAnimations.GetArrayElementAtIndex(i).objectReferenceValue;
                     if (state == null)
                         continue;

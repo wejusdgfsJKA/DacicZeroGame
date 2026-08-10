@@ -4,15 +4,12 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomPropertyDrawer(typeof(BaseVariableReference), true)]
-    public class VariableReferenceDrawer : PropertyDrawer
-    {
+    public class VariableReferenceDrawer : PropertyDrawer {
         private GUIStyle constVarGUIStyle = new GUIStyle("MiniButton");
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.BeginProperty(position, label, property);
 
             EditorGUI.BeginChangeCheck();
@@ -21,39 +18,33 @@ namespace MBTEditor
             SerializedProperty keyProperty = property.FindPropertyRelative("key");
             SerializedProperty blackboardProperty = property.FindPropertyRelative("blackboard");
             SerializedProperty useConstProperty = property.FindPropertyRelative("useConstant");
-            
+
             MonoBehaviour inspectedComponent = property.serializedObject.targetObject as MonoBehaviour;
             // search only in the same game object
-            if (inspectedComponent != null)
-            {
+            if (inspectedComponent != null) {
                 // Blackboard blackboard = inspectedComponent.GetComponent<Blackboard>();
                 Blackboard blackboard = GetBlackboardInParent(inspectedComponent);
-                if (blackboard != null)
-                {
+                if (blackboard != null) {
                     // Draw mode toggle if not disabled
-                    if (property.FindPropertyRelative("mode").enumValueIndex == 0)
-                    {
+                    if (property.FindPropertyRelative("mode").enumValueIndex == 0) {
                         Rect togglePosition = position;
                         togglePosition.width = 8;
                         togglePosition.height = 16;
                         useConstProperty.boolValue = EditorGUI.Toggle(togglePosition, useConstProperty.boolValue, constVarGUIStyle);
                         position.xMin += 10;
                     }
-                    
+
                     // Draw constant or dropdown
-                    if (useConstProperty.boolValue)
-                    {
+                    if (useConstProperty.boolValue) {
                         // Use constant variable
                         EditorGUI.PropertyField(position, property.FindPropertyRelative("constantValue"), label);
                     }
-                    else
-                    {
+                    else {
                         System.Type desiredVariableType = fieldInfo.FieldType.BaseType.GetGenericArguments()[0];
                         BlackboardVariable[] variables = blackboard.GetAllVariables();
                         List<string> keys = new List<string>();
                         keys.Add("None");
-                        for (int i = 0; i < variables.Length; i++)
-                        {
+                        for (int i = 0; i < variables.Length; i++) {
                             BlackboardVariable bv = variables[i];
                             if (bv.GetType() == desiredVariableType) {
                                 keys.Add(bv.key);
@@ -65,8 +56,7 @@ namespace MBTEditor
                         if (selected < 0) {
                             selected = 0;
                             // If key is not empty it means variable was deleted and missing
-                            if (!System.String.IsNullOrEmpty(keyProperty.stringValue))
-                            {
+                            if (!System.String.IsNullOrEmpty(keyProperty.stringValue)) {
                                 keys[0] = "Missing";
                             }
                         }
@@ -74,14 +64,14 @@ namespace MBTEditor
                         if (result > 0) {
                             keyProperty.stringValue = keys[result];
                             blackboardProperty.objectReferenceValue = blackboard;
-                        } else {
+                        }
+                        else {
                             keyProperty.stringValue = "";
                             blackboardProperty.objectReferenceValue = null;
                         }
                     }
                 }
-                else
-                {
+                else {
                     EditorGUI.LabelField(position, property.displayName);
                     int indent = EditorGUI.indentLevel;
                     EditorGUI.indentLevel = 1;
@@ -92,7 +82,7 @@ namespace MBTEditor
                     EditorGUI.indentLevel = indent;
                 }
             }
-            
+
 
             if (EditorGUI.EndChangeCheck()) {
                 property.serializedObject.ApplyModifiedProperties();
@@ -101,8 +91,7 @@ namespace MBTEditor
             EditorGUI.EndProperty();
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-        {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             MonoBehaviour monoBehaviour = property.serializedObject.targetObject as MonoBehaviour;
             if (monoBehaviour != null && GetBlackboardInParent(monoBehaviour) == null) {
                 return 3 * (EditorGUIUtility.standardVerticalSpacing + 16);
@@ -115,19 +104,16 @@ namespace MBTEditor
         /// </summary>
         /// <param name="component">Component to search</param>
         /// <returns>Blackboard if found, otherwise null</returns>
-        protected Blackboard GetBlackboardInParent(Component component)
-        {
+        protected Blackboard GetBlackboardInParent(Component component) {
             Transform current = component.transform;
             Blackboard result = null;
-            while (current != null && result == null)
-            {
-                if (current.TryGetComponent<Blackboard>(out Blackboard b))
-                {
+            while (current != null && result == null) {
+                if (current.TryGetComponent<Blackboard>(out Blackboard b)) {
                     result = b;
                 }
                 current = current.parent;
             }
             return result;
         }
-    } 
+    }
 }

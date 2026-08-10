@@ -1,16 +1,11 @@
 using EventBus;
 using System.Collections.Generic;
 using UnityEngine;
-namespace AI
-{
-    public class TacticalBrain : MonoBehaviour
-    {
-        public Vector3? RequestedPosition
-        {
-            get
-            {
-                if (@event != null)
-                {
+namespace AI {
+    public class TacticalBrain : MonoBehaviour {
+        public Vector3? RequestedPosition {
+            get {
+                if (@event != null) {
                     return @event.Value.Position;
                 }
                 return null;
@@ -26,59 +21,45 @@ namespace AI
         protected Collider[] colliders = new Collider[GlobalSettings.MaxTargets];
         #endregion
         #region Setup
-        protected void Awake()
-        {
+        protected void Awake() {
             EventBus<RequestPositionEvent>.AddActions(transform.root.GetInstanceID(), ReceivePositionRequest);
         }
-        protected void OnDestroy()
-        {
+        protected void OnDestroy() {
             EventBus<RequestPositionEvent>.RemoveActions(transform.root.GetInstanceID(), ReceivePositionRequest);
         }
         #endregion
-        protected void Update()
-        {
-            if (@event != null)
-            {
+        protected void Update() {
+            if (@event != null) {
                 remainingRequestTime -= Time.deltaTime;
-                if (remainingRequestTime < 0)
-                {
+                if (remainingRequestTime < 0) {
                     @event = null;
                 }
             }
         }
-        public void ReceivePositionRequest(RequestPositionEvent request)
-        {
-            if (@event == null || @event.Value.Priority < request.Priority)
-            {
+        public void ReceivePositionRequest(RequestPositionEvent request) {
+            if (@event == null || @event.Value.Priority < request.Priority) {
                 @event = request;
                 remainingRequestTime = request.ExpirationTime;
             }
         }
-        public void SendAlert(Vector3 vector3)
-        {
+        public void SendAlert(Vector3 vector3) {
             int nr = Physics.OverlapSphereNonAlloc(transform.position, alertRadius,
                 colliders, 1 << gameObject.layer);
             var newEvent = new RequestPositionEvent(vector3, expirationTime, priority);
             HashSet<int> transformSet = new() { transform.root.GetInstanceID() };
-            for (int i = 0; i < nr; i++)
-            {
+            for (int i = 0; i < nr; i++) {
                 var tr = colliders[i].transform.root.GetInstanceID();
-                if (transformSet.Add(tr))
-                {
+                if (transformSet.Add(tr)) {
                     EventBus<RequestPositionEvent>.Raise(tr, newEvent);
                 }
             }
         }
         #region Debugging
-        private void OnDrawGizmos()
-        {
-            if (PatrolPoints != null && PatrolPoints.Length > 1)
-            {
+        private void OnDrawGizmos() {
+            if (PatrolPoints != null && PatrolPoints.Length > 1) {
                 Gizmos.color = Color.magenta;
-                for (int i = 0; i < PatrolPoints.Length - 1; i++)
-                {
-                    if (PatrolPoints[i] != null && PatrolPoints[i + 1] != null)
-                    {
+                for (int i = 0; i < PatrolPoints.Length - 1; i++) {
+                    if (PatrolPoints[i] != null && PatrolPoints[i + 1] != null) {
                         Gizmos.DrawLine(PatrolPoints[i].position, PatrolPoints[i + 1].position);
                     }
                 }

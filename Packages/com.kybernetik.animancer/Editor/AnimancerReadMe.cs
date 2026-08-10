@@ -8,15 +8,13 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] A welcome screen for <see cref="Animancer"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/AnimancerReadMe
     /// 
     // [CreateAssetMenu]
     [AnimancerHelpUrl(typeof(AnimancerReadMe))]
-    public class AnimancerReadMe : ReadMe
-    {
+    public class AnimancerReadMe : ReadMe {
         /************************************************************************************************************************/
 
         /// <summary>The release ID of the current version.</summary>
@@ -91,8 +89,7 @@ namespace Animancer.Editor
             new("Email",
                 "for anything private",
                 GetEmailURL(Strings.DocsURLs.DeveloperEmail, Strings.ProductName),
-                Strings.DocsURLs.DeveloperEmail))
-        {
+                Strings.DocsURLs.DeveloperEmail)) {
             ExtraSamples = new LinkSection[]
             {
                 new("Platformer Game Kit", null, "https://kybernetik.com.au/platformer"),
@@ -103,8 +100,7 @@ namespace Animancer.Editor
 
         /// <summary>[Editor-Only] A custom Inspector for <see cref="AnimancerReadMe"/>.</summary>
         [CustomEditor(typeof(AnimancerReadMe), editorForChildClasses: true)]
-        public new class Editor : ReadMe.Editor
-        {
+        public new class Editor : ReadMe.Editor {
             /************************************************************************************************************************/
 
             /// <summary>A callback to execute data migration.</summary>
@@ -113,8 +109,7 @@ namespace Animancer.Editor
             /************************************************************************************************************************/
 
             /// <inheritdoc/>
-            protected override void DoNewVersionDetails()
-            {
+            protected override void DoNewVersionDetails() {
                 base.DoNewVersionDetails();
 
                 if (MigrateOldAssetData == null)
@@ -138,10 +133,9 @@ namespace Animancer.Editor
     /// Validates that the Animancer.Lite.dll is the correct one for this version of Unity.
     /// </summary>
     [UnityEditor.InitializeOnLoad]
-    internal static class UnityVersionChecker
-    {
+    internal static class UnityVersionChecker {
         /************************************************************************************************************************/
-        
+
         private const string ExpectedAssemblyTarget =
 #if UNITY_6000_0_OR_NEWER
             "6000.0";
@@ -156,12 +150,10 @@ namespace Animancer.Editor
         static UnityVersionChecker()
             => UnityEditor.EditorApplication.delayCall += Execute;
 
-        private static void Execute()
-        {
+        private static void Execute() {
             var assembly = typeof(AnimancerEditorUtilities).Assembly;
             var attributes = assembly.GetCustomAttributes(typeof(System.Reflection.AssemblyDescriptionAttribute), false);
-            if (attributes.Length != 1)
-            {
+            if (attributes.Length != 1) {
                 Debug.LogWarning($"{assembly.FullName} has {attributes.Length} [AssemblyDescription] attributes.");
                 return;
             }
@@ -188,8 +180,7 @@ namespace Animancer.Editor
                 "Ignore Warning",
                 "Open Download Page");
 
-            switch (choice)
-            {
+            switch (choice) {
                 case 0:
                     UnityEditor.PackageManager.UI.Window.Open("Animancer Lite");
                     break;
@@ -209,7 +200,7 @@ namespace Animancer.Editor
     }
 
     /************************************************************************************************************************/
-#endregion
+    #endregion
     /************************************************************************************************************************/
 }
 

@@ -4,13 +4,11 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace EventBus
-{
+namespace EventBus {
     /// <summary>
     /// Contains methods and properties related to event buses and event types in the Unity application.
     /// </summary>
-    public static class EventBusUtil
-    {
+    public static class EventBusUtil {
         public static IReadOnlyList<Type> EventTypes { get; set; }
         public static IReadOnlyList<Type> EventBusTypes { get; set; }
 
@@ -27,17 +25,14 @@ namespace EventBus
         /// actions to be performed when the Editor's play mode changes.
         /// </summary>    
         [InitializeOnLoadMethod]
-        public static void InitializeEditor()
-        {
+        public static void InitializeEditor() {
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        static void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
+        static void OnPlayModeStateChanged(PlayModeStateChange state) {
             PlayModeState = state;
-            if (state == PlayModeStateChange.ExitingPlayMode)
-            {
+            if (state == PlayModeStateChange.ExitingPlayMode) {
                 ClearAllBuses();
             }
         }
@@ -51,19 +46,16 @@ namespace EventBus
         /// done before any game objects, scripts or components have started.
         /// </summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static void Initialize()
-        {
+        public static void Initialize() {
             EventTypes = PredefinedAssemblyUtil.GetTypes(typeof(IEvent));
             EventBusTypes = InitializeAllBuses();
         }
 
-        static List<Type> InitializeAllBuses()
-        {
+        static List<Type> InitializeAllBuses() {
             List<Type> eventBusTypes = new List<Type>();
 
             var typedef = typeof(EventBus<>);
-            foreach (var eventType in EventTypes)
-            {
+            foreach (var eventType in EventTypes) {
                 var busType = typedef.MakeGenericType(eventType);
                 eventBusTypes.Add(busType);
                 Debug.Log($"Initialized EventBus<{eventType.Name}>");
@@ -75,11 +67,10 @@ namespace EventBus
         /// <summary>
         /// Clears (removes all listeners from) all event buses in the application.
         /// </summary>
-        public static void ClearAllBuses()
-        {
+        public static void ClearAllBuses() {
+            if (EventBusTypes == null) return;
             Debug.Log("Clearing all buses...");
-            for (int i = 0; i < EventBusTypes.Count; i++)
-            {
+            for (int i = 0; i < EventBusTypes.Count; i++) {
                 var busType = EventBusTypes[i];
                 var clearMethod = busType.GetMethod("Clear", BindingFlags.Static | BindingFlags.NonPublic);
                 clearMethod?.Invoke(null, null);

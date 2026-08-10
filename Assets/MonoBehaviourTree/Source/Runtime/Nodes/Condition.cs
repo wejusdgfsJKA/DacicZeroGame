@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
-    public abstract class Condition : Decorator
-    {
+namespace MBT {
+    public abstract class Condition : Decorator {
         protected bool lastConditionCheckResult = false;
 
-        public override NodeResult Execute()
-        {
-            if (!TryGetChild(out Node node))
-            {
+        public override NodeResult Execute() {
+            if (!TryGetChild(out Node node)) {
                 return NodeResult.failure;
             }
             if (node.status == Status.Success || node.status == Status.Failure) {
@@ -28,11 +24,9 @@ namespace MBT
         /// Reevaluate condition and try to abort the tree if required
         /// </summary>
         /// <param name="abort">Abort type</param>
-        protected void EvaluateConditionAndTryAbort(Abort abortType)
-        {
+        protected void EvaluateConditionAndTryAbort(Abort abortType) {
             bool c = Check();
-            if (c != lastConditionCheckResult)
-            {
+            if (c != lastConditionCheckResult) {
                 lastConditionCheckResult = c;
                 TryAbort(abortType);
             }

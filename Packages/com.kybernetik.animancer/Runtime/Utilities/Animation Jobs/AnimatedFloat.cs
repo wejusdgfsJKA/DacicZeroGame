@@ -3,8 +3,7 @@
 using UnityEngine.Animations;
 using Unity.Collections;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>[Pro-Only]
     /// A wrapper which allows access to the value of <see cref="float"/> properties that are controlled by animations.
     /// </summary>
@@ -17,8 +16,7 @@ namespace Animancer
     /// 
     /// https://kybernetik.com.au/animancer/api/Animancer/AnimatedFloat
     /// 
-    public class AnimatedFloat : AnimatedProperty<AnimatedFloat.Job, float>
-    {
+    public class AnimatedFloat : AnimatedProperty<AnimatedFloat.Job, float> {
         /************************************************************************************************************************/
 
         /// <summary>
@@ -27,23 +25,19 @@ namespace Animancer
         /// </summary>
         public AnimatedFloat(IAnimancerComponent animancer, int propertyCount,
             NativeArrayOptions options = NativeArrayOptions.ClearMemory)
-            : base(animancer, propertyCount, options)
-        { }
+            : base(animancer, propertyCount, options) { }
 
         /// <summary>Initializes a single property.</summary>
         public AnimatedFloat(IAnimancerComponent animancer, string propertyName)
-            : base(animancer, propertyName)
-        { }
+            : base(animancer, propertyName) { }
 
         /// <summary>Initializes a group of properties.</summary>
         public AnimatedFloat(IAnimancerComponent animancer, params string[] propertyNames)
-            : base(animancer, propertyNames)
-        { }
+            : base(animancer, propertyNames) { }
 
         /************************************************************************************************************************/
 
-        protected override void CreateJob()
-        {
+        protected override void CreateJob() {
             _Job = new() { properties = _Properties, values = _Values };
         }
 
@@ -52,15 +46,13 @@ namespace Animancer
         /// <summary>An <see cref="IAnimationJob"/> which reads an array of <see cref="float"/> values.</summary>
         /// https://kybernetik.com.au/animancer/api/Animancer/Job
         /// 
-        public struct Job : IAnimationJob
-        {
+        public struct Job : IAnimationJob {
             public NativeArray<PropertyStreamHandle> properties;
             public NativeArray<float> values;
 
             public void ProcessRootMotion(AnimationStream stream) { }
 
-            public void ProcessAnimation(AnimationStream stream)
-            {
+            public void ProcessAnimation(AnimationStream stream) {
                 for (int i = properties.Length - 1; i >= 0; i--)
                     values[i] = properties[i].GetFloat(stream);
             }

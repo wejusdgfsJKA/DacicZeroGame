@@ -1,4 +1,3 @@
-public class IntPoolable : Poolable<int>
-{
+public class IntPoolable : Poolable<int> {
 
 }

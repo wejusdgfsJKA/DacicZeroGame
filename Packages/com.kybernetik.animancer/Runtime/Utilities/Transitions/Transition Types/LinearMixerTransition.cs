@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/LinearMixerTransition
     [Serializable]
@@ -12,8 +11,7 @@ namespace Animancer
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
     public class LinearMixerTransition : MixerTransition<LinearMixerState, float>,
-        ICopyable<LinearMixerTransition>
-    {
+        ICopyable<LinearMixerTransition> {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -42,18 +40,15 @@ namespace Animancer
         /// Are all <see cref="ManualMixerTransition{TMixer}.Animations"/> assigned and
         /// <see cref="MixerTransition{TMixer, TParameter}.Thresholds"/> unique and sorted in ascending order?
         /// </summary>
-        public override bool IsValid
-        {
-            get
-            {
+        public override bool IsValid {
+            get {
                 if (!base.IsValid)
                     return false;
 
                 var previous = float.NegativeInfinity;
 
                 var thresholds = Thresholds;
-                for (int i = 0; i < thresholds.Length; i++)
-                {
+                for (int i = 0; i < thresholds.Length; i++) {
                     var threshold = thresholds[i];
                     if (threshold < previous)
                         return false;
@@ -68,10 +63,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override LinearMixerState CreateState()
-        {
-            State = new()
-            {
+        public override LinearMixerState CreateState() {
+            State = new() {
                 ParameterName = ParameterName,
             };
             InitializeState();
@@ -81,8 +74,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void Apply(AnimancerState state)
-        {
+        public override void Apply(AnimancerState state) {
             base.Apply(state);
             State.ExtrapolateSpeed = _ExtrapolateSpeed;
         }
@@ -91,8 +83,7 @@ namespace Animancer
 
         /// <summary>Sorts all states so that their thresholds go from lowest to highest.</summary>
         /// <remarks>This method uses Bubble Sort which is inefficient for large numbers of states.</remarks>
-        public void SortByThresholds()
-        {
+        public void SortByThresholds() {
             var thresholdCount = Thresholds.Length;
             if (thresholdCount <= 1)
                 return;
@@ -102,11 +93,9 @@ namespace Animancer
 
             var previousThreshold = Thresholds[0];
 
-            for (int i = 1; i < thresholdCount; i++)
-            {
+            for (int i = 1; i < thresholdCount; i++) {
                 var threshold = Thresholds[i];
-                if (threshold >= previousThreshold)
-                {
+                if (threshold >= previousThreshold) {
                     previousThreshold = threshold;
                     continue;
                 }
@@ -117,26 +106,22 @@ namespace Animancer
                 if (i < speedCount)
                     Speeds.Swap(i, i - 1);
 
-                if (i == syncCount && !SynchronizeChildren[i - 1])
-                {
+                if (i == syncCount && !SynchronizeChildren[i - 1]) {
                     var sync = SynchronizeChildren;
                     Array.Resize(ref sync, ++syncCount);
                     sync[i - 1] = true;
                     sync[i] = false;
                     SynchronizeChildren = sync;
                 }
-                else if (i < syncCount)
-                {
+                else if (i < syncCount) {
                     SynchronizeChildren.Swap(i, i - 1);
                 }
 
-                if (i == 1)
-                {
+                if (i == 1) {
                     i = 0;
                     previousThreshold = float.NegativeInfinity;
                 }
-                else
-                {
+                else {
                     i -= 2;
                     previousThreshold = Thresholds[i];
                 }
@@ -154,12 +139,10 @@ namespace Animancer
             => this.CopyFromBase(copyFrom, context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(LinearMixerTransition copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(LinearMixerTransition copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _ExtrapolateSpeed = true;
                 return;
             }

@@ -7,8 +7,7 @@ using UnityEditor;
 
 [assembly: PolymorphicDrawerDetails(typeof(UnityEngine.Events.UnityEventBase), SeparateHeader = true)]
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] <see cref="PropertyDrawer"/> for <see cref="UnityEvent"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/UnityEventDrawer
     [CustomPropertyDrawer(typeof(UnityEvent), true)]

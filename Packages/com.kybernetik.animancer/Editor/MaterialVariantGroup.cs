@@ -5,8 +5,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only]
     /// A utility for automatically swapping materials based on supported shaders.
     /// </summary>
@@ -17,8 +16,7 @@ namespace Animancer.Editor
     //[CreateAssetMenu(
     //     menuName = Strings.MenuPrefix + "Material Variant Group",
     //     order = Strings.AssetMenuOrder + 5)]
-    public class MaterialVariantGroup : ScriptableObject
-    {
+    public class MaterialVariantGroup : ScriptableObject {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -38,21 +36,18 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Applies the first variant that successfully loaded its shader.</summary>
-        protected virtual void OnEnable()
-        {
+        protected virtual void OnEnable() {
             if (_Material == null ||
                 _Variants.IsNullOrEmpty())
                 return;
 
-            foreach (var variant in _Variants)
-            {
+            foreach (var variant in _Variants) {
                 if (variant == null ||
                     variant.shader == null ||
                     !variant.shader.isSupported)
                     continue;
 
-                if (_Material.shader != variant.shader)
-                {
+                if (_Material.shader != variant.shader) {
                     _Material.shader = variant.shader;
                     _Material.CopyPropertiesFromMaterial(variant);
                 }
@@ -66,8 +61,7 @@ namespace Animancer.Editor
         /// <summary>[Editor-Only]
         /// Loads all assets of this type to ensure their <see cref="OnEnable"/> is called.
         /// </summary>
-        private class Initializer : AssetPostprocessor
-        {
+        private class Initializer : AssetPostprocessor {
             /************************************************************************************************************************/
 
             /// <summary>Loads all assets of this type to ensure their <see cref="OnEnable"/> is called.</summary>
@@ -76,8 +70,7 @@ namespace Animancer.Editor
                 string[] deletedAssets,
                 string[] movedAssets,
                 string[] movedFromAssetPaths,
-                bool didDomainReload)
-            {
+                bool didDomainReload) {
                 if (!didDomainReload)
                     return;
 
@@ -87,8 +80,7 @@ namespace Animancer.Editor
                 if (guids.Length == 0)
                     return;
 
-                for (int i = 0; i < guids.Length; i++)
-                {
+                for (int i = 0; i < guids.Length; i++) {
                     var path = AssetDatabase.GUIDToAssetPath(guids[i]);
                     AssetDatabase.LoadAssetAtPath<MaterialVariantGroup>(path);
                 }

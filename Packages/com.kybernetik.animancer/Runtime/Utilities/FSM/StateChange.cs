@@ -2,8 +2,7 @@
 
 using System;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>A static access point for the details of a state change in a <see cref="StateMachine{TState}"/>.</summary>
     /// <remarks>
     /// This system is thread-safe.
@@ -15,8 +14,7 @@ namespace Animancer.FSM
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/StateChange_1
     /// 
     public struct StateChange<TState> : IDisposable
-        where TState : class, IState
-    {
+        where TState : class, IState {
         /************************************************************************************************************************/
 
         [ThreadStatic]
@@ -43,10 +41,8 @@ namespace Animancer.FSM
         /// <exception cref="InvalidOperationException">[Assert-Only]
         /// <see cref="IsActive"/> is false so this property is likely being accessed on the wrong generic type.
         /// </exception>
-        public static TState PreviousState
-        {
-            get
-            {
+        public static TState PreviousState {
+            get {
 #if UNITY_ASSERTIONS
                 if (!IsActive)
                     throw new InvalidOperationException(
@@ -62,10 +58,8 @@ namespace Animancer.FSM
         /// <exception cref="InvalidOperationException">[Assert-Only]
         /// <see cref="IsActive"/> is false so this property is likely being accessed on the wrong generic type.
         /// </exception>
-        public static TState NextState
-        {
-            get
-            {
+        public static TState NextState {
+            get {
 #if UNITY_ASSERTIONS
                 if (!IsActive)
                     throw new InvalidOperationException(
@@ -89,8 +83,7 @@ namespace Animancer.FSM
         ///     // Do the actual state change.
         /// }
         /// </code></remarks>
-        internal StateChange(StateMachine<TState> stateMachine, TState previousState, TState nextState)
-        {
+        internal StateChange(StateMachine<TState> stateMachine, TState previousState, TState nextState) {
             this = _Current;
 
             _Current._StateMachine = stateMachine;
