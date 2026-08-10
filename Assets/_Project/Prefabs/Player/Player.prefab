@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1399365190490886335
 GameObject:
@@ -222,14 +223,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1490137187961995706}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 0.9651981, b: 0.6698113, a: 1}
   m_Intensity: 0.2
   m_Range: 3
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 1
     m_Resolution: -1
@@ -552,6 +553,10 @@ MonoBehaviour:
   Damage: 2
   fireCooldown: 0
   altFireCooldown: 0
+  <Firing>k__BackingField: 0
+  <AltFiring>k__BackingField: 0
+  <IsEnhanced>k__BackingField: 0
+  WeaponSprite: {fileID: 0}
   cooldownTo: -1
   projectile: {fileID: 3828718443384397336, guid: 768e04c6db2aaea47a540174ecf69776, type: 3}
   ammo: 1000
@@ -753,6 +758,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 685811877318736729}
     m_Modifications:
+    - target: {fileID: 2371008033620651497, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2371008033620651497, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2371008033620651497, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240838564707579733, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240838564707579733, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4240838564707579733, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5212163375797343210, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -765,6 +794,22 @@ PrefabInstance:
       propertyPath: WeaponController
       value: 
       objectReference: {fileID: 8672219811969518626}
+    - target: {fileID: 5673507172178725357, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5673507172178725357, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6356735757545545947, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6356735757545545947, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6463434542685227857, guid: a7dc9673f61ddff41a7665232fd4f017, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
