@@ -7,6 +7,10 @@ using UnityEngine.UIElements;
 
 namespace Weapons
 {
+    public struct WeaponFired : IEvent { }
+
+    public struct WeaponAltFired : IEvent { }
+
     public abstract class WeaponBase : MonoBehaviour
     {
         [SerializeField] protected int Damage = 2;
@@ -42,6 +46,7 @@ namespace Weapons
                 if (Time.time >= cooldownTo)
                 {
                     cooldownTo = Time.time + fireCooldown;
+                    EventBus<WeaponFired>.Raise(gameObject.GetInstanceID(), new WeaponFired());
                     Fire();
                 }
             }
@@ -50,6 +55,7 @@ namespace Weapons
                 if (Time.time >= cooldownTo)
                 {
                     cooldownTo = Time.time + altFireCooldown;
+                    EventBus<WeaponAltFired>.Raise(gameObject.GetInstanceID(), new WeaponAltFired());
                     AltFire();
                 }
             }
