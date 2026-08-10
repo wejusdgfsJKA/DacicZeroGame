@@ -3,6 +3,7 @@ using HP;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 
 namespace Weapons
 {
@@ -15,7 +16,9 @@ namespace Weapons
         [field: SerializeField] public bool AltFiring { get; set; }
         [field: SerializeField] public bool IsEnhanced { get; set; }
 
-        protected float cooldownTo = -1;
+        [SerializeField] public Texture WeaponSprite;
+
+        public float cooldownTo = -1;
         protected float timeLastShot = -1;
         public UnityAction<float> BoostPlayer = delegate { };
         public UnityAction<Vector3, Quaternion?> TeleportPlayer = delegate { };

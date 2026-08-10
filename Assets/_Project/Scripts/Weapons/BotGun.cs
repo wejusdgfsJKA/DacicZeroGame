@@ -27,11 +27,11 @@ namespace Weapons {
         #endregion
         #region Other fields
         /// <summary>
-        /// Current error of the gun. Don't fuck with this.
+        /// Current error of the weapon. Don't fuck with this.
         /// </summary>
         protected float error;
         /// <summary>
-        /// Current error of the gun. Don't fuck with this.
+        /// Current error of the weapon. Don't fuck with this.
         /// </summary>
         protected float currentError {
             get {
@@ -73,8 +73,9 @@ namespace Weapons {
                 }
             }
         }
-        protected override void Fire() {
-            //reset the fireCooldown of the gun
+        protected override void Fire()
+        {
+            //reset the fireCooldown of the weapon
             cooldownTo = Time.time + fireCooldown;
             timeLastShot = Time.time;
             Vector3 dir = transform.forward;

@@ -3,8 +3,9 @@ using UnityEngine.AI;
 using Weapons;
 namespace MBT {
     [AddComponentMenu("")]
-    [MBTNode("Tasks/Shoot gun")]
-    public class ShootGun : Leaf {
+    [MBTNode("Tasks/Shoot weapon")]
+    public class ShootGun : Leaf
+    {
         [SerializeField] BotGun gun;
         [SerializeField] Vector3Reference target;
         [SerializeField] NavMeshAgent agent;
@@ -17,7 +18,7 @@ namespace MBT {
         public override NodeResult Execute() {
             //make the bot look at the target
             self.LookAt(new Vector3(target.Value.x, self.position.y, target.Value.z));
-            //aim the gun at the target
+            //aim the weapon at the target
             gun.transform.LookAt(target.Value);
             return NodeResult.running;
         }

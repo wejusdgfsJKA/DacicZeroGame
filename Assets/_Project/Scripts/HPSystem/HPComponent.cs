@@ -5,13 +5,14 @@ using UnityEngine.Events;
 namespace HP {
     public class HPComponent : MonoBehaviour {
         [field: SerializeField] public int MaxHealth { get; set; }
-        [field: SerializeField] public int CurrentHealth { get; protected set; }
+        [field: SerializeField] public int CurrentHealth { get; set; }
         /// <summary>
         /// Fires when this entity dies.
         /// </summary>
         public UnityEvent OnDeath;
-        public UnityEvent<int> OnDamageTaken;
-        protected void Awake() {
+        public UnityAction<int> OnDamageTaken = delegate { };
+        protected void Awake()
+        {
             //add damage binding for this entity
             EventBus<TakeDamage>.AddActions(transform.GetInstanceID(), TakeDamage);
         }
