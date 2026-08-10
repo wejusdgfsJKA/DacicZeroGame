@@ -1,0 +1,8 @@
+﻿<Solution>
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Kybernetik.Animancer.csproj" />
+  <Project Path="Kybernetik.Animancer.Editor.csproj" />
+  <Project Path="Qriva.MonoBehaviourTree.Runtime.csproj" />
+  <Project Path="Kybernetik.Animancer.FSM.csproj" />
+  <Project Path="Qriva.MonoBehaviourTree.Editor.csproj" />
+</Solution>
