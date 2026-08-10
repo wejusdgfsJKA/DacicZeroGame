@@ -22,6 +22,7 @@ namespace Weapons
         protected float timeLastShot = -1;
         public UnityAction<float> BoostPlayer = delegate { };
         public UnityAction<Vector3, Quaternion?> TeleportPlayer = delegate { };
+        public UnityAction<float> UpdateWeaponCharge = delegate { };
 
         protected Renderer[] modelRenderers;
 
