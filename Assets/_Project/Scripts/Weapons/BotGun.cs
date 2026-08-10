@@ -94,7 +94,7 @@ namespace Weapons {
                     hit.point });
                 //raise a damage event for whatever we hit
                 EventBus<TakeDamage>.Raise(hit.transform.root.GetInstanceID(),
-                    new TakeDamage(damage, transform.root, hit.collider));
+                    new TakeDamage(Damage, transform.root, hit.collider));
             }
             else {
                 lineRenderer.SetPositions(new Vector3[2] { transform.position,

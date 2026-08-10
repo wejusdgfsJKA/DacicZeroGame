@@ -107,5 +107,21 @@ public class SicaProjectile : Projectile
                 EventBus<TakeDamage>.Raise(root.GetInstanceID(), new TakeDamage(damage, transform.root, explosionColliders[i]));
             }
         }
+
+        Collider[] explosionPlayerColliders = new Collider[10];
+        int nrOfPlayerHits = Physics.OverlapSphereNonAlloc(
+            transform.position,
+            explosionRadius,
+            explosionColliders,
+            LayerMask.GetMask("Player")
+        );
+
+        for (int i = 0; i < nrOfPlayerHits; i++)
+        {
+            Transform root = explosionColliders[i].transform.root;
+            Rigidbody PlayerBody = root.GetComponent<Rigidbody>();
+            PlayerBody.AddExplosionForce(500f, transform.position, explosionRadius*3);
+            EventBus<TakeDamage>.Raise(root.GetInstanceID(), new TakeDamage(1, transform.root, explosionColliders[i]));
+        }
     }
 }
