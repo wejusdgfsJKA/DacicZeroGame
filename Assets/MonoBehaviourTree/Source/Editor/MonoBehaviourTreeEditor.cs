@@ -4,55 +4,44 @@ using UnityEngine;
 using UnityEditor;
 using MBT;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(MonoBehaviourTree))]
-    public class MonoBehaviourTreeEditor : Editor
-    {
+    public class MonoBehaviourTreeEditor : Editor {
         private GUIStyle boxStyle;
         private GUIStyle foldStyle;
         private Editor nodeEditor;
-        
-        void InitStyle()
-        {
-            if (foldStyle == null)
-            {
+
+        void InitStyle() {
+            if (foldStyle == null) {
                 boxStyle = new GUIStyle(EditorStyles.helpBox);
                 foldStyle = new GUIStyle(EditorStyles.foldoutHeader);
                 foldStyle.onNormal = foldStyle.onFocused;
             }
         }
 
-        void OnEnable()
-        {
+        void OnEnable() {
             // Set hide flags in case object was duplicated or turned into prefab
-            if (target == null)
-            {
+            if (target == null) {
                 return;
             }
-            MonoBehaviourTree mbt = (MonoBehaviourTree) target;
+            MonoBehaviourTree mbt = (MonoBehaviourTree)target;
             // Sample one component and check if its hidden. Hide all nodes if sample is visible.
-            if (mbt.TryGetComponent<Node>(out Node n) && n.hideFlags != HideFlags.HideInInspector)
-            {
+            if (mbt.TryGetComponent<Node>(out Node n) && n.hideFlags != HideFlags.HideInInspector) {
                 Node[] nodes = mbt.GetComponents<Node>();
-                for (int i = 0; i < nodes.Length; i++)
-                {
+                for (int i = 0; i < nodes.Length; i++) {
                     nodes[i].hideFlags = HideFlags.HideInInspector;
                 }
             }
         }
 
-        void OnDisable()
-        {
+        void OnDisable() {
             // Destroy editor if there is any
-            if (nodeEditor != null)
-            {
+            if (nodeEditor != null) {
                 DestroyImmediate(nodeEditor);
             }
         }
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             InitStyle();
 
             DrawDefaultInspector();
@@ -63,24 +52,23 @@ namespace MBTEditor
             }
 
             EditorGUILayout.Space();
-            
-            MonoBehaviourTree mbt = ((MonoBehaviourTree) target);
+
+            MonoBehaviourTree mbt = ((MonoBehaviourTree)target);
             bool renderNodeInspector = mbt.selectedEditorNode != null;
 
             EditorGUILayout.Foldout(renderNodeInspector, "Node inspector", foldStyle);
-                EditorGUILayout.Space(1);
-                if (renderNodeInspector)
-                {
-                    EditorGUILayout.BeginHorizontal(boxStyle);
-                        GUILayout.Space(3);
-                        EditorGUILayout.BeginVertical();
-                            GUILayout.Space(5);
-                            Editor.CreateCachedEditor(mbt.selectedEditorNode, null, ref nodeEditor);
-                            nodeEditor.OnInspectorGUI();
-                            GUILayout.Space(5);
-                        EditorGUILayout.EndVertical();
-                    EditorGUILayout.EndHorizontal();
-                }
+            EditorGUILayout.Space(1);
+            if (renderNodeInspector) {
+                EditorGUILayout.BeginHorizontal(boxStyle);
+                GUILayout.Space(3);
+                EditorGUILayout.BeginVertical();
+                GUILayout.Space(5);
+                Editor.CreateCachedEditor(mbt.selectedEditorNode, null, ref nodeEditor);
+                nodeEditor.OnInspectorGUI();
+                GUILayout.Space(5);
+                EditorGUILayout.EndVertical();
+                EditorGUILayout.EndHorizontal();
+            }
             EditorGUILayout.Space();
         }
     }

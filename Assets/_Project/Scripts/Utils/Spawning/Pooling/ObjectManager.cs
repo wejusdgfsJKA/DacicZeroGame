@@ -1,13 +1,11 @@
 using Spawning;
 using UnityEngine;
-namespace Pooling
-{
+namespace Pooling {
     /// <summary>
     /// Handles object creation and pooling.
     /// </summary>
     /// <typeparam name="Id">The pooling id of the objects.</typeparam>
-    public abstract class ObjectManager<Id> : MonoBehaviour
-    {
+    public abstract class ObjectManager<Id> : MonoBehaviour {
         /// <summary>
         /// Holds inactive objects in categories.
         /// </summary>
@@ -20,10 +18,8 @@ namespace Pooling
         /// Manager instance. Should only be one per scene.
         /// </summary>
         public static ObjectManager<Id> Instance { get; protected set; }
-        protected virtual void Awake()
-        {
-            if (Instance == null)
-            {
+        protected virtual void Awake() {
+            if (Instance == null) {
                 Instance = this;
             }
         }
@@ -32,11 +28,9 @@ namespace Pooling
         /// </summary>
         /// <param name="data">The data that will be used to retrieve an object or create a new object.</param>
         /// <returns>An instance of the requested object.</returns>
-        public Poolable<Id> Get(ObjectData<Id> data)
-        {
+        public Poolable<Id> Get(ObjectData<Id> data) {
             Poolable<Id> t;
-            if (multiPool.TryGet(data.ID, out t))
-            {
+            if (multiPool.TryGet(data.ID, out t)) {
                 t.ResetObject();
                 return t;
             }
@@ -46,8 +40,7 @@ namespace Pooling
         /// Release the object into the pool.
         /// </summary>
         /// <param name="object">The object to be released.</param>
-        public void Release(Poolable<Id> @object)
-        {
+        public void Release(Poolable<Id> @object) {
             multiPool.Release(@object);
         }
     }

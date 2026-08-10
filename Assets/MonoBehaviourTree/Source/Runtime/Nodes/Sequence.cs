@@ -2,45 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Sequence", order = 150)]
-    public class Sequence : Composite
-    {
+    public class Sequence : Composite {
         private int index;
-        
-        public override void OnAllowInterrupt()
-        {
-            if (random)
-            {
+
+        public override void OnAllowInterrupt() {
+            if (random) {
                 ShuffleList(children);
             }
         }
-        
-        public override void OnEnter()
-        {
+
+        public override void OnEnter() {
             index = 0;
         }
 
-        public override void OnBehaviourTreeAbort()
-        {
+        public override void OnBehaviourTreeAbort() {
             // Do not continue from last index
             index = 0;
         }
 
-        public override NodeResult Execute()
-        {
-            while (index < children.Count)
-            {
+        public override NodeResult Execute() {
+            while (index < children.Count) {
                 Node child = children[index];
-                switch (child.status)
-                {
+                switch (child.status) {
                     case Status.Success:
                         index += 1;
                         continue;
                     case Status.Failure:
-                        return NodeResult.failure; 
+                        return NodeResult.failure;
                 }
                 return child.runningNodeResult;
             }

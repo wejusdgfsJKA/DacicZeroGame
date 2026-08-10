@@ -7,13 +7,11 @@ using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/MixerTransition2DDrawer
     [CustomPropertyDrawer(typeof(MixerTransition2D), true)]
-    public class MixerTransition2DDrawer : MixerTransitionDrawer
-    {
+    public class MixerTransition2DDrawer : MixerTransitionDrawer {
         /************************************************************************************************************************/
 
         /// <summary>
@@ -21,24 +19,20 @@ namespace Animancer.Editor
         /// `thresholdWidth` than usual to accomodate both the X and Y values.
         /// </summary>
         public MixerTransition2DDrawer()
-            : base(StandardThresholdWidth * 2 + 20)
-        { }
+            : base(StandardThresholdWidth * 2 + 20) { }
 
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override void AddThresholdFunctionsToMenu(GenericMenu menu)
-        {
-            AddCalculateThresholdsFunction(menu, "From Velocity/XY", (state, threshold) =>
-            {
+        protected override void AddThresholdFunctionsToMenu(GenericMenu menu) {
+            AddCalculateThresholdsFunction(menu, "From Velocity/XY", (state, threshold) => {
                 if (AnimancerUtilities.TryGetAverageVelocity(state, out var velocity))
                     return new(velocity.x, velocity.y);
                 else
                     return new(float.NaN, float.NaN);
             });
 
-            AddCalculateThresholdsFunction(menu, "From Velocity/XZ", (state, threshold) =>
-            {
+            AddCalculateThresholdsFunction(menu, "From Velocity/XZ", (state, threshold) => {
                 if (AnimancerUtilities.TryGetAverageVelocity(state, out var velocity))
                     return new(velocity.x, velocity.z);
                 else
@@ -77,8 +71,7 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private void Initialize4Directions(SerializedProperty property)
-        {
+        private void Initialize4Directions(SerializedProperty property) {
             var oldSpeedCount = CurrentSpeeds.arraySize;
 
             CurrentAnimations.arraySize = CurrentThresholds.arraySize = CurrentSpeeds.arraySize = 5;
@@ -96,8 +89,7 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private void Initialize8Directions(SerializedProperty property)
-        {
+        private void Initialize8Directions(SerializedProperty property) {
             var oldSpeedCount = CurrentSpeeds.arraySize;
 
             var diagonal = 1 / Mathf.Sqrt(2);
@@ -121,16 +113,14 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private void NormalizeThresholds(SerializedProperty property)
-        {
+        private void NormalizeThresholds(SerializedProperty property) {
             var thresholdCount = CurrentThresholds.arraySize;
             if (thresholdCount == 0)
                 return;
 
             var largestSquaredMagnitude = 0f;
 
-            for (int i = 0; i < thresholdCount; i++)
-            {
+            for (int i = 0; i < thresholdCount; i++) {
                 var threshold = CurrentThresholds.GetArrayElementAtIndex(i).vector2Value;
                 var squaredMagnitude = threshold.sqrMagnitude;
                 if (largestSquaredMagnitude < squaredMagnitude)
@@ -142,8 +132,7 @@ namespace Animancer.Editor
 
             var inverseSquaredMagnitude = 1 / Mathf.Sqrt(largestSquaredMagnitude);
 
-            for (int i = 0; i < thresholdCount; i++)
-            {
+            for (int i = 0; i < thresholdCount; i++) {
                 var threshold = CurrentThresholds.GetArrayElementAtIndex(i);
                 threshold.vector2Value *= inverseSquaredMagnitude;
             }
@@ -154,14 +143,12 @@ namespace Animancer.Editor
         private void AddCalculateThresholdsFunction(
             GenericMenu menu,
             string label,
-            Func<Object, Vector2, Vector2> calculateThreshold)
-        {
+            Func<Object, Vector2, Vector2> calculateThreshold) {
             var functionState = CurrentAnimations == null || CurrentThresholds == null
                 ? MenuFunctionState.Disabled
                 : MenuFunctionState.Normal;
 
-            AddPropertyModifierFunction(menu, label, functionState, property =>
-            {
+            AddPropertyModifierFunction(menu, label, functionState, property => {
                 GatherSubProperties(property);
 
                 if (CurrentAnimations == null ||
@@ -169,8 +156,7 @@ namespace Animancer.Editor
                     return;
 
                 var count = CurrentAnimations.arraySize;
-                for (int i = 0; i < count; i++)
-                {
+                for (int i = 0; i < count; i++) {
                     var state = CurrentAnimations.GetArrayElementAtIndex(i).objectReferenceValue;
                     if (state == null)
                         continue;
@@ -186,20 +172,16 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         private void AddCalculateThresholdsFunctionPerAxis(GenericMenu menu, string label,
-            Func<Object, float, float> calculateThreshold)
-        {
+            Func<Object, float, float> calculateThreshold) {
             AddCalculateThresholdsFunction(menu, "X/" + label, 0, calculateThreshold);
             AddCalculateThresholdsFunction(menu, "Y/" + label, 1, calculateThreshold);
         }
 
         private void AddCalculateThresholdsFunction(GenericMenu menu, string label, int axis,
-            Func<Object, float, float> calculateThreshold)
-        {
-            AddPropertyModifierFunction(menu, label, (property) =>
-            {
+            Func<Object, float, float> calculateThreshold) {
+            AddPropertyModifierFunction(menu, label, (property) => {
                 var count = CurrentAnimations.arraySize;
-                for (int i = 0; i < count; i++)
-                {
+                for (int i = 0; i < count; i++) {
                     var state = CurrentAnimations.GetArrayElementAtIndex(i).objectReferenceValue;
                     if (state == null)
                         continue;

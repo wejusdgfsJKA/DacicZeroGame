@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A generic set of objects corresponding to up/right/down/left with diagonals as well.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -14,8 +13,7 @@ namespace Animancer
     /// https://kybernetik.com.au/animancer/api/Animancer/DirectionalSet8_1
     /// 
     [AnimancerHelpUrl(typeof(DirectionalSet8<>))]
-    public class DirectionalSet8<T> : DirectionalSet4<T>
-    {
+    public class DirectionalSet8<T> : DirectionalSet4<T> {
         /************************************************************************************************************************/
         #region Fields and Properties
         /************************************************************************************************************************/
@@ -25,11 +23,9 @@ namespace Animancer
 
         /// <summary>[<see cref="SerializeField"/>] The object for <see cref="Direction8.UpRight"/>.</summary>
         /// <exception cref="ArgumentException"><see cref="AllowChanges"/> was not called before setting this value.</exception>
-        public T UpRight
-        {
+        public T UpRight {
             get => _UpRight;
-            set
-            {
+            set {
                 AssertAllowChanges();
                 _UpRight = value;
                 AnimancerUtilities.SetDirty(this);
@@ -43,11 +39,9 @@ namespace Animancer
 
         /// <summary>[<see cref="SerializeField"/>] The object for <see cref="Direction8.DownRight"/>.</summary>
         /// <exception cref="ArgumentException"><see cref="AllowChanges"/> was not called before setting this value.</exception>
-        public T DownRight
-        {
+        public T DownRight {
             get => _DownRight;
-            set
-            {
+            set {
                 AssertAllowChanges();
                 _DownRight = value;
                 AnimancerUtilities.SetDirty(this);
@@ -61,11 +55,9 @@ namespace Animancer
 
         /// <summary>[<see cref="SerializeField"/>] The object for <see cref="Direction8.DownLeft"/>.</summary>
         /// <exception cref="ArgumentException"><see cref="AllowChanges"/> was not called before setting this value.</exception>
-        public T DownLeft
-        {
+        public T DownLeft {
             get => _DownLeft;
-            set
-            {
+            set {
                 AssertAllowChanges();
                 _DownLeft = value;
                 AnimancerUtilities.SetDirty(this);
@@ -79,11 +71,9 @@ namespace Animancer
 
         /// <summary>[<see cref="SerializeField"/>] The object for <see cref="Direction8.UpLeft"/>.</summary>
         /// <exception cref="ArgumentException"><see cref="AllowChanges"/> was not called before setting this value.</exception>
-        public T UpLeft
-        {
+        public T UpLeft {
             get => _UpLeft;
-            set
-            {
+            set {
                 AssertAllowChanges();
                 _UpLeft = value;
                 AnimancerUtilities.SetDirty(this);
@@ -110,8 +100,7 @@ namespace Animancer
 
         /// <summary>Returns the object associated with the specified `direction`.</summary>
         public T Get(Direction8 direction)
-            => direction switch
-            {
+            => direction switch {
                 Direction8.Up => Up,
                 Direction8.Right => Right,
                 Direction8.Down => Down,
@@ -130,12 +119,10 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override T Get(Vector2 direction)
-        {
+        public override T Get(Vector2 direction) {
             var angle = Mathf.Atan2(direction.y, direction.x);
             var octant = Mathf.RoundToInt(8 * angle / (2 * Mathf.PI) + 8) % 8;
-            return octant switch
-            {
+            return octant switch {
                 0 => Right,
                 1 => _UpRight,
                 2 => Up,
@@ -151,10 +138,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Sets the object associated with the specified `direction`.</summary>
-        public void Set(Direction8 direction, T value)
-        {
-            switch (direction)
-            {
+        public void Set(Direction8 direction, T value) {
+            switch (direction) {
                 case Direction8.Up: Up = value; break;
                 case Direction8.Right: Right = value; break;
                 case Direction8.Down: Down = value; break;

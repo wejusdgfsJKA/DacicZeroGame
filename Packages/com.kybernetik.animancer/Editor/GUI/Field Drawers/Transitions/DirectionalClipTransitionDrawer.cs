@@ -5,19 +5,16 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/DirectionalClipTransitionDrawer
     [CustomPropertyDrawer(typeof(DirectionalClipTransition), true)]
-    public class DirectionalClipTransitionDrawer : TransitionDrawer
-    {
+    public class DirectionalClipTransitionDrawer : TransitionDrawer {
         /************************************************************************************************************************/
 
         /// <summary>Creates a new <see cref="DirectionalClipTransitionDrawer"/>.</summary>
         public DirectionalClipTransitionDrawer()
-            : base(DirectionalClipTransition.AnimationSetField)
-        { }
+            : base(DirectionalClipTransition.AnimationSetField) { }
 
         /************************************************************************************************************************/
 
@@ -26,15 +23,12 @@ namespace Animancer.Editor
             ref Rect area,
             SerializedProperty rootProperty,
             SerializedProperty property,
-            GUIContent label)
-        {
+            GUIContent label) {
             var width = area.width;
 
             var path = property.propertyPath;
-            if (path.EndsWith($".{ClipTransition.ClipFieldName}"))
-            {
-                if (property.objectReferenceValue != null)
-                {
+            if (path.EndsWith($".{ClipTransition.ClipFieldName}")) {
+                if (property.objectReferenceValue != null) {
                     var removeArea = AnimancerGUI.StealFromRight(
                         ref area, AnimancerGUI.LineHeight, AnimancerGUI.StandardSpacing);
 
@@ -48,8 +42,7 @@ namespace Animancer.Editor
                 }
 
                 if (Context.Transition is DirectionalClipTransition directionalClipTransition &&
-                    directionalClipTransition.AnimationSet != null)
-                {
+                    directionalClipTransition.AnimationSet != null) {
                     var dropdownArea = AnimancerGUI.StealFromRight(
                         ref area, area.height, AnimancerGUI.StandardSpacing);
 
@@ -66,22 +59,18 @@ namespace Animancer.Editor
         /************************************************************************************************************************/
 
         /// <summary>Shows a context menu to choose an <see cref="AnimationClip"/> from the `source`.</summary>
-        private void PickAnimation(SerializedProperty property, object source)
-        {
+        private void PickAnimation(SerializedProperty property, object source) {
             var menu = new GenericMenu();
 
-            using (SetPool<AnimationClip>.Instance.Acquire(out var clips))
-            {
+            using (SetPool<AnimationClip>.Instance.Acquire(out var clips)) {
                 clips.GatherFromSource(source);
                 if (clips.Count == 0)
                     return;
 
                 property = property.Copy();
 
-                foreach (var clip in clips)
-                {
-                    menu.AddPropertyModifierFunction(property, clip.name, true, modify =>
-                    {
+                foreach (var clip in clips) {
+                    menu.AddPropertyModifierFunction(property, clip.name, true, modify => {
                         modify.objectReferenceValue = clip;
                     });
                 }

@@ -3,8 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// Fades the child weights of a <see cref="MixerState{TParameter}"/> to a new parameter value
     /// instead of fading the actual parameter.
@@ -36,8 +35,7 @@ namespace Animancer
 #if !UNITY_EDITOR
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
-    public static class MixerChildFade
-    {
+    public static class MixerChildFade {
         /************************************************************************************************************************/
 
         private static readonly List<float>
@@ -53,8 +51,7 @@ namespace Animancer
         public static void FadeChildWeights<TParameter>(
             this MixerState<TParameter> mixer,
             TParameter parameter,
-            float fadeDuration)
-        {
+            float fadeDuration) {
             ChildWeights.Clear();
 
             var childCount = mixer.ChildCount;
@@ -67,8 +64,7 @@ namespace Animancer
 
             var mixerPlayable = mixer.Playable;
 
-            for (int i = 0; i < childCount; i++)
-            {
+            for (int i = 0; i < childCount; i++) {
                 var child = mixer.GetChild(i);
                 mixerPlayable.SetChildWeight(child, ChildWeights[i]);
                 child.StartFade(Math.Max(child.TargetWeight, float.Epsilon), fadeDuration);

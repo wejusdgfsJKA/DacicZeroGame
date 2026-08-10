@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode(name = "Tasks/Invoke Unity Event")]
-    public class InvokeUnityEvent : Leaf
-    {
+    public class InvokeUnityEvent : Leaf {
         public EventType type;
 
         public TransformReference transformReference = new TransformReference();
@@ -27,10 +25,8 @@ namespace MBT
         public Vector3Event vector3Event;
         public Vector2Event vector2Event;
 
-        public override NodeResult Execute()
-        {
-            switch (type)
-            {
+        public override NodeResult Execute() {
+            switch (type) {
                 case EventType.Transform:
                     transformEvent.Invoke(transformReference.Value);
                     break;
@@ -59,10 +55,8 @@ namespace MBT
             return NodeResult.success;
         }
 
-        public override bool IsValid()
-        {
-            switch (type)
-            {
+        public override bool IsValid() {
+            switch (type) {
                 case EventType.Transform: return !transformReference.isInvalid;
                 case EventType.Float: return !floatReference.isInvalid;
                 case EventType.Bool: return !boolReference.isInvalid;
@@ -75,8 +69,7 @@ namespace MBT
             }
         }
 
-        public enum EventType
-        {
+        public enum EventType {
             Transform, GameObject, Float, Int, Bool, String, Vector3, Vector2
         }
 

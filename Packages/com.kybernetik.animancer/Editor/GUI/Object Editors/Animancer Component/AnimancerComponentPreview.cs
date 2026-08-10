@@ -4,8 +4,7 @@
 
 using UnityEditor;
 
-namespace Animancer.Editor.Previews
-{
+namespace Animancer.Editor.Previews {
     /// <summary>[Editor-Only]
     /// An interactive preview which displays the internal details of an <see cref="AnimancerComponent"/>.
     /// </summary>

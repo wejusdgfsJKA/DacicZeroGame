@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-namespace NPC
-{
+namespace NPC {
     [System.Serializable]
-    public struct Requirement
-    {
+    public struct Requirement {
         public Skills Type;
         public int Level;
         /// <summary>
@@ -16,8 +14,7 @@ namespace NPC
         public float Weight;
     }
     [System.Serializable]
-    public class Task
-    {
+    public class Task {
         /// <summary>
         /// Fires when the task is successfully completed.
         /// </summary>
@@ -34,14 +31,11 @@ namespace NPC
         /// </summary>
         /// <param name="inputSkills">The given skills to calculate probability for.</param>
         /// <returns>The probability of success.</returns>
-        public float GetSuccessProbability(IEnumerable<Skill> inputSkills)
-        {
+        public float GetSuccessProbability(IEnumerable<Skill> inputSkills) {
             SuccessProbability = 1;
-            for (int i = 0; i < Requirements.Count; i++)
-            {
+            for (int i = 0; i < Requirements.Count; i++) {
                 var requirement = Requirements[i];
-                var skill = inputSkills.FirstOrDefault((s) =>
-                {
+                var skill = inputSkills.FirstOrDefault((s) => {
                     return s.Type == requirement.Type;
                 });
                 if (skill == null) return 0;
@@ -54,10 +48,8 @@ namespace NPC
         /// Fires OnCompletion if the task was completed.
         /// </summary>
         /// <returns>True if the task was completed successfully.</returns>
-        public bool Resolve()
-        {
-            if (SuccessProbability >= 1 || (SuccessProbability > 0 && Random.value < SuccessProbability))
-            {
+        public bool Resolve() {
+            if (SuccessProbability >= 1 || (SuccessProbability > 0 && Random.value < SuccessProbability)) {
                 OnCompletion?.Invoke();
                 return true;
             }
@@ -71,23 +63,17 @@ namespace NPC
         /// </summary>
         /// <param name="characters">Input characters.</param>
         /// <returns>Success probability.</returns>
-        public float AssignCharacters(List<Character> characters)
-        {
+        public float AssignCharacters(List<Character> characters) {
             HashSet<Skill> inputSkills = new();
-            for (int i = 0; i < characters.Count; i++)
-            {
-                for (int j = 0; j < characters[i].Skills.Count; j++)
-                {
+            for (int i = 0; i < characters.Count; i++) {
+                for (int j = 0; j < characters[i].Skills.Count; j++) {
                     var s = characters[i].Skills[j];
-                    if (!inputSkills.Contains(s))
-                    {
+                    if (!inputSkills.Contains(s)) {
                         inputSkills.Add(s);
                         continue;
                     }
-                    if (inputSkills.TryGetValue(s, out var skill))
-                    {
-                        if (skill.Level < s.Level)
-                        {
+                    if (inputSkills.TryGetValue(s, out var skill)) {
+                        if (skill.Level < s.Level) {
                             inputSkills.Remove(skill);
                             inputSkills.Add(s);
                         }

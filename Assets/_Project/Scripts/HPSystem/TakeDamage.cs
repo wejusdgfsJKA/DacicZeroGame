@@ -1,12 +1,10 @@
 using EventBus;
 using UnityEngine;
-namespace HP
-{
+namespace HP {
     /// <summary>
     /// Use this to deal damage to an entity.
     /// </summary>
-    public struct TakeDamage : IEvent
-    {
+    public struct TakeDamage : IEvent {
         /// <summary>
         /// How much damage this attack has dealt.
         /// </summary>
@@ -19,8 +17,7 @@ namespace HP
         /// The collider we hit.
         /// </summary>
         public Collider ColliderHit { get; set; }
-        public TakeDamage(int damage, Transform source, Collider collider)
-        {
+        public TakeDamage(int damage, Transform source, Collider collider) {
             Damage = damage;
             Source = source;
             ColliderHit = collider;

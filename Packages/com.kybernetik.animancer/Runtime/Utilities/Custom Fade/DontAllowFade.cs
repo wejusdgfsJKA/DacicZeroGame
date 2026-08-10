@@ -7,8 +7,7 @@
 
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>An <see cref="IUpdatable"/> that cancels any fades and logs warnings when they occur.</summary>
     /// 
     /// <remarks>
@@ -33,14 +32,12 @@ namespace Animancer
     /// 
     /// https://kybernetik.com.au/animancer/api/Animancer/DontAllowFade
     /// 
-    public class DontAllowFade : Updatable
-    {
+    public class DontAllowFade : Updatable {
         /************************************************************************************************************************/
 
         /// <summary>[Assert-Conditional] Applies a <see cref="DontAllowFade"/> to `animancer`.</summary>
         [System.Diagnostics.Conditional(Strings.Assertions)]
-        public static void Assert(AnimancerGraph animancer)
-        {
+        public static void Assert(AnimancerGraph animancer) {
 #if UNITY_EDITOR
             var warnings = OptionalWarning.ProOnly.DisableTemporarily();
             animancer.RequirePreUpdate(new DontAllowFade());
@@ -51,10 +48,8 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>If the `node` is fading, this methods logs a warning (Assert-Only) and cancels the fade.</summary>
-        private static void Validate(AnimancerNode node)
-        {
-            if (node != null && node.FadeSpeed != 0)
-            {
+        private static void Validate(AnimancerNode node) {
+            if (node != null && node.FadeSpeed != 0) {
 #if UNITY_ASSERTIONS
                 Debug.LogWarning($"The following {node.GetType().Name} is fading even though " +
                     $"{nameof(DontAllowFade)} is active: {node.GetDescription()}",
@@ -68,11 +63,9 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Calls <see cref="Validate"/> on all layers and their <see cref="AnimancerLayer.CurrentState"/>.</summary>
-        public override void Update()
-        {
+        public override void Update() {
             var layers = AnimancerGraph.Current.Layers;
-            for (int i = layers.Count - 1; i >= 0; i--)
-            {
+            for (int i = layers.Count - 1; i >= 0; i--) {
                 var layer = layers[i];
                 Validate(layer);
                 Validate(layer.CurrentState);

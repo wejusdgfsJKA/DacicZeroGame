@@ -8,21 +8,17 @@ using UnityEditorInternal;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer.Editor
-{
+namespace Animancer.Editor {
     /// <summary>[Editor-Only] A custom Inspector for <see cref="NamedAnimancerComponent"/>s.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer.Editor/NamedAnimancerComponentEditor
     /// 
     [CustomEditor(typeof(NamedAnimancerComponent), true), CanEditMultipleObjects]
-    public class NamedAnimancerComponentEditor : AnimancerComponentEditor
-    {
+    public class NamedAnimancerComponentEditor : AnimancerComponentEditor {
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override bool DoOverridePropertyGUI(string path, SerializedProperty property, GUIContent label)
-        {
-            switch (path)
-            {
+        protected override bool DoOverridePropertyGUI(string path, SerializedProperty property, GUIContent label) {
+            switch (path) {
                 case "_PlayAutomatically":
                     if (ShouldShowAnimationFields())
                         DoDefaultAnimationField(property);
@@ -45,8 +41,7 @@ namespace Animancer.Editor
         /// <see cref="NamedAnimancerComponent.Animations"/> fields are only used on startup, so we don't need to show
         /// them in Play Mode after the object is already enabled.
         /// </summary>
-        private bool ShouldShowAnimationFields()
-        {
+        private bool ShouldShowAnimationFields() {
             if (!EditorApplication.isPlayingOrWillChangePlaymode)
                 return true;
 
@@ -59,8 +54,7 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private void DoDefaultAnimationField(SerializedProperty playAutomatically)
-        {
+        private void DoDefaultAnimationField(SerializedProperty playAutomatically) {
             var area = AnimancerGUI.LayoutSingleLineRect();
 
             var playAutomaticallyWidth = EditorGUIUtility.labelWidth + AnimancerGUI.ToggleWidth;
@@ -73,14 +67,12 @@ namespace Animancer.Editor
             AnimationClip clip;
 
             var animations = serializedObject.FindProperty("_Animations");
-            if (animations.arraySize > 0)
-            {
+            if (animations.arraySize > 0) {
                 firstElement = animations.GetArrayElementAtIndex(0);
                 clip = (AnimationClip)firstElement.objectReferenceValue;
                 EditorGUI.BeginProperty(area, null, firstElement);
             }
-            else
-            {
+            else {
                 firstElement = null;
                 clip = null;
                 EditorGUI.BeginProperty(area, null, animations);
@@ -95,20 +87,16 @@ namespace Animancer.Editor
 
             EditorGUI.indentLevel = indentLevel;
 
-            if (EditorGUI.EndChangeCheck())
-            {
-                if (clip != null)
-                {
-                    if (firstElement == null)
-                    {
+            if (EditorGUI.EndChangeCheck()) {
+                if (clip != null) {
+                    if (firstElement == null) {
                         animations.arraySize = 1;
                         firstElement = animations.GetArrayElementAtIndex(0);
                     }
 
                     firstElement.objectReferenceValue = clip;
                 }
-                else
-                {
+                else {
                     if (firstElement == null || animations.arraySize == 1)
                         animations.arraySize = 0;
                     else
@@ -124,12 +112,10 @@ namespace Animancer.Editor
         private ReorderableList _Animations;
         private static int _RemoveAnimationIndex;
 
-        private void DoAnimationsField(SerializedProperty property)
-        {
+        private void DoAnimationsField(SerializedProperty property) {
             GUILayout.Space(AnimancerGUI.StandardSpacing - 1);
 
-            _Animations ??= new(property.serializedObject, property.Copy())
-            {
+            _Animations ??= new(property.serializedObject, property.Copy()) {
                 drawHeaderCallback = DrawAnimationsHeader,
                 drawElementCallback = DrawAnimationElement,
                 elementHeight = AnimancerGUI.LineHeight,
@@ -152,20 +138,17 @@ namespace Animancer.Editor
 
         private SerializedProperty _AnimationsArraySize;
 
-        private void DrawAnimationsHeader(Rect area)
-        {
+        private void DrawAnimationsHeader(Rect area) {
             var labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth -= 6;
 
             area.width += 5;
 
             var property = _Animations.serializedProperty;
-            using (var label = PooledGUIContent.Acquire(property))
-            {
+            using (var label = PooledGUIContent.Acquire(property)) {
                 var propertyLabel = EditorGUI.BeginProperty(area, label, property);
 
-                if (_AnimationsArraySize == null)
-                {
+                if (_AnimationsArraySize == null) {
                     _AnimationsArraySize = property.Copy();
                     _AnimationsArraySize.Next(true);
                     _AnimationsArraySize.Next(true);
@@ -184,8 +167,7 @@ namespace Animancer.Editor
         private static readonly HashSet<Object>
             PreviousAnimations = new();
 
-        private void DrawAnimationElement(Rect area, int index, bool isActive, bool isFocused)
-        {
+        private void DrawAnimationElement(Rect area, int index, bool isActive, bool isFocused) {
             if (index == 0)
                 PreviousAnimations.Clear();
 
@@ -213,8 +195,7 @@ namespace Animancer.Editor
 
         /************************************************************************************************************************/
 
-        private static void RemoveSelectedElement(ReorderableList list)
-        {
+        private static void RemoveSelectedElement(ReorderableList list) {
             var property = list.serializedProperty;
             var element = property.GetArrayElementAtIndex(list.index);
 
@@ -232,20 +213,16 @@ namespace Animancer.Editor
 
         private static DragAndDropHandler<object> _DropToAddAnimations;
         private static SerializedProperty _DropToAddAnimationsProperty;
-        private static void HandleDragAndDropToAddAnimations(Rect area, SerializedProperty property)
-        {
+        private static void HandleDragAndDropToAddAnimations(Rect area, SerializedProperty property) {
             _DropToAddAnimationsProperty = property;
 
-            _DropToAddAnimations ??= (obj, isDrop) =>
-            {
-                using (ListPool<AnimationClip>.Instance.Acquire(out var clips))
-                {
+            _DropToAddAnimations ??= (obj, isDrop) => {
+                using (ListPool<AnimationClip>.Instance.Acquire(out var clips)) {
                     clips.GatherFromSource(obj);
 
                     var anyValid = false;
 
-                    for (int i = 0; i < clips.Count; i++)
-                    {
+                    for (int i = 0; i < clips.Count; i++) {
                         var clip = clips[i];
                         if (clip.legacy)
                             continue;
