@@ -1,6 +1,5 @@
 using Spawning;
 
-public class SphereSpawner : MonoBehaviourSpawner<float, Poolable<float>>
-{
+public class SphereSpawner : MonoBehaviourSpawner<float, Poolable<float>> {
 
 }

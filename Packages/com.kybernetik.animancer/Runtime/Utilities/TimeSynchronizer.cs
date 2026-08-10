@@ -3,8 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A system for synchronizing the <see cref="AnimancerState.NormalizedTime"/>
     /// of animations within the same "group".
@@ -53,8 +52,7 @@ namespace Animancer
     /// 
     /// https://kybernetik.com.au/animancer/api/Animancer/TimeSynchronizer_1
     /// 
-    public class TimeSynchronizer<T>
-    {
+    public class TimeSynchronizer<T> {
         /************************************************************************************************************************/
 
         /// <summary>The group that the current animation is in.</summary>
@@ -73,12 +71,10 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Creates a new <see cref="TimeSynchronizer{T}"/>.</summary>
-        public TimeSynchronizer()
-        { }
+        public TimeSynchronizer() { }
 
         /// <summary>Creates a new <see cref="TimeSynchronizer{T}"/>.</summary>
-        public TimeSynchronizer(T group, bool synchronizeDefaultGroup = false)
-        {
+        public TimeSynchronizer(T group, bool synchronizeDefaultGroup = false) {
             CurrentGroup = group;
             SynchronizeDefaultGroup = synchronizeDefaultGroup;
         }
@@ -98,8 +94,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Sets the <see cref="State"/> and <see cref="NormalizedTime"/>.</summary>
-        public void StoreTime(AnimancerState state, double normalizedTime)
-        {
+        public void StoreTime(AnimancerState state, double normalizedTime) {
             State = state;
             NormalizedTime = normalizedTime;
         }
@@ -134,14 +129,12 @@ namespace Animancer
         /// <remarks>
         /// If the `state` is the same one the time was stored from, this method does nothing and returns false.
         /// </remarks>
-        public bool SyncTime(AnimancerState state, T group, float deltaTime)
-        {
+        public bool SyncTime(AnimancerState state, T group, float deltaTime) {
             if (state == null ||
                 state == State ||
                 double.IsNaN(NormalizedTime) ||
                 !EqualityComparer<T>.Default.Equals(CurrentGroup, group) ||
-                (!SynchronizeDefaultGroup && EqualityComparer<T>.Default.Equals(default, group)))
-            {
+                (!SynchronizeDefaultGroup && EqualityComparer<T>.Default.Equals(default, group))) {
                 CurrentGroup = group;
                 return false;
             }

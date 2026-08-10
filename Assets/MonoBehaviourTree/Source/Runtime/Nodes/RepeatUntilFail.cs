@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode("Decorators/Repeat Until Fail")]
-    public class RepeatUntilFail : Decorator
-    {
-        public override NodeResult Execute()
-        {
-            if (!TryGetChild(out Node node))
-            {
+    public class RepeatUntilFail : Decorator {
+        public override NodeResult Execute() {
+            if (!TryGetChild(out Node node)) {
                 return NodeResult.failure;
             }
             if (node.status == Status.Failure) {
@@ -19,7 +15,7 @@ namespace MBT
             }
             // Repeat children
             behaviourTree.ResetNodesTo(this);
-            return node.runningNodeResult; 
+            return node.runningNodeResult;
         }
     }
 }

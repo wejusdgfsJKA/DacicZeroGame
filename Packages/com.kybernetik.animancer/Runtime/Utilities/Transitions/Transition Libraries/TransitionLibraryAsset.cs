@@ -3,8 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer.TransitionLibraries
-{
+namespace Animancer.TransitionLibraries {
     /// <summary>[Pro-Only]
     /// A <see cref="ScriptableObject"/> which serializes a <see cref="TransitionLibraryDefinition"/>
     /// and creates a <see cref="TransitionLibrary"/> from it at runtime.

@@ -3,8 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>Left or Right.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -13,8 +12,7 @@ namespace Animancer
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer/Direction2
     /// 
-    public enum Direction2
-    {
+    public enum Direction2 {
         /************************************************************************************************************************/
 
         /// <summary><see cref="Vector2.left"/>.</summary>
@@ -36,8 +34,7 @@ namespace Animancer
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer/Direction4
     /// 
-    public enum Direction4
-    {
+    public enum Direction4 {
         /************************************************************************************************************************/
 
         /// <summary><see cref="Vector2.up"/>.</summary>
@@ -65,8 +62,7 @@ namespace Animancer
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer/Direction8
     /// 
-    public enum Direction8
-    {
+    public enum Direction8 {
         /// <summary><see cref="Vector2.up"/>.</summary>
         Up,
 
@@ -102,8 +98,7 @@ namespace Animancer
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer/Directions
     /// 
-    public static class Directions
-    {
+    public static class Directions {
         /************************************************************************************************************************/
 
         /// <summary>1 / (Square Root of 2).</summary>
@@ -143,8 +138,7 @@ namespace Animancer
 
         /// <summary>Returns a vector representing the specified `direction`.</summary>
         public static Vector2 ToVector2(this Direction2 direction)
-            => direction switch
-            {
+            => direction switch {
                 Direction2.Left => Vector2.left,
                 Direction2.Right => Vector2.right,
                 _ => throw AnimancerUtilities.CreateUnsupportedArgumentException(direction),
@@ -152,8 +146,7 @@ namespace Animancer
 
         /// <summary>Returns a vector representing the specified `direction`.</summary>
         public static Vector2 ToVector2(this Direction4 direction)
-            => direction switch
-            {
+            => direction switch {
                 Direction4.Up => Vector2.up,
                 Direction4.Right => Vector2.right,
                 Direction4.Down => Vector2.down,
@@ -163,8 +156,7 @@ namespace Animancer
 
         /// <summary>Returns a vector representing the specified `direction`.</summary>
         public static Vector2 ToVector2(this Direction8 direction)
-            => direction switch
-            {
+            => direction switch {
                 Direction8.Up => Vector2.up,
                 Direction8.Right => Vector2.right,
                 Direction8.Down => Vector2.down,
@@ -191,17 +183,14 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Returns the direction closest to the specified `vector`.</summary>
-        public static Direction4 ToDirection4(Vector2 vector)
-        {
-            if (vector.x >= 0)
-            {
+        public static Direction4 ToDirection4(Vector2 vector) {
+            if (vector.x >= 0) {
                 if (vector.y >= 0)
                     return vector.x > vector.y ? Direction4.Right : Direction4.Up;
                 else
                     return vector.x > -vector.y ? Direction4.Right : Direction4.Down;
             }
-            else
-            {
+            else {
                 if (vector.y >= 0)
                     return vector.x < -vector.y ? Direction4.Left : Direction4.Up;
                 else
@@ -210,17 +199,14 @@ namespace Animancer
         }
 
         /// <summary>Returns the direction closest to the specified `vector`.</summary>
-        public static Direction4 ToDirection4(Vector2Int vector)
-        {
-            if (vector.x >= 0)
-            {
+        public static Direction4 ToDirection4(Vector2Int vector) {
+            if (vector.x >= 0) {
                 if (vector.y >= 0)
                     return vector.x > vector.y ? Direction4.Right : Direction4.Up;
                 else
                     return vector.x > -vector.y ? Direction4.Right : Direction4.Down;
             }
-            else
-            {
+            else {
                 if (vector.y >= 0)
                     return vector.x < -vector.y ? Direction4.Left : Direction4.Up;
                 else
@@ -231,12 +217,10 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Returns the direction closest to the specified `vector`.</summary>
-        public static Direction8 ToDirection8(Vector2 vector)
-        {
+        public static Direction8 ToDirection8(Vector2 vector) {
             var angle = Mathf.Atan2(vector.y, vector.x);
             var octant = Mathf.RoundToInt(8 * angle / (2 * Mathf.PI) + 8) % 8;
-            return octant switch
-            {
+            return octant switch {
                 0 => Direction8.Right,
                 1 => Direction8.UpRight,
                 2 => Direction8.Up,
@@ -258,8 +242,7 @@ namespace Animancer
             : new(vector.magnitude, 0);
 
         /// <summary>Returns a copy of the `vector` pointing in the closest <see cref="Direction4"/>.</summary>
-        public static Vector2 SnapToDirection4(Vector2 vector)
-        {
+        public static Vector2 SnapToDirection4(Vector2 vector) {
             var magnitude = vector.magnitude;
             var direction = ToDirection4(vector);
             vector = direction.ToVector2() * magnitude;
@@ -267,8 +250,7 @@ namespace Animancer
         }
 
         /// <summary>Returns a copy of the `vector` pointing in the closest <see cref="Direction8"/>.</summary>
-        public static Vector2 SnapToDirection8(Vector2 vector)
-        {
+        public static Vector2 SnapToDirection8(Vector2 vector) {
             var magnitude = vector.magnitude;
             var direction = ToDirection8(vector);
             vector = direction.ToVector2() * magnitude;

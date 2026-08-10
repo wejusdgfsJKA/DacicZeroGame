@@ -4,8 +4,7 @@
 
 using UnityEngine;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>
     /// A component which takes the root motion from an <see cref="Animator"/> and applies it to a
     /// <see cref="CharacterController"/>.
@@ -21,27 +20,23 @@ namespace Animancer
     /// 
     [AddComponentMenu("Animancer/Redirect Root Motion To Character Controller")]
     [HelpURL("https://kybernetik.com.au/animancer/api/Animancer/" + nameof(RedirectRootMotionToCharacterController))]
-    public class RedirectRootMotionToCharacterController : RedirectRootMotion<CharacterController>
-    {
+    public class RedirectRootMotionToCharacterController : RedirectRootMotion<CharacterController> {
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override Vector3 Position
-        {
+        public override Vector3 Position {
             get => Target.transform.position;
             set => Target.Move(value - Position);
         }
 
         /// <inheritdoc/>
-        public override Quaternion Rotation
-        {
+        public override Quaternion Rotation {
             get => Target.transform.rotation;
             set => Target.transform.rotation = value;
         }
 
         /// <inheritdoc/>
-        protected override void OnAnimatorMove()
-        {
+        protected override void OnAnimatorMove() {
             if (!ApplyRootMotion)
                 return;
 

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GlobalSettings
-{
+public static class GlobalSettings {
     #region AI stuff
     /// <summary>
     /// What layers should each team check? Bots should check for humies and viceversa.

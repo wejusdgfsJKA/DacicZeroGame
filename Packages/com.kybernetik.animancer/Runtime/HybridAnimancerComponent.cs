@@ -9,8 +9,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>[Pro-Only]
     /// A <see cref="NamedAnimancerComponent"/> which plays a main <see cref="RuntimeAnimatorController"/>
     /// with the ability to play other individual <see cref="AnimationClip"/>s separately.
@@ -27,8 +26,7 @@ namespace Animancer
 #endif
     [AddComponentMenu(Strings.MenuPrefix + "Hybrid Animancer Component")]
     [AnimancerHelpUrl(typeof(HybridAnimancerComponent))]
-    public class HybridAnimancerComponent : NamedAnimancerComponent
-    {
+    public class HybridAnimancerComponent : NamedAnimancerComponent {
         /************************************************************************************************************************/
         #region Controller
         /************************************************************************************************************************/
@@ -48,8 +46,7 @@ namespace Animancer
         /// <see cref="Transition{TState}.FadeDuration"/> and returns the
         /// <see cref="Transition{TState}.State"/>.
         /// </summary>
-        public ControllerState PlayController()
-        {
+        public ControllerState PlayController() {
             if (!_Controller.IsValid())
                 return null;
 
@@ -79,12 +76,10 @@ namespace Animancer
         /// Called by the Unity Editor when this component is first added (in Edit Mode) and whenever the Reset command
         /// is executed from its context menu.
         /// </remarks>
-        protected override void Reset()
-        {
+        protected override void Reset() {
             base.Reset();
 
-            if (Animator != null)
-            {
+            if (Animator != null) {
                 Controller = Animator.runtimeAnimatorController;
                 Animator.runtimeAnimatorController = null;
             }
@@ -99,8 +94,7 @@ namespace Animancer
         /// Plays the <see cref="Controller"/> if <see cref="PlayAutomatically"/> is false (otherwise it plays the
         /// first animation in the <see cref="NamedAnimancerComponent.Animations"/> array).
         /// </summary>
-        protected override void OnEnable()
-        {
+        protected override void OnEnable() {
             if (!TryGetAnimator())
                 return;
 
@@ -114,8 +108,7 @@ namespace Animancer
         /// Sets <see cref="AnimancerGraph.KeepChildrenConnected"/> to <c>true</c> in order to avoid some
         /// undesirable behaviours caused by disconnecting <see cref="AnimatorControllerPlayable"/>s from the graph.
         /// </summary>
-        protected override void OnInitializeGraph()
-        {
+        protected override void OnInitializeGraph() {
             base.OnInitializeGraph();
             Graph.SetKeepChildrenConnected(true);
         }
@@ -123,8 +116,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void GatherAnimationClips(ICollection<AnimationClip> clips)
-        {
+        public override void GatherAnimationClips(ICollection<AnimationClip> clips) {
             base.GatherAnimationClips(clips);
             clips.GatherFromSource(_Controller);
         }
@@ -142,8 +134,7 @@ namespace Animancer
             => Graph;
 
         /// <summary><see cref="Controller"/></summary>
-        public RuntimeAnimatorController runtimeAnimatorController
-        {
+        public RuntimeAnimatorController runtimeAnimatorController {
             get => Controller.Controller;
             set => Controller.Controller = value;
         }
@@ -151,13 +142,11 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>The <see cref="AnimancerNode.Speed"/> of the <see cref="Controller"/>.</summary>
-        public float Speed
-        {
+        public float Speed {
             get => _Controller.State != null
                 ? _Controller.State.Speed
                 : _Controller.Speed;
-            set
-            {
+            set {
                 _Controller.Speed = value;
 
                 if (_Controller.State != null)
@@ -166,8 +155,7 @@ namespace Animancer
         }
 
         /// <summary>Wraps the <see cref="Speed"/> property with the same name as <see cref="Animator.speed"/>.</summary>
-        public float speed
-        {
+        public float speed {
             get => Speed;
             set => Speed = value;
         }
@@ -177,22 +165,19 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary><see cref="Animator.applyRootMotion"/></summary>
-        public bool applyRootMotion
-        {
+        public bool applyRootMotion {
             get => Animator.applyRootMotion;
             set => Animator.applyRootMotion = value;
         }
 
         /// <summary><see cref="Animator.bodyRotation"/></summary>
-        public Quaternion bodyRotation
-        {
+        public Quaternion bodyRotation {
             get => Animator.bodyRotation;
             set => Animator.bodyRotation = value;
         }
 
         /// <summary><see cref="Animator.bodyPosition"/></summary>
-        public Vector3 bodyPosition
-        {
+        public Vector3 bodyPosition {
             get => Animator.bodyPosition;
             set => Animator.bodyPosition = value;
         }
@@ -204,8 +189,7 @@ namespace Animancer
         public bool hasRootMotion => Animator.hasRootMotion;
 
         /// <summary><see cref="Animator.layersAffectMassCenter"/></summary>
-        public bool layersAffectMassCenter
-        {
+        public bool layersAffectMassCenter {
             get => Animator.layersAffectMassCenter;
             set => Animator.layersAffectMassCenter = value;
         }
@@ -217,15 +201,13 @@ namespace Animancer
         public float pivotWeight => Animator.pivotWeight;
 
         /// <summary><see cref="Animator.rootRotation"/></summary>
-        public Quaternion rootRotation
-        {
+        public Quaternion rootRotation {
             get => Animator.rootRotation;
             set => Animator.rootRotation = value;
         }
 
         /// <summary><see cref="Animator.rootPosition"/></summary>
-        public Vector3 rootPosition
-        {
+        public Vector3 rootPosition {
             get => Animator.rootPosition;
             set => Animator.rootPosition = value;
         }
@@ -250,15 +232,13 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary><see cref="Animator.feetPivotActive"/></summary>
-        public float feetPivotActive
-        {
+        public float feetPivotActive {
             get => Animator.feetPivotActive;
             set => Animator.feetPivotActive = value;
         }
 
         /// <summary><see cref="Animator.stabilizeFeet"/></summary>
-        public bool stabilizeFeet
-        {
+        public bool stabilizeFeet {
             get => Animator.stabilizeFeet;
             set => Animator.stabilizeFeet = value;
         }
@@ -281,8 +261,7 @@ namespace Animancer
             int stateNameHash,
             float fadeDuration = ControllerState.DefaultFadeDuration,
             int layer = -1,
-            float normalizedTime = float.NegativeInfinity)
-        {
+            float normalizedTime = float.NegativeInfinity) {
             fadeDuration = ControllerState.GetFadeDuration(fadeDuration);
             var controllerState = PlayController();
             controllerState.Playable.CrossFade(stateNameHash, fadeDuration, layer, normalizedTime);
@@ -296,12 +275,10 @@ namespace Animancer
             string stateName,
             float fadeDuration = ControllerState.DefaultFadeDuration,
             int layer = -1,
-            float normalizedTime = float.NegativeInfinity)
-        {
+            float normalizedTime = float.NegativeInfinity) {
             fadeDuration = ControllerState.GetFadeDuration(fadeDuration);
 
-            if (States.TryGet(stateName, out var state))
-            {
+            if (States.TryGet(stateName, out var state)) {
                 Play(state, fadeDuration);
 
                 if (layer >= 0)
@@ -312,8 +289,7 @@ namespace Animancer
 
                 return state;
             }
-            else
-            {
+            else {
                 var controllerState = PlayController();
                 controllerState.Playable.CrossFade(stateName, fadeDuration, layer, normalizedTime);
                 return controllerState;
@@ -328,8 +304,7 @@ namespace Animancer
             int stateNameHash,
             float fadeDuration = ControllerState.DefaultFadeDuration,
             int layer = -1,
-            float fixedTime = 0)
-        {
+            float fixedTime = 0) {
             fadeDuration = ControllerState.GetFadeDuration(fadeDuration);
             var controllerState = PlayController();
             controllerState.Playable.CrossFadeInFixedTime(stateNameHash, fadeDuration, layer, fixedTime);
@@ -343,12 +318,10 @@ namespace Animancer
             string stateName,
             float fadeDuration = ControllerState.DefaultFadeDuration,
             int layer = -1,
-            float fixedTime = 0)
-        {
+            float fixedTime = 0) {
             fadeDuration = ControllerState.GetFadeDuration(fadeDuration);
 
-            if (States.TryGet(stateName, out var state))
-            {
+            if (States.TryGet(stateName, out var state)) {
                 Play(state, fadeDuration);
 
                 if (layer >= 0)
@@ -358,8 +331,7 @@ namespace Animancer
 
                 return state;
             }
-            else
-            {
+            else {
                 var controllerState = PlayController();
                 controllerState.Playable.CrossFadeInFixedTime(stateName, fadeDuration, layer, fixedTime);
                 return controllerState;
@@ -376,8 +348,7 @@ namespace Animancer
         public void Play(
             int stateNameHash,
             int layer = -1,
-            float normalizedTime = float.NegativeInfinity)
-        {
+            float normalizedTime = float.NegativeInfinity) {
             var controllerState = PlayController();
             controllerState.Playable.Play(stateNameHash, layer, normalizedTime);
         }
@@ -388,10 +359,8 @@ namespace Animancer
         public AnimancerState Play(
             string stateName,
             int layer = -1,
-            float normalizedTime = float.NegativeInfinity)
-        {
-            if (States.TryGet(stateName, out var state))
-            {
+            float normalizedTime = float.NegativeInfinity) {
+            if (States.TryGet(stateName, out var state)) {
                 Play(state);
 
                 if (layer >= 0)
@@ -402,8 +371,7 @@ namespace Animancer
 
                 return state;
             }
-            else
-            {
+            else {
                 var controllerState = PlayController();
                 controllerState.Playable.Play(stateName, layer, normalizedTime);
                 return controllerState;
@@ -416,8 +384,7 @@ namespace Animancer
         public void PlayInFixedTime(
             int stateNameHash,
             int layer = -1,
-            float fixedTime = 0)
-        {
+            float fixedTime = 0) {
             var controllerState = PlayController();
             controllerState.Playable.PlayInFixedTime(stateNameHash, layer, fixedTime);
         }
@@ -428,10 +395,8 @@ namespace Animancer
         public AnimancerState PlayInFixedTime(
             string stateName,
             int layer = -1,
-            float fixedTime = 0)
-        {
-            if (States.TryGet(stateName, out var state))
-            {
+            float fixedTime = 0) {
+            if (States.TryGet(stateName, out var state)) {
                 Play(state);
 
                 if (layer >= 0)
@@ -441,8 +406,7 @@ namespace Animancer
 
                 return state;
             }
-            else
-            {
+            else {
                 var controllerState = PlayController();
                 controllerState.Playable.PlayInFixedTime(stateName, layer, fixedTime);
                 return controllerState;
@@ -618,22 +582,19 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary><see cref="Animator.avatar"/></summary>
-        public Avatar avatar
-        {
+        public Avatar avatar {
             get => Animator.avatar;
             set => Animator.avatar = value;
         }
 
         /// <summary><see cref="Animator.cullingMode"/></summary>
-        public AnimatorCullingMode cullingMode
-        {
+        public AnimatorCullingMode cullingMode {
             get => Animator.cullingMode;
             set => Animator.cullingMode = value;
         }
 
         /// <summary><see cref="Animator.fireEvents"/></summary>
-        public bool fireEvents
-        {
+        public bool fireEvents {
             get => Animator.fireEvents;
             set => Animator.fireEvents = value;
         }
@@ -651,16 +612,14 @@ namespace Animancer
         public bool isOptimizable => Animator.isOptimizable;
 
         /// <summary><see cref="Animator.logWarnings"/></summary>
-        public bool logWarnings
-        {
+        public bool logWarnings {
             get => Animator.logWarnings;
             set => Animator.logWarnings = value;
         }
 
         /// <summary><see cref="Animator.updateMode"/></summary>
         /// <remarks>Changing this at runtime doesn't work when using the Playables API.</remarks>
-        public AnimatorUpdateMode updateMode
-        {
+        public AnimatorUpdateMode updateMode {
             get => Animator.updateMode;
             set => Animator.updateMode = value;
         }
@@ -668,8 +627,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary><see cref="Animator.keepAnimatorStateOnDisable"/></summary>
-        public bool keepAnimatorStateOnDisable
-        {
+        public bool keepAnimatorStateOnDisable {
             get => Animator.keepAnimatorStateOnDisable;
             set => Animator.keepAnimatorStateOnDisable = value;
         }
@@ -689,8 +647,7 @@ namespace Animancer
     /// <summary>Extension methods for <see cref="HybridAnimancerComponent"/>.</summary>
     /// https://kybernetik.com.au/animancer/api/Animancer/HybridAnimancerComponentExtensions
     /// 
-    public static class HybridAnimancerComponentExtensions
-    {
+    public static class HybridAnimancerComponentExtensions {
         /************************************************************************************************************************/
 
         /// <summary>

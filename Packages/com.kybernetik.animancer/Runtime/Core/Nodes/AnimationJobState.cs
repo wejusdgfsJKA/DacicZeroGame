@@ -5,15 +5,13 @@ using Unity.Collections;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <summary>A scripted animation for an <see cref="AnimationJobState{T}"/>.</summary>
     /// <remarks>
     /// If <see cref="IDisposable.Dispose"/> is implemented,
     /// it will be called when the state is destroyed or disposed.
     /// </remarks>
-    public interface IAnimancerStateJob : IDisposable
-    {
+    public interface IAnimancerStateJob : IDisposable {
         /************************************************************************************************************************/
 
         /// <summary>The total time this job would take to play in seconds at normal speed.</summary>
@@ -48,8 +46,7 @@ namespace Animancer
     /// https://kybernetik.com.au/animancer/api/Animancer/AnimationJobState_1
     /// 
     public class AnimationJobState<T> : AnimancerState, IUpdatable, IDisposable
-        where T : struct, IAnimancerStateJob
-    {
+        where T : struct, IAnimancerStateJob {
         /************************************************************************************************************************/
 
         /// <summary>
@@ -57,8 +54,7 @@ namespace Animancer
         /// in order to manage a <see cref="Time"/> array which can feed the <see cref="AnimancerState.TimeD"/>
         /// into the job.
         /// </summary>
-        public struct TimedJob : IAnimationJob, IDisposable
-        {
+        public struct TimedJob : IAnimationJob, IDisposable {
             /// <summary>The <see cref="IAnimancerStateJob"/> data.</summary>
             public T Job;
 
@@ -66,8 +62,7 @@ namespace Animancer
             public NativeArray<double> Time;
 
             /// <summary>Cleans up the unmanaged resources used by this job.</summary>
-            public readonly void Dispose()
-            {
+            public readonly void Dispose() {
                 if (Time.IsCreated)
                     Time.Dispose();
 
@@ -95,11 +90,9 @@ namespace Animancer
         /// <see href="https://kybernetik.com.au/animancer/docs/samples/jobs/hit-impacts#angle">
         /// Hit Impacts</see> sample.
         /// </remarks>
-        public T Job
-        {
+        public T Job {
             get => _Job.Job;
-            set
-            {
+            set {
                 _Job.Job = value;
                 _Playable.SetJobData(_Job);
             }
@@ -119,16 +112,14 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Creates a new <see cref="AnimationJobState{T}"/>.</summary>
-        public AnimationJobState(T job)
-        {
+        public AnimationJobState(T job) {
             _Job.Job = job;
         }
 
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void SetGraph(AnimancerGraph graph)
-        {
+        public override void SetGraph(AnimancerGraph graph) {
             Graph?.Disposables.Remove(this);
             base.SetGraph(graph);
             Graph?.Disposables.Add(this);
@@ -137,8 +128,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override void CreatePlayable(out Playable playable)
-        {
+        protected override void CreatePlayable(out Playable playable) {
             if (!_Job.Time.IsCreated)
                 _Job.Time = AnimancerUtilities.CreateNativeReference<double>();
 
@@ -148,8 +138,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        protected override void OnSetIsPlaying()
-        {
+        protected override void OnSetIsPlaying() {
             base.OnSetIsPlaying();
 
             if (IsPlaying)
@@ -164,8 +153,7 @@ namespace Animancer
         /// Called every frame before the job is applied to send the
         /// <see cref="AnimancerState.Time"/> to the <see cref="Job"/>.
         /// </summary>
-        public virtual void Update()
-        {
+        public virtual void Update() {
             var time = _Job.Time;
             time[0] = TimeD;
         }
@@ -177,12 +165,10 @@ namespace Animancer
             => _Job.Dispose();
 
         /// <inheritdoc/>
-        public override void Destroy()
-        {
+        public override void Destroy() {
             base.Destroy();
 
-            if (Graph != null)
-            {
+            if (Graph != null) {
                 Graph.CancelPreUpdate(this);
                 Graph.Disposables.Remove(this);
             }
@@ -199,8 +185,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override AnimancerState Clone(CloneContext context)
-        {
+        public override AnimancerState Clone(CloneContext context) {
             var clone = new AnimationJobState<T>(_Job.Job);
             clone.CopyFrom(this, context);
             return clone;

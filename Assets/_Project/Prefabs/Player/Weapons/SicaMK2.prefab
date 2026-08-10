@@ -205,8 +205,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7fb0d9a83a88c4a805f26716fe774d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.SicaMK1
+  Damage: 2
   fireCooldown: 0.5
   altFireCooldown: 10
+  WeaponSprite: {fileID: 2800000, guid: c72fa9cde4a6d724eafadc2d9d625fe3, type: 3}
+  cooldownTo: -1
   projectile: {fileID: 115248252639209875, guid: 869fead39158538459e46537abb6c292, type: 3}
   projectileVelocity: 20
   clip: {fileID: 7400000, guid: 6ffc3fee10117ca43b524b4439eb840b, type: 2}

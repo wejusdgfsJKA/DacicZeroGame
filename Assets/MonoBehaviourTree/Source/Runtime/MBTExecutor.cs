@@ -1,28 +1,22 @@
 ﻿using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MonoBehaviourTree))]
-    public class MBTExecutor : MonoBehaviour
-    {
+    public class MBTExecutor : MonoBehaviour {
         public MonoBehaviourTree monoBehaviourTree;
 
-        void Reset()
-        {
+        void Reset() {
             monoBehaviourTree = GetComponent<MonoBehaviourTree>();
             OnValidate();
         }
 
-        void Update()
-        {
+        void Update() {
             monoBehaviourTree.Tick();
         }
 
-        void OnValidate()
-        {
-            if (monoBehaviourTree != null && monoBehaviourTree.parent != null)
-            {
+        void OnValidate() {
+            if (monoBehaviourTree != null && monoBehaviourTree.parent != null) {
                 monoBehaviourTree = null;
                 Debug.LogWarning("Subtree should not be target of update. Select parent tree instead.", this.gameObject);
             }

@@ -5,11 +5,9 @@ using UnityEditor;
 using MBT;
 using System;
 
-namespace MBTEditor
-{
+namespace MBTEditor {
     [CustomEditor(typeof(InvokeUnityEvent))]
-    public class InvokeUnityEventEditor : Editor
-    {
+    public class InvokeUnityEventEditor : Editor {
         SerializedProperty titleProp;
         SerializedProperty typeProp;
 
@@ -21,7 +19,7 @@ namespace MBTEditor
         private SerializedProperty stringEventProp;
         private SerializedProperty vector3EventProp;
         private SerializedProperty vector2EventProp;
-        
+
         private SerializedProperty transformReferenceProp;
         private SerializedProperty gameObjectReferenceProp;
         private SerializedProperty floatReferenceProp;
@@ -31,11 +29,10 @@ namespace MBTEditor
         private SerializedProperty vector3ReferenceProp;
         private SerializedProperty vector2ReferenceProp;
 
-        void OnEnable()
-        {
+        void OnEnable() {
             titleProp = serializedObject.FindProperty("title");
             typeProp = serializedObject.FindProperty("type");
-            
+
             transformEventProp = serializedObject.FindProperty("transformEvent");
             gameObjectEventProp = serializedObject.FindProperty("gameObjectEvent");
             floatEventProp = serializedObject.FindProperty("floatEvent");
@@ -58,8 +55,7 @@ namespace MBTEditor
         private static readonly GUIContent variableLabel = new GUIContent("Parameter");
         private static readonly GUIContent eventLabel = new GUIContent("Event");
 
-        public override void OnInspectorGUI()
-        {
+        public override void OnInspectorGUI() {
             serializedObject.Update();
             EditorGUI.BeginChangeCheck();
 
@@ -67,23 +63,19 @@ namespace MBTEditor
             EditorGUILayout.PropertyField(typeProp);
             EditorGUILayout.Space();
 
-            if (GetSerializedProperties(out SerializedProperty eventProp, out SerializedProperty variableProp))
-            {
+            if (GetSerializedProperties(out SerializedProperty eventProp, out SerializedProperty variableProp)) {
                 EditorGUILayout.PropertyField(variableProp, variableLabel);
                 EditorGUILayout.PropertyField(eventProp, eventLabel);
             }
 
-            if (EditorGUI.EndChangeCheck())
-            {
+            if (EditorGUI.EndChangeCheck()) {
                 serializedObject.ApplyModifiedProperties();
             }
         }
 
-        private bool GetSerializedProperties(out SerializedProperty eventProp, out SerializedProperty referenceProp)
-        {
+        private bool GetSerializedProperties(out SerializedProperty eventProp, out SerializedProperty referenceProp) {
             InvokeUnityEvent.EventType eventType = (InvokeUnityEvent.EventType)typeProp.enumValueIndex;
-            switch (eventType)
-            {
+            switch (eventType) {
                 case InvokeUnityEvent.EventType.Transform:
                     eventProp = transformEventProp;
                     referenceProp = transformReferenceProp;

@@ -5,8 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>Interface for accessing <see cref="StateMachine{TKey, TState}"/> without the <c>TState</c>.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -15,8 +14,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/IKeyedStateMachine_1
     /// 
-    public interface IKeyedStateMachine<TKey>
-    {
+    public interface IKeyedStateMachine<TKey> {
         /************************************************************************************************************************/
 
         /// <summary>The key which identifies the <see cref="StateMachine{TState}.CurrentState"/>.</summary>
@@ -68,8 +66,7 @@ namespace Animancer.FSM
     [HelpURL(StateExtensions.APIDocumentationURL + nameof(StateMachine<TState>) + "_2")]
     [Serializable]
     public partial class StateMachine<TKey, TState> : StateMachine<TState>, IKeyedStateMachine<TKey>, IDictionary<TKey, TState>
-        where TState : class, IState
-    {
+        where TState : class, IState {
         /************************************************************************************************************************/
 
         /// <summary>The collection of states mapped to a particular key.</summary>
@@ -97,8 +94,7 @@ namespace Animancer.FSM
         /// Creates a new <see cref="StateMachine{TKey, TState}"/> with a new <see cref="Dictionary"/>, leaving the
         /// <see cref="CurrentState"/> null.
         /// </summary>
-        public StateMachine()
-        {
+        public StateMachine() {
             Dictionary = new Dictionary<TKey, TState>();
         }
 
@@ -106,8 +102,7 @@ namespace Animancer.FSM
         /// Creates a new <see cref="StateMachine{TKey, TState}"/> which uses the specified `dictionary`, leaving the
         /// <see cref="CurrentState"/> null.
         /// </summary>
-        public StateMachine(IDictionary<TKey, TState> dictionary)
-        {
+        public StateMachine(IDictionary<TKey, TState> dictionary) {
             Dictionary = dictionary;
         }
 
@@ -116,8 +111,7 @@ namespace Animancer.FSM
         /// immediately uses the `defaultKey` to enter the `defaultState`.
         /// </summary>
         /// <remarks>This calls <see cref="IState.OnEnterState"/> but not <see cref="IState.CanEnterState"/>.</remarks>
-        public StateMachine(TKey defaultKey, TState defaultState)
-        {
+        public StateMachine(TKey defaultKey, TState defaultState) {
             Dictionary = new Dictionary<TKey, TState>
             {
                 { defaultKey, defaultState }
@@ -130,8 +124,7 @@ namespace Animancer.FSM
         /// immediately uses the `defaultKey` to enter the `defaultState`.
         /// </summary>
         /// <remarks>This calls <see cref="IState.OnEnterState"/> but not <see cref="IState.CanEnterState"/>.</remarks>
-        public StateMachine(IDictionary<TKey, TState> dictionary, TKey defaultKey, TState defaultState)
-        {
+        public StateMachine(IDictionary<TKey, TState> dictionary, TKey defaultKey, TState defaultState) {
             Dictionary = dictionary;
             dictionary.Add(defaultKey, defaultState);
             ForceSetState(defaultKey, defaultState);
@@ -140,16 +133,13 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void InitializeAfterDeserialize()
-        {
-            if (CurrentState != null)
-            {
+        public override void InitializeAfterDeserialize() {
+            if (CurrentState != null) {
                 using (new KeyChange<TKey>(this, default, _CurrentKey))
                 using (new StateChange<TState>(this, null, CurrentState))
                     CurrentState.OnEnterState();
             }
-            else if (Dictionary.TryGetValue(_CurrentKey, out var state))
-            {
+            else if (Dictionary.TryGetValue(_CurrentKey, out var state)) {
                 ForceSetState(_CurrentKey, state);
             }
 
@@ -164,8 +154,7 @@ namespace Animancer.FSM
         /// <see cref="StateMachine{TState}.CurrentState"/>. To allow directly re-entering the same state, use
         /// <see cref="TryResetState(TKey, TState)"/> instead.
         /// </remarks>
-        public bool TrySetState(TKey key, TState state)
-        {
+        public bool TrySetState(TKey key, TState state) {
             if (CurrentState == state)
                 return true;
             else
@@ -177,8 +166,7 @@ namespace Animancer.FSM
         /// This method returns true immediately if the specified `key` is already the <see cref="CurrentKey"/>. To
         /// allow directly re-entering the same state, use <see cref="TryResetState(TKey)"/> instead.
         /// </remarks>
-        public TState TrySetState(TKey key)
-        {
+        public TState TrySetState(TKey key) {
             if (EqualityComparer<TKey>.Default.Equals(_CurrentKey, key))
                 return CurrentState;
             else
@@ -195,10 +183,8 @@ namespace Animancer.FSM
         /// This method does not check if the `state` is already the <see cref="StateMachine{TState}.CurrentState"/>.
         /// To do so, use <see cref="TrySetState(TKey, TState)"/> instead.
         /// </remarks>
-        public bool TryResetState(TKey key, TState state)
-        {
-            using (new KeyChange<TKey>(this, _CurrentKey, key))
-            {
+        public bool TryResetState(TKey key, TState state) {
+            using (new KeyChange<TKey>(this, _CurrentKey, key)) {
                 if (!CanSetState(state))
                     return false;
 
@@ -213,8 +199,7 @@ namespace Animancer.FSM
         /// This method does not check if the `key` is already the <see cref="CurrentKey"/>. To do so, use
         /// <see cref="TrySetState(TKey)"/> instead.
         /// </remarks>
-        public TState TryResetState(TKey key)
-        {
+        public TState TryResetState(TKey key) {
             if (Dictionary.TryGetValue(key, out var state) &&
                 TryResetState(key, state))
                 return state;
@@ -235,10 +220,8 @@ namespace Animancer.FSM
         /// This method does not check <see cref="IState.CanExitState"/> or <see cref="IState.CanEnterState"/>. To do
         /// that, you should use <see cref="TrySetState(TKey, TState)"/> instead.
         /// </remarks>
-        public void ForceSetState(TKey key, TState state)
-        {
-            using (new KeyChange<TKey>(this, _CurrentKey, key))
-            {
+        public void ForceSetState(TKey key, TState state) {
+            using (new KeyChange<TKey>(this, _CurrentKey, key)) {
                 _CurrentKey = key;
                 ForceSetState(state);
             }
@@ -249,8 +232,7 @@ namespace Animancer.FSM
         /// is registered, it use <c>null</c> and will throw an exception unless
         /// <see cref="StateMachine{TState}.AllowNullStates"/> is enabled.
         /// </summary>
-        public TState ForceSetState(TKey key)
-        {
+        public TState ForceSetState(TKey key) {
             Dictionary.TryGetValue(key, out var state);
             ForceSetState(key, state);
             return state;
@@ -334,8 +316,7 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <summary>Returns the state registered with the specified `key`, or null if none is present.</summary>
-        public TState GetState(TKey key)
-        {
+        public TState GetState(TKey key) {
             TryGetValue(key, out var state);
             return state;
         }
@@ -343,13 +324,11 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <summary>Adds the specified `keys` and `states`. Both arrays must be the same size.</summary>
-        public void AddRange(TKey[] keys, TState[] states)
-        {
+        public void AddRange(TKey[] keys, TState[] states) {
             Debug.Assert(keys.Length == states.Length,
                 $"The '{nameof(keys)}' and '{nameof(states)}' arrays must be the same size.");
 
-            for (int i = 0; i < keys.Length; i++)
-            {
+            for (int i = 0; i < keys.Length; i++) {
                 Dictionary.Add(keys[i], states[i]);
             }
         }
@@ -380,8 +359,7 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void DoGUI(ref Rect area)
-        {
+        public override void DoGUI(ref Rect area) {
             area.height = UnityEditor.EditorGUIUtility.singleLineHeight;
 
             UnityEditor.EditorGUI.BeginChangeCheck();

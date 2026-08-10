@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MBT
-{
+namespace MBT {
     [AddComponentMenu("")]
     [MBTNode("Decorators/Random Chance")]
-    public class RandomChance : Decorator
-    {
+    public class RandomChance : Decorator {
         [Tooltip("Probability should be between 0 and 1")]
         public FloatReference probability = new FloatReference(0.5f);
         private float roll;
 
-        public override void OnAllowInterrupt()
-        {
+        public override void OnAllowInterrupt() {
             roll = Random.Range(0f, 1f);
         }
 
-        public override NodeResult Execute()
-        {
+        public override NodeResult Execute() {
             Node node = GetChild();
             if (node == null) {
                 return NodeResult.failure;
@@ -32,10 +28,8 @@ namespace MBT
             return node.runningNodeResult;
         }
 
-        void OnValidate()
-        {
-            if (probability.isConstant)
-            {
+        void OnValidate() {
+            if (probability.isConstant) {
                 probability.Value = Mathf.Clamp(probability.GetConstant(), 0f, 1f);
             }
         }

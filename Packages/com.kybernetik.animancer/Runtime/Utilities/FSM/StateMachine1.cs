@@ -5,8 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Animancer.FSM
-{
+namespace Animancer.FSM {
     /// <summary>A simple keyless Finite State Machine system.</summary>
     /// <remarks>
     /// <strong>Documentation:</strong>
@@ -15,8 +14,7 @@ namespace Animancer.FSM
     /// </remarks>
     /// https://kybernetik.com.au/animancer/api/Animancer.FSM/IStateMachine
     /// 
-    public interface IStateMachine
-    {
+    public interface IStateMachine {
         /************************************************************************************************************************/
 
         /// <summary>The currently active state.</summary>
@@ -124,8 +122,7 @@ namespace Animancer.FSM
     [HelpURL(StateExtensions.APIDocumentationURL + nameof(StateMachine<TState>) + "_1")]
     [Serializable]
     public partial class StateMachine<TState> : IStateMachine
-        where TState : class, IState
-    {
+        where TState : class, IState {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -149,15 +146,13 @@ namespace Animancer.FSM
 
         /// <summary>Creates a new <see cref="StateMachine{TState}"/> and immediately enters the `state`.</summary>
         /// <remarks>This calls <see cref="IState.OnEnterState"/> but not <see cref="IState.CanEnterState"/>.</remarks>
-        public StateMachine(TState state)
-        {
+        public StateMachine(TState state) {
 #if UNITY_ASSERTIONS
             if (state == null)// AllowNullStates won't be true yet since this is the constructor.
                 throw new ArgumentNullException(nameof(state), NullNotAllowed);
 #endif
 
-            using (new StateChange<TState>(this, null, state))
-            {
+            using (new StateChange<TState>(this, null, state)) {
                 _CurrentState = state;
                 state.OnEnterState();
             }
@@ -183,8 +178,7 @@ namespace Animancer.FSM
         ///     }
         /// }
         /// </code></remarks>
-        public virtual void InitializeAfterDeserialize()
-        {
+        public virtual void InitializeAfterDeserialize() {
             if (_CurrentState != null)
                 using (new StateChange<TState>(this, null, _CurrentState))
                     _CurrentState.OnEnterState();
@@ -197,15 +191,13 @@ namespace Animancer.FSM
         /// This requires <see cref="IState.CanExitState"/> on the <see cref="CurrentState"/> and
         /// <see cref="IState.CanEnterState"/> on the specified `state` to both return true.
         /// </remarks>
-        public bool CanSetState(TState state)
-        {
+        public bool CanSetState(TState state) {
 #if UNITY_ASSERTIONS
             if (state == null && !AllowNullStates)
                 throw new ArgumentNullException(nameof(state), NullNotAllowed);
 #endif
 
-            using (new StateChange<TState>(this, _CurrentState, state))
-            {
+            using (new StateChange<TState>(this, _CurrentState, state)) {
                 if (_CurrentState != null && !_CurrentState.CanExitState)
                     return false;
 
@@ -223,14 +215,12 @@ namespace Animancer.FSM
         /// <para></para>
         /// States are checked in ascending order (i.e. from <c>[0]</c> to <c>[states.Count - 1]</c>).
         /// </remarks>
-        public TState CanSetState(IList<TState> states)
-        {
+        public TState CanSetState(IList<TState> states) {
             // We call CanSetState so that it will check CanExitState for each individual pair in case it does
             // something based on the next state.
 
             var count = states.Count;
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 var state = states[i];
                 if (CanSetState(state))
                     return state;
@@ -246,10 +236,8 @@ namespace Animancer.FSM
         /// This method returns true immediately if the specified `state` is already the <see cref="CurrentState"/>.
         /// To allow directly re-entering the same state, use <see cref="TryResetState(TState)"/> instead.
         /// </remarks>
-        public bool TrySetState(TState state)
-        {
-            if (_CurrentState == state)
-            {
+        public bool TrySetState(TState state) {
+            if (_CurrentState == state) {
 #if UNITY_ASSERTIONS
                 if (state == null && !AllowNullStates)
                     throw new ArgumentNullException(nameof(state), NullNotAllowed);
@@ -268,8 +256,7 @@ namespace Animancer.FSM
         /// <para></para>
         /// States are checked in ascending order (i.e. from <c>[0]</c> to <c>[states.Count - 1]</c>).
         /// </remarks>
-        public bool TrySetState(IList<TState> states)
-        {
+        public bool TrySetState(IList<TState> states) {
             var count = states.Count;
             for (int i = 0; i < count; i++)
                 if (TrySetState(states[i]))
@@ -285,8 +272,7 @@ namespace Animancer.FSM
         /// This method does not check if the `state` is already the <see cref="CurrentState"/>. To do so, use
         /// <see cref="TrySetState(TState)"/> instead.
         /// </remarks>
-        public bool TryResetState(TState state)
-        {
+        public bool TryResetState(TState state) {
             if (!CanSetState(state))
                 return false;
 
@@ -301,8 +287,7 @@ namespace Animancer.FSM
         /// <para></para>
         /// States are checked in ascending order (i.e. from <c>[0]</c> to <c>[states.Count - 1]</c>).
         /// </remarks>
-        public bool TryResetState(IList<TState> states)
-        {
+        public bool TryResetState(IList<TState> states) {
             var count = states.Count;
             for (int i = 0; i < count; i++)
                 if (TryResetState(states[i]))
@@ -321,16 +306,13 @@ namespace Animancer.FSM
         /// This method does not check <see cref="IState.CanExitState"/> or
         /// <see cref="IState.CanEnterState"/>. To do that, you should use <see cref="TrySetState"/> instead.
         /// </remarks>
-        public void ForceSetState(TState state)
-        {
+        public void ForceSetState(TState state) {
 #if UNITY_ASSERTIONS
-            if (state == null)
-            {
+            if (state == null) {
                 if (!AllowNullStates)
                     throw new ArgumentNullException(nameof(state), NullNotAllowed);
             }
-            else if (state is IOwnedState<TState> owned && owned.OwnerStateMachine != this)
-            {
+            else if (state is IOwnedState<TState> owned && owned.OwnerStateMachine != this) {
                 throw new InvalidOperationException(
                     $"Attempted to use a state in a machine that is not its owner." +
                     $"\n• State: {state}" +
@@ -338,8 +320,7 @@ namespace Animancer.FSM
             }
 #endif
 
-            using (new StateChange<TState>(this, _CurrentState, state))
-            {
+            using (new StateChange<TState>(this, _CurrentState, state)) {
                 _CurrentState?.OnExitState();
 
                 _CurrentState = state;
@@ -368,8 +349,7 @@ namespace Animancer.FSM
 
         /// <summary>[Assert-Conditional] Sets <see cref="AllowNullStates"/>.</summary>
         [System.Diagnostics.Conditional("UNITY_ASSERTIONS")]
-        public void SetAllowNullStates(bool allow = true)
-        {
+        public void SetAllowNullStates(bool allow = true) {
 #if UNITY_ASSERTIONS
             AllowNullStates = allow;
 #endif
@@ -387,8 +367,7 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <summary>[Editor-Only] Draws GUI fields to display the status of this state machine.</summary>
-        public void DoGUI()
-        {
+        public void DoGUI() {
             var spacing = UnityEditor.EditorGUIUtility.standardVerticalSpacing;
             var lines = GUILineCount;
             var height =
@@ -404,16 +383,14 @@ namespace Animancer.FSM
         /************************************************************************************************************************/
 
         /// <summary>[Editor-Only] Draws GUI fields to display the status of this state machine in the given `area`.</summary>
-        public virtual void DoGUI(ref Rect area)
-        {
+        public virtual void DoGUI(ref Rect area) {
             area.height = UnityEditor.EditorGUIUtility.singleLineHeight;
 
             UnityEditor.EditorGUI.BeginChangeCheck();
 
             var state = StateMachineUtilities.DoGenericField(area, "Current State", _CurrentState);
 
-            if (UnityEditor.EditorGUI.EndChangeCheck())
-            {
+            if (UnityEditor.EditorGUI.EndChangeCheck()) {
                 if (Event.current.control)
                     ForceSetState(state);
                 else

@@ -1,5 +1,4 @@
-public interface IStunnable
-{
+public interface IStunnable {
     void Stun();
     void EndStun();
 }

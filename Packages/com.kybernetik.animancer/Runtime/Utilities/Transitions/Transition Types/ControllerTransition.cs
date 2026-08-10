@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Animancer
-{
+namespace Animancer {
     /// <inheritdoc/>
     /// https://kybernetik.com.au/animancer/api/Animancer/ControllerTransition_1
     [Serializable]
@@ -16,8 +15,7 @@ namespace Animancer
     public abstract class ControllerTransition<TState> : Transition<TState>,
         IAnimationClipCollection,
         ICopyable<ControllerTransition<TState>>
-        where TState : ControllerState
-    {
+        where TState : ControllerState {
         /************************************************************************************************************************/
 
         [SerializeField]
@@ -31,11 +29,9 @@ namespace Animancer
         /// you will need to call <see cref="Transition{T}.ReconcileMainObject(AnimancerGraph)"/>
         /// for each of them to create new states for the newly assigned object.
         /// </remarks>
-        public RuntimeAnimatorController Controller
-        {
+        public RuntimeAnimatorController Controller {
             get => _Controller;
-            set
-            {
+            set {
                 _Controller = value;
 
                 if (BaseState != null)
@@ -90,18 +86,15 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override float MaximumDuration
-        {
-            get
-            {
+        public override float MaximumDuration {
+            get {
                 if (_Controller == null)
                     return 0;
 
                 var duration = 0f;
 
                 var clips = _Controller.animationClips;
-                for (int i = 0; i < clips.Length; i++)
-                {
+                for (int i = 0; i < clips.Length; i++) {
                     var length = clips[i].length;
                     if (duration < length)
                         duration = length;
@@ -130,8 +123,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override void Apply(AnimancerState state)
-        {
+        public override void Apply(AnimancerState state) {
             if (state is ControllerState controllerState)
                 controllerState.ActionsOnStop = _ActionsOnStop;
 
@@ -141,8 +133,7 @@ namespace Animancer
         /************************************************************************************************************************/
 
         /// <summary>Adds all clips in the <see cref="Controller"/> to the collection.</summary>
-        void IAnimationClipCollection.GatherAnimationClips(ICollection<AnimationClip> clips)
-        {
+        void IAnimationClipCollection.GatherAnimationClips(ICollection<AnimationClip> clips) {
             if (_Controller != null)
                 clips.Gather(_Controller.animationClips);
         }
@@ -154,12 +145,10 @@ namespace Animancer
             => this.CopyFromBase(copyFrom, context);
 
         /// <inheritdoc/>
-        public virtual void CopyFrom(ControllerTransition<TState> copyFrom, CloneContext context)
-        {
+        public virtual void CopyFrom(ControllerTransition<TState> copyFrom, CloneContext context) {
             base.CopyFrom(copyFrom, context);
 
-            if (copyFrom == null)
-            {
+            if (copyFrom == null) {
                 _Controller = default;
                 _ActionsOnStop = Array.Empty<ControllerState.ActionOnStop>();
                 return;
@@ -182,13 +171,11 @@ namespace Animancer
     [System.Obsolete(Validate.ProOnlyMessage)]
 #endif
     public class ControllerTransition : ControllerTransition<ControllerState>,
-        ICopyable<ControllerTransition>
-    {
+        ICopyable<ControllerTransition> {
         /************************************************************************************************************************/
 
         /// <inheritdoc/>
-        public override ControllerState CreateState()
-        {
+        public override ControllerState CreateState() {
 #if UNITY_ASSERTIONS
             if (Controller == null)
                 throw new ArgumentException(
@@ -196,8 +183,7 @@ namespace Animancer
                     $" {nameof(ControllerTransition)}.{nameof(Controller)} is null.");
 #endif
 
-            return State = new(Controller, ActionsOnStop)
-            {
+            return State = new(Controller, ActionsOnStop) {
                 SerializedParameterBindings = ParameterBindings
             };
         }
@@ -241,8 +227,7 @@ namespace Animancer
         public static ITransitionDetailed TryCreateTransition(Object target)
             => target is not RuntimeAnimatorController controller
             ? null
-            : new ControllerTransition()
-            {
+            : new ControllerTransition() {
                 Controller = controller,
             };
 
