@@ -101,7 +101,7 @@ namespace Weapons
         {
             hits ??= new HashSet<Transform>();
             Collider[] colliders = new Collider[10];
-            int nrOfHits = Physics.OverlapSphereNonAlloc(transform.position + dist * transform.forward, radius, colliders, LayerMask.GetMask("Bots"));
+            int nrOfHits = Physics.OverlapSphereNonAlloc(transform.position + dist * transform.forward, radius, colliders, LayerMask.GetMask("Bots", "Destructible"));
             for (int i = 0; i < nrOfHits; i++)
             {
                 if (!hits.Contains(colliders[i].transform.root))
