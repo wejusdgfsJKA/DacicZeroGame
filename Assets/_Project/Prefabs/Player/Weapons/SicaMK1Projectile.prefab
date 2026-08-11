@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6507741467992592654}
   - component: {fileID: 833116538586215943}
   - component: {fileID: 115248252639209875}
+  - component: {fileID: 1032823894326919498}
   m_Layer: 8
   m_Name: SicaMK1Projectile
   m_TagString: Untagged
@@ -181,6 +182,8 @@ MonoBehaviour:
   obstructionMask:
     serializedVersion: 2
     m_Bits: 1
+  hasGravity: 0
+  yawOffset: 0
   wallLayers:
     serializedVersion: 2
     m_Bits: 1
@@ -189,3 +192,17 @@ MonoBehaviour:
     m_Bits: 128
   maxBounces: 0
   bounceRadiusMultiplier: 1
+--- !u!114 &1032823894326919498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2822076856858069956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63a095f0fe61c854c9b775e2c9a981f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSfxPlayer
+  impactSfx: {fileID: 0}
+  clipVolume: 0.964

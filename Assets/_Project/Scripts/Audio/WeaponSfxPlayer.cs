@@ -43,22 +43,20 @@ public class WeaponSfxPlayer : MonoBehaviour
 
     private void PlayFireAudio()
     {
-        Debug.Log("Playing audio for WeaponFire event");
         float randomPitch = pitchFire + Random.Range(-pitchVariation, pitchVariation);
-        audioSource.pitch = randomPitch;
-        StartCoroutine(PlayWithDelay(fireSfx, audioDelayFire));
+        StartCoroutine(PlayWithDelay(fireSfx, audioDelayFire, randomPitch));
     }
 
     private void PlayAltFireAudio()
     {
         float randomPitch = pitchAltFire + Random.Range(-pitchVariation, pitchVariation);
-        audioSource.pitch = randomPitch;
-        StartCoroutine(PlayWithDelay(altfireSfx, audioDelayAltFire));
+        StartCoroutine(PlayWithDelay(altfireSfx, audioDelayAltFire, randomPitch));
     }
 
-    private IEnumerator PlayWithDelay(AudioClip sound, float time)
+    private IEnumerator PlayWithDelay(AudioClip sound, float time, float pitch)
     {
         yield return new WaitForSeconds(time);
+        audioSource.pitch = pitch;
         audioSource.PlayOneShot(sound);
     }
 

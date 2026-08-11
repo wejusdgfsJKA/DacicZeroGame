@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.InputSystem.HID;
 using Weapons;
 
+public struct ProjectileImpact : IEvent { }
+
 public class Projectile : MonoBehaviour
 {
     public float velocity = 0;
@@ -50,6 +52,7 @@ public class Projectile : MonoBehaviour
     protected virtual void OnTriggerEnter(Collider other)
     {
         EventBus<TakeDamage>.Raise(other.transform.root.GetInstanceID(), new TakeDamage(damage, transform.root, other));
+        EventBus<ProjectileImpact>.Raise(gameObject.GetInstanceID(), new ProjectileImpact());
         Destroy(gameObject);
     }
     protected void OnDestroy()
