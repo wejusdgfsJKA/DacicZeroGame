@@ -4,6 +4,9 @@ using System.Collections;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Timeline;
+
+
 namespace PlayerController {
     public class CameraController : MonoBehaviour {
         #region Fields
@@ -59,12 +62,14 @@ namespace PlayerController {
             inputReader.EnablePlayerActions();
             UpdateInteractionPrompt();
             inputReader.Interact += OnInteract;
+            Debug.Log("CameraController enabled");
         }
         private void OnDisable() {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             inputReader.DisablePlayerActions();
             inputReader.Interact -= OnInteract;
+            Debug.Log("CameraController disabled");
         }
 
         Quaternion TargetRotation;
@@ -125,8 +130,17 @@ namespace PlayerController {
         protected void InteractionCheck() {
             if (Physics.SphereCast(transform.position, transform.localScale.x / 2,
                 transform.forward, out hit, GlobalPlayerConfig.InteractionDistance, 1 << 5)) {
-                currentInteractableProperty = hit.transform;
-                return;
+                if(!Physics.Raycast(transform.position,
+                                    transform.forward,
+                                    out _,
+                                    GlobalPlayerConfig.InteractionDistance,
+                                    LayerMask.GetMask("Default", "Bots")
+                                    )
+                    )
+                {
+                    currentInteractableProperty = hit.transform;
+                    return;
+                }
             }
             currentInteractableProperty = null;
         }
