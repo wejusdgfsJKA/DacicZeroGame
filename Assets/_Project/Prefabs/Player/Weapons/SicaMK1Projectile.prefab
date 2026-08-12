@@ -135,6 +135,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!54 &833116538586215943
 Rigidbody:
@@ -204,5 +205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a095f0fe61c854c9b775e2c9a981f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileSfxPlayer
-  impactSfx: {fileID: 0}
-  clipVolume: 0.964
+  impactSfx: {fileID: 8300000, guid: 9fb3de2d113ed984991cd82d3e112637, type: 3}
+  clipVolume: 1
+  pitchImpact: 1
+  impactPitchVariation: 0.2
+  mixerGroup: {fileID: 3897150334706837529, guid: 732489827cae0014f8eec4a1909539c7, type: 2}

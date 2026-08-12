@@ -57,7 +57,8 @@ public class WeaponSfxPlayer : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         audioSource.pitch = pitch;
-        audioSource.PlayOneShot(sound);
+        audioSource.clip = sound;
+        audioSource.Play();
     }
 
 }

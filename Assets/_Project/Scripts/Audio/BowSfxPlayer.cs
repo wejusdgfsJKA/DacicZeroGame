@@ -48,7 +48,7 @@ public class BowSfxPlayer : WeaponSfxPlayer
         if (!chargeSfxIsPlaying) 
         {
             chargeSfxIsPlaying = true;
-            StartCoroutine(PlayWithDelay(chargeSfx, chargeDelay, chargePitch));
+            currentCorutine = StartCoroutine(PlayWithDelay(chargeSfx, chargeDelay, chargePitch));
         }
 
     }
