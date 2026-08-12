@@ -176,4 +176,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileSfxPlayer
   impactSfx: {fileID: 8300000, guid: 56c248ee93b7a214b8fb83633505e439, type: 3}
-  clipVolume: 1
+  clipVolume: 1.2

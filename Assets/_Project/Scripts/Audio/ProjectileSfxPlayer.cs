@@ -7,7 +7,7 @@ public class ProjectileSfxPlayer : MonoBehaviour
     [SerializeField]
     private AudioClip impactSfx;
 
-    [SerializeField, Range(0f, 1f)]
+    [SerializeField, Range(0f, 1.5f)]
     private float clipVolume;
 
     private void OnEnable()

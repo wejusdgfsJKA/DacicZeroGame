@@ -23,37 +23,37 @@ public class WeaponSfxPlayer : MonoBehaviour
     [SerializeField]
     private float pitchVariation = 0.2f;
 
-    private AudioSource audioSource;
+    protected AudioSource audioSource;
     private void Awake()
     {
         audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         EventBus<WeaponFired>.AddActions(gameObject.GetInstanceID(), actionNoArgs: PlayFireAudio);
         EventBus<WeaponAltFired>.AddActions(gameObject.GetInstanceID(), actionNoArgs: PlayAltFireAudio);
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
         EventBus<WeaponFired>.RemoveActions(gameObject.GetInstanceID(), actionNoArgs: PlayFireAudio);
         EventBus<WeaponAltFired>.RemoveActions(gameObject.GetInstanceID(), actionNoArgs: PlayAltFireAudio);
     }
 
-    private void PlayFireAudio()
+    protected virtual void PlayFireAudio()
     {
         float randomPitch = pitchFire + Random.Range(-pitchVariation, pitchVariation);
         StartCoroutine(PlayWithDelay(fireSfx, audioDelayFire, randomPitch));
     }
 
-    private void PlayAltFireAudio()
+    protected virtual void PlayAltFireAudio()
     {
         float randomPitch = pitchAltFire + Random.Range(-pitchVariation, pitchVariation);
         StartCoroutine(PlayWithDelay(altfireSfx, audioDelayAltFire, randomPitch));
     }
 
-    private IEnumerator PlayWithDelay(AudioClip sound, float time, float pitch)
+    protected IEnumerator PlayWithDelay(AudioClip sound, float time, float pitch)
     {
         yield return new WaitForSeconds(time);
         audioSource.pitch = pitch;

@@ -11,6 +11,10 @@ namespace Weapons
 
     public struct WeaponAltFired : IEvent { }
 
+    public struct WeaponChargeStart : IEvent { }
+
+    public struct WeaponChargeStop: IEvent { }
+
     public abstract class WeaponBase : MonoBehaviour
     {
         [SerializeField] protected int Damage = 2;
