@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 6507741467992592654}
   - component: {fileID: 833116538586215943}
   - component: {fileID: 3828718443384397336}
+  - component: {fileID: 7510944909259008338}
+  - component: {fileID: 7976649201220798270}
   m_Layer: 8
   m_Name: Projectile
   m_TagString: Untagged
@@ -112,6 +114,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!54 &833116538586215943
 Rigidbody:
@@ -154,7 +157,44 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   velocity: 100
   damage: 1
+  isEnhanced: 0
   ProjectileBody: {fileID: 0}
   obstructionMask:
     serializedVersion: 2
     m_Bits: 1
+  hasGravity: 0
+  yawOffset: 0
+--- !u!114 &7510944909259008338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2822076856858069956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63a095f0fe61c854c9b775e2c9a981f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSfxPlayer
+  impactSfx: {fileID: 8300000, guid: 56c248ee93b7a214b8fb83633505e439, type: 3}
+  clipVolume: 1.2
+  pitchImpact: 1
+  impactPitchVariation: 0.2
+  mixerGroup: {fileID: 0}
+--- !u!114 &7976649201220798270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2822076856858069956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63a095f0fe61c854c9b775e2c9a981f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSfxPlayer
+  impactSfx: {fileID: 8300000, guid: 56c248ee93b7a214b8fb83633505e439, type: 3}
+  clipVolume: 1.2
+  pitchImpact: 1
+  impactPitchVariation: 0.2
+  mixerGroup: {fileID: 3897150334706837529, guid: 732489827cae0014f8eec4a1909539c7, type: 2}

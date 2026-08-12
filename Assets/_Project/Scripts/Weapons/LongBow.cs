@@ -15,6 +15,7 @@ namespace Weapons
                 return;
 
             currentCharge += chargeIncrement * Time.deltaTime;
+            EventBus<WeaponAltFired>.Raise(gameObject.GetInstanceID(), new WeaponAltFired());
             AltFire();
         }
 
