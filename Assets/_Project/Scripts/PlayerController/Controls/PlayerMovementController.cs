@@ -91,7 +91,7 @@ namespace PlayerController
             Vector3 dir = (transform.forward * inputVector.y + transform.right * inputVector.x).normalized;
             Vector3 target = dir * GlobalPlayerConfig.PlayerSpeed;
 
-            if (isCrouching && !isSprinting)
+            if (isCrouching && (!isSprinting || !EnableFancyMovement))
                 target *= GlobalPlayerConfig.PlayerCrouchSpeedMultiplier;
             else if (isSprinting)
                 target *= GlobalPlayerConfig.PlayerSprintSpeedMultiplier;
