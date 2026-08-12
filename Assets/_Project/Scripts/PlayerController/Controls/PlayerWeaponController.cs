@@ -13,6 +13,16 @@ namespace PlayerController
         [SerializeField] protected List<WeaponBase> weapons = new();
         protected int selectedWeaponIndex = 0;
 
+        bool isEnabled = true;
+        public bool IsEnabled { 
+            get { return isEnabled; }
+            set
+                {
+                    isEnabled = value;
+                    OnSwitchWeapon(value ? 0 : -1);
+                }
+        }
+
 
         public UnityAction<WeaponBase> SwitchedActiveWeapon = delegate { };
         public UnityAction<float> UpdateWeaponCharge = delegate { };
@@ -26,7 +36,7 @@ namespace PlayerController
             {
                 weapons[i].SetModelVisible(false);
             }
-            OnSwitchWeapon(0);
+            IsEnabled = isEnabled;
         }
         private void OnDisable()
         {
@@ -40,18 +50,21 @@ namespace PlayerController
         /// <param name="context">The input context that the selectedWeaponIndex must receive.</param>
         protected void OnFire(InputAction.CallbackContext context)
         {
-            if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
+            if (isEnabled)
             {
-                Debug.LogError($"{transform} attempted to use nonexistant selectedWeaponIndex {selectedWeaponIndex}.");
-                return;
-            }
-            if (context.ReadValue<float>() == 1)
-            {
-                weapons[selectedWeaponIndex].Firing = true;
-            }
-            else
-            {
-                weapons[selectedWeaponIndex].Firing = false;
+                if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
+                {
+                    Debug.LogError($"{transform} attempted to use nonexistant selectedWeaponIndex {selectedWeaponIndex}.");
+                    return;
+                }
+                if (context.ReadValue<float>() == 1)
+                {
+                    weapons[selectedWeaponIndex].Firing = true;
+                }
+                else
+                {
+                    weapons[selectedWeaponIndex].Firing = false;
+                }
             }
         }
 
@@ -61,18 +74,20 @@ namespace PlayerController
         /// <param name="context">The input context that the selectedWeaponIndex must receive.</param>
         protected void OnAltFire(InputAction.CallbackContext context)
         {
-            if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
+            if (isEnabled)
             {
-                Debug.LogError($"{transform} attempted to use nonexistant selectedWeaponIndex {selectedWeaponIndex}.");
-                return;
-            }
-            if (context.ReadValue<float>() == 1)
-            {
-                weapons[selectedWeaponIndex].AltFiring = true;
-            }
-            else
-            {
-                weapons[selectedWeaponIndex].AltFiring = false;
+                if (selectedWeaponIndex < 0 || selectedWeaponIndex >= weapons.Count)
+                {
+                    return;
+                }
+                if (context.ReadValue<float>() == 1)
+                {
+                    weapons[selectedWeaponIndex].AltFiring = true;
+                }
+                else
+                {
+                    weapons[selectedWeaponIndex].AltFiring = false;
+                }
             }
         }
         /// <summary>
@@ -99,15 +114,21 @@ namespace PlayerController
         /// <param name="weaponNumber"> The index of the weapon we want to switch to.</param>
         protected void OnSwitchWeapon(int weaponNumber)
         {
-            weapons[selectedWeaponIndex].Firing = false;
-            weapons[selectedWeaponIndex].AltFiring = false;
-            clearWeaponACtions(selectedWeaponIndex);
-            bindWeaponActions(weaponNumber);
-            weapons[selectedWeaponIndex].SetModelVisible(false);
-            weapons[weaponNumber].SetModelVisible(true);
-            selectedWeaponIndex = weaponNumber;
-            OnWeaponChargeUpdated(0f);
-            SwitchedActiveWeapon.Invoke(weapons[selectedWeaponIndex]);
+            if (!(!isEnabled && selectedWeaponIndex == -1))
+            {
+                weapons[selectedWeaponIndex].Firing = false;
+                weapons[selectedWeaponIndex].AltFiring = false;
+                clearWeaponACtions(selectedWeaponIndex);
+                weapons[selectedWeaponIndex].SetModelVisible(false);
+                selectedWeaponIndex = weaponNumber;
+                if (weaponNumber >= 0)
+                {
+                    bindWeaponActions(weaponNumber);
+                    weapons[weaponNumber].SetModelVisible(true);
+                    OnWeaponChargeUpdated(0f);
+                    SwitchedActiveWeapon.Invoke(weapons[selectedWeaponIndex]);
+                }
+            }
         }
 
         public void OnWeaponChargeUpdated(float charge)
