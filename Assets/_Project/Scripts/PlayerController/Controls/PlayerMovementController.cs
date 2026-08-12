@@ -158,6 +158,7 @@ namespace PlayerController
             {
                 capsuleCollider.height = GlobalPlayerConfig.PlayerCrouchingHeight;
                 camPivot.localPosition = new Vector3(camPivot.localPosition.x, GlobalPlayerConfig.PlayerCameraCrouchingHeight, camPivot.localPosition.z);
+                if(Grounded) PlayerBody.AddForce(transform.up * GlobalPlayerConfig.GroundPoundForce, ForceMode.Impulse);
             }
             else
             {
