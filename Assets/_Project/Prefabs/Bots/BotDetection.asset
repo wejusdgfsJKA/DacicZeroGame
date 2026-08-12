@@ -22,7 +22,7 @@ MonoBehaviour:
   <VisualAngle>k__BackingField: 90
   <ObstructionMask>k__BackingField:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 9
   <ProximityRange>k__BackingField: 2
   <LookAtTarget>k__BackingField: 1
   <LookAtSound>k__BackingField: 1
