@@ -62,12 +62,14 @@ namespace PlayerController {
             inputReader.EnablePlayerActions();
             UpdateInteractionPrompt();
             inputReader.Interact += OnInteract;
+            Debug.Log("CameraController enabled");
         }
         private void OnDisable() {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             inputReader.DisablePlayerActions();
             inputReader.Interact -= OnInteract;
+            Debug.Log("CameraController disabled");
         }
 
         Quaternion TargetRotation;
