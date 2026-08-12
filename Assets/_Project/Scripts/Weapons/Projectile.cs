@@ -50,7 +50,10 @@ public class Projectile : MonoBehaviour
     protected virtual void OnTriggerEnter(Collider other)
     {
         EventBus<TakeDamage>.Raise(other.transform.root.GetInstanceID(), new TakeDamage(damage, transform.root, other));
-        Destroy(gameObject);
+        if (1 << other.gameObject.layer == LayerMask.GetMask("Destructible"))
+            return;
+        else
+            Destroy(gameObject);
     }
     protected void OnDestroy()
     {
