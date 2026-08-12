@@ -523,6 +523,7 @@ MonoBehaviour:
   IsEnabled: 0
   MovementController: {fileID: 4781275751611352142}
   CameraController: {fileID: 8482040174508115737}
+  PlayerWeaponController: {fileID: 8672219811969518626}
   PlayerCollider: {fileID: 7484420058146721102}
 --- !u!1 &8282551703606491229
 GameObject:

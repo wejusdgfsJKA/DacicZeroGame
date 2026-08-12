@@ -3,6 +3,7 @@ using HP;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -13,16 +14,22 @@ namespace PlayerController
         [SerializeField] public bool IsEnabled;
         [SerializeField] PlayerMovementController MovementController;
         [SerializeField] CameraController CameraController;
+        [SerializeField] PlayerWeaponController PlayerWeaponController;
         [SerializeField] Collider PlayerCollider;
 
 
 
         public void Awake()
         {
-            if (IsEnabled) MovementController.EnableFancyMovement = false;
+            if (IsEnabled)
+            {
+                MovementController.EnableFancyMovement = false;
+                PlayerWeaponController.IsEnabled = false;
+            }
         }
         public IEnumerator GetSpottedBy(Transform spotter)
         {
+            if (!IsEnabled) yield break;
             var PlayerBody = transform.root.GetComponent<Rigidbody>();
             CameraController.cameraSpeed = 0f;
             var dir = -spotter.forward;

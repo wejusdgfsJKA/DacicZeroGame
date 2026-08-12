@@ -2023,5 +2023,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponSpriteHandler
   WeaponController: {fileID: 0}
   Image: {fileID: 2149616365008174030}
+  ImageBackground: {fileID: 2023125091086254028}
   ChargeSlider: {fileID: 7620006029374720712}
   ChargeSliderFill: {fileID: 5883660288781457227}
