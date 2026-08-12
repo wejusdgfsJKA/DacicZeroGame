@@ -7,6 +7,14 @@ using UnityEngine.UIElements;
 
 namespace Weapons
 {
+    public struct WeaponFired : IEvent { }
+
+    public struct WeaponAltFired : IEvent { }
+
+    public struct WeaponChargeStart : IEvent { }
+
+    public struct WeaponChargeStop: IEvent { }
+
     public abstract class WeaponBase : MonoBehaviour
     {
         [SerializeField] protected int Damage = 2;
@@ -43,6 +51,7 @@ namespace Weapons
                 if (Time.time >= cooldownTo)
                 {
                     cooldownTo = Time.time + fireCooldown;
+                    EventBus<WeaponFired>.Raise(gameObject.GetInstanceID(), new WeaponFired());
                     Fire();
                 }
             }
@@ -51,6 +60,7 @@ namespace Weapons
                 if (Time.time >= cooldownTo)
                 {
                     cooldownTo = Time.time + altFireCooldown;
+                    EventBus<WeaponAltFired>.Raise(gameObject.GetInstanceID(), new WeaponAltFired());
                     AltFire();
                 }
             }
@@ -101,7 +111,7 @@ namespace Weapons
         {
             hits ??= new HashSet<Transform>();
             Collider[] colliders = new Collider[10];
-            int nrOfHits = Physics.OverlapSphereNonAlloc(transform.position + dist * transform.forward, radius, colliders, LayerMask.GetMask("Bots"));
+            int nrOfHits = Physics.OverlapSphereNonAlloc(transform.position + dist * transform.forward, radius, colliders, LayerMask.GetMask("Bots", "Destructible"));
             for (int i = 0; i < nrOfHits; i++)
             {
                 if (!hits.Contains(colliders[i].transform.root))

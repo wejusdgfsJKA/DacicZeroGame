@@ -60,6 +60,13 @@ public class SicaProjectile : Projectile
 
     protected override void OnTriggerEnter(Collider other)
     {
+        EventBus<ProjectileImpact>.Raise(gameObject.GetInstanceID(), new ProjectileImpact());
+        if (1 << other.gameObject.layer == LayerMask.GetMask("Destructible"))
+        {
+            EventBus<TakeDamage>.Raise(other.transform.root.GetInstanceID(), new TakeDamage(damage, transform.root, other));
+            return;
+        }
+
         if (((1 << other.gameObject.layer) & enemyLayers) == 0) return;
         if (!HitEnemies.Contains(other))
         {

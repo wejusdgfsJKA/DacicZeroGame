@@ -20,10 +20,12 @@ namespace MBT
             if ((target.Value - self.position).magnitude >= weapon.Range) { weapon.Firing = false;  return NodeResult.failure;  }
             if (!weapon.Firing)
             {
-                self.LookAt(new Vector3(target.Value.x, self.position.y, target.Value.z));
-                weapon.transform.LookAt(target.Value);
-                if(weapon.cooldownTo < Time.time)
+                if (weapon.cooldownTo < Time.time)
+                {
+                    self.LookAt(new Vector3(target.Value.x, self.position.y, target.Value.z));
+                    weapon.transform.LookAt(target.Value);
                     weapon.Firing = true;
+                }
             }
             return NodeResult.running;
         }

@@ -1,5 +1,7 @@
 
 
+using AI;
+using Detection;
 using UnityEngine;
 
 public class ScannerBotComponent : MonoBehaviour

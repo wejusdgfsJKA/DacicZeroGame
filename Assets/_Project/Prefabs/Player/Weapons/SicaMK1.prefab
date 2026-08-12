@@ -143,6 +143,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &8629466349362021416
 GameObject:
@@ -155,6 +156,8 @@ GameObject:
   - component: {fileID: 8121218739952842804}
   - component: {fileID: 8928841742684204096}
   - component: {fileID: 968852002482703538}
+  - component: {fileID: 1541167526672944979}
+  - component: {fileID: 4837641631085736555}
   m_Layer: 6
   m_Name: SicaMK1
   m_TagString: Untagged
@@ -205,10 +208,132 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee7fb0d9a83a88c4a805f26716fe774d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapons.SicaMK1
+  Damage: 2
   fireCooldown: 0.5
   altFireCooldown: 10
+  <Firing>k__BackingField: 0
+  <AltFiring>k__BackingField: 0
+  <IsEnhanced>k__BackingField: 0
+  WeaponSprite: {fileID: 2800000, guid: c72fa9cde4a6d724eafadc2d9d625fe3, type: 3}
+  cooldownTo: -1
   projectile: {fileID: 115248252639209875, guid: 405c88ba08fea774baa2368f644c2ba4, type: 3}
   projectileVelocity: 20
   clip: {fileID: 7400000, guid: 6ffc3fee10117ca43b524b4439eb840b, type: 2}
   radius: 0.7
   dist: 0.7
+--- !u!82 &1541167526672944979
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629466349362021416}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 3897150334706837529, guid: 732489827cae0014f8eec4a1909539c7, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &4837641631085736555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629466349362021416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3da8c6c684d1fae4d94d2b1ea7b27e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponSfxPlayer
+  audioDelayFire: 0
+  pitchFire: 1
+  pitchAltFire: 1
+  audioDelayAltFire: 0
+  fireSfx: {fileID: 8300000, guid: 00b4ea25cd115fa468ec176de736fc15, type: 3}
+  altfireSfx: {fileID: 8300000, guid: fcdf2480d51ec724e95b2193934b0e77, type: 3}
+  pitchVariation: 0.2
