@@ -13,6 +13,7 @@ namespace PlayerController
         [SerializeField] Transform camPivot;
         [SerializeField] Camera playerCamera;
         [SerializeField] public Transform groundCheckPoint;
+        [SerializeField] public bool EnableFancyMovement = true;
         public bool Grounded { get; protected set; }
         bool onSlope;
         RaycastHit slopeHit;
@@ -105,7 +106,7 @@ namespace PlayerController
         {
             if (!isCrouching) return;
 
-            if (!Grounded && !isSliding && PlayerBody.linearVelocity.y <= 0)
+            if (!Grounded && !isSliding && PlayerBody.linearVelocity.y <= 0 && EnableFancyMovement)
             {
                 // groundpound! (might not make the final cut)
                 PlayerBody.linearVelocity = new Vector3(0, GlobalPlayerConfig.GroundPoundForce, 0);
@@ -141,7 +142,7 @@ namespace PlayerController
             {
                 PlayerBody.AddForce(transform.up * GlobalPlayerConfig.JumpForce, ForceMode.Impulse);
 
-                if (isSliding)
+                if (isSliding && EnableFancyMovement)
                     PlayerBody.AddForce(transform.forward * GlobalPlayerConfig.JumpForce, ForceMode.Impulse);
             }
         }
@@ -163,7 +164,7 @@ namespace PlayerController
                 capsuleCollider.height = GlobalPlayerConfig.PlayerStandingHeight;
                 camPivot.localPosition = new Vector3(camPivot.localPosition.x, GlobalPlayerConfig.PlayerCameraStandingHeight, camPivot.localPosition.z);
             }
-            isSliding = isHeld && isSprinting && Grounded;
+            isSliding = isHeld && isSprinting && Grounded && EnableFancyMovement;
             Physics.SyncTransforms();
         }
 

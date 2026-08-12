@@ -332,6 +332,7 @@ GameObject:
   - component: {fileID: 8672219811969518626}
   - component: {fileID: 3464305454432268230}
   - component: {fileID: 4835473798990928266}
+  - component: {fileID: 665142174315176259}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -446,6 +447,7 @@ MonoBehaviour:
   camPivot: {fileID: 6776431533047406821}
   playerCamera: {fileID: 2102838470461650688}
   groundCheckPoint: {fileID: 3741848804775637333}
+  EnableFancyMovement: 1
 --- !u!114 &8672219811969518626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,6 +508,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &665142174315176259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778261875785697884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 307e0dd7e32504f4199dfc383a53b3ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController.PlayerStealthController
+  IsEnabled: 0
+  MovementController: {fileID: 4781275751611352142}
+  CameraController: {fileID: 8482040174508115737}
+  PlayerCollider: {fileID: 7484420058146721102}
 --- !u!1 &8282551703606491229
 GameObject:
   m_ObjectHideFlags: 0

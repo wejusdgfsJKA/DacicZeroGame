@@ -18,9 +18,9 @@ GameObject:
   - component: {fileID: 8561518122655142124}
   - component: {fileID: 3550361723345297377}
   - component: {fileID: 6261866373614125566}
-  - component: {fileID: 551986801753268547}
   - component: {fileID: 5290266464874347977}
   - component: {fileID: 7045754441399901946}
+  - component: {fileID: 6378886786059122261}
   m_Layer: 7
   m_Name: BT
   m_TagString: Untagged
@@ -55,7 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25af8627659c6949b60949c3aa8d91d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedEditorNode: {fileID: 7045754441399901946}
+  selectedEditorNode: {fileID: 8469765849172727788}
   repeatOnFinish: 1
   maxExecutionsPerTick: 1000
   parent: {fileID: 0}
@@ -241,7 +241,7 @@ MonoBehaviour:
     height: 44
   parent: {fileID: 8561518122655142124}
   children:
-  - {fileID: 551986801753268547}
+  - {fileID: 6378886786059122261}
   behaviourTree: {fileID: 0}
   runtimePriority: 0
   breakpoint: 0
@@ -286,39 +286,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: TargetAwareness
   val: 0
---- !u!114 &551986801753268547
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1718131105888259393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26f5900cbb9682a428f0967ed66a0c1e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  title: Shoot gun
-  rect:
-    serializedVersion: 2
-    x: 60
-    y: 480
-    width: 160
-    height: 44
-  parent: {fileID: 3550361723345297377}
-  children: []
-  behaviourTree: {fileID: 0}
-  runtimePriority: 0
-  breakpoint: 0
-  gun: {fileID: 1942675778111703800}
-  target:
-    useConstant: 0
-    mode: 0
-    blackboard: {fileID: 1051981429011338588}
-    key: TargetPosition
-    constantValue: {x: 0, y: 0, z: 0}
-  agent: {fileID: 0}
-  self: {fileID: 561832215926940277}
 --- !u!114 &5290266464874347977
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,6 +328,39 @@ MonoBehaviour:
   brain: {fileID: 7766379108726240151}
   Scan: {fileID: 6915068023335917343}
   currentPatrolPoint: 0
+--- !u!114 &6378886786059122261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718131105888259393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd3454ab1853cbd4fa5fb898cf9c61a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MBT.SpotPlayer
+  title: SpotPlayer
+  rect:
+    serializedVersion: 2
+    x: 60.80002
+    y: 520
+    width: 160
+    height: 44
+  parent: {fileID: 3550361723345297377}
+  children: []
+  behaviourTree: {fileID: 0}
+  runtimePriority: 0
+  breakpoint: 0
+  gun: {fileID: 0}
+  targetPos:
+    useConstant: 0
+    mode: 0
+    blackboard: {fileID: 1051981429011338588}
+    key: TargetPosition
+    constantValue: {x: 0, y: 0, z: 0}
+  self: {fileID: 561832215926940277}
+  scanner: {fileID: 6915068023335917343}
 --- !u!1 &2128199764013867580
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +482,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &3089132165868292306
 GameObject:
@@ -593,9 +594,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnDamageTaken:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4646713103417924419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -744,6 +742,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &8611490911810951475
 BoxCollider:
@@ -854,6 +853,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &5715324471213758706
 GameObject:
@@ -895,14 +895,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5715324471213758706}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0, g: 0.08427, b: 1, a: 1}
   m_Intensity: 100
   m_Range: 30
   m_SpotAngle: 30
   m_InnerSpotAngle: 2
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 0
     m_Resolution: -1
@@ -1041,6 +1041,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &9144120359027488434
 GameObject:
@@ -1092,6 +1093,11 @@ MonoBehaviour:
   Damage: 2
   fireCooldown: 1
   altFireCooldown: 0
+  <Firing>k__BackingField: 0
+  <AltFiring>k__BackingField: 0
+  <IsEnhanced>k__BackingField: 0
+  WeaponSprite: {fileID: 0}
+  cooldownTo: -1
   minError: 0
   maxError: 0.5
   accBuildUp: 0.1
@@ -1198,7 +1204,7 @@ AudioSource:
     m_RotationOrder: 4
 --- !u!120 &6098632282209762097
 LineRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1244,6 +1250,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 1}
@@ -1302,7 +1309,6 @@ LineRenderer:
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: PigeonBotDetection
   m_EditorClassIdentifier: 
   <UpdateCooldown>k__BackingField: 0.05
-  <TimeToForgetTarget>k__BackingField: 20
+  <TimeToForgetTarget>k__BackingField: 1
   <AwarenessBuildRate>k__BackingField: 0.05
   <AwarenessLossRate>k__BackingField: 0.03
-  <TimeToForgetSound>k__BackingField: 10
+  <TimeToForgetSound>k__BackingField: 1
   <AudioRange>k__BackingField: 20
   <VisualRange>k__BackingField: 30
   <VisualAngle>k__BackingField: 30
