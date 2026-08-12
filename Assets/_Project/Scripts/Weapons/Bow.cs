@@ -1,4 +1,5 @@
 using Animancer;
+using EventBus;
 using UnityEngine;
 
 namespace Weapons
@@ -67,6 +68,7 @@ namespace Weapons
 
         protected void AccumulateCharge()
         {
+            EventBus<WeaponChargeStart>.Raise(gameObject.GetInstanceID(), new WeaponChargeStart());
             currentCharge += chargeIncrement * Time.deltaTime;
             currentCharge = Mathf.Clamp(currentCharge, 0, MaxCharge);
             UpdateWeaponCharge.Invoke(currentCharge);
@@ -74,6 +76,7 @@ namespace Weapons
 
         protected virtual void CancelCharge()
         {
+            EventBus<WeaponChargeStop>.Raise(gameObject.GetInstanceID(), new WeaponChargeStop());
             currentCharge = 0;
         }
 
@@ -81,9 +84,18 @@ namespace Weapons
         {
             if (currentCharge > MinChargeToFire)
             {
-                if (chargeType == ChargeType.Fire) Fire();
-                else if (chargeType == ChargeType.AltFire) AltFire();
+                if (chargeType == ChargeType.Fire)
+                {
+                    EventBus<WeaponFired>.Raise(gameObject.GetInstanceID(), new WeaponFired());
+                    Fire();
+                }
+                else if (chargeType == ChargeType.AltFire)
+                {
+                    EventBus<WeaponAltFired>.Raise(gameObject.GetInstanceID(), new WeaponAltFired());
+                    AltFire();
+                }
             }
+            EventBus<WeaponChargeStop>.Raise(gameObject.GetInstanceID(), new WeaponChargeStop());
             currentCharge = 0;
             HandleNotFiring();
             UpdateWeaponCharge.Invoke(currentCharge);
